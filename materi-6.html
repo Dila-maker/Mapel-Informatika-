@@ -1,0 +1,1643 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Sistem Komputer - SMPN 1 Tinggimoncong</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            user-select: none;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+        .glow-amber {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .cyber-border {
+            border: 2px solid #06b6d4;
+            box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.2);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(6,182,212,0.6)); }
+            50% { filter: drop-shadow(0 0 15px rgba(6,182,212,0.9)); }
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-cyan-500 selection:text-slate-900">
+
+    <!-- TOP NAVIGATION & STATUS BAR -->
+    <header class="sticky top-0 z-50 glass-card border-b border-slate-700/50 px-4 py-3">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-3">
+            <!-- Brand & School info -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="app.showScreen('map')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg text-white font-orbitron font-bold text-xl animate-float">
+                    ⚡
+                </div>
+                <div>
+                    <h1 class="font-orbitron font-extrabold text-cyan-400 text-sm sm:text-base tracking-wider uppercase">Sistem Komputer</h1>
+                    <p class="text-xs text-slate-400">SMPN 1 Tinggimoncong</p>
+                </div>
+            </div>
+
+            <!-- Player Status Dashboard -->
+            <div id="player-dashboard" class="hidden flex items-center gap-3 sm:gap-6 bg-slate-800/80 px-4 py-1.5 rounded-full border border-slate-700">
+                <!-- Avatar & Name -->
+                <div class="flex items-center gap-2">
+                    <span id="player-avatar" class="text-xl">🤖</span>
+                    <span id="player-display-name" class="font-semibold text-xs sm:text-sm text-slate-200">Siswa</span>
+                </div>
+                <!-- XP Bar -->
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-amber-400 text-sm"></i>
+                    <div class="w-20 sm:w-28 bg-slate-700 rounded-full h-3 overflow-hidden p-0.5 border border-slate-600">
+                        <div id="xp-bar-fill" class="bg-gradient-to-r from-amber-500 to-yellow-300 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <span id="player-xp" class="font-orbitron text-xs text-amber-300 font-bold">0 XP</span>
+                </div>
+                <!-- Badges trigger -->
+                <button onclick="app.toggleBadgeModal()" class="text-slate-300 hover:text-cyan-400 transition relative">
+                    <i class="fa-solid fa-medal text-lg"></i>
+                    <span id="badge-count-badge" class="absolute -top-1.5 -right-2 bg-rose-500 text-white text-[10px] font-bold px-1.5 rounded-full">0</span>
+                </button>
+                <!-- Audio toggle -->
+                <button onclick="app.toggleAudio()" id="audio-btn" class="text-slate-400 hover:text-cyan-400 text-sm">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-6xl mx-auto w-full p-4 flex-grow relative">
+
+        <!-- MASKOT KOMPY FLOATING DIALOG -->
+        <div id="kompy-guide" class="fixed bottom-4 right-4 z-40 max-w-xs sm:max-w-sm flex items-end gap-3 transition-all duration-300 transform translate-y-0">
+            <div class="glass-card bg-slate-900/90 border border-cyan-500/40 p-3.5 rounded-2xl shadow-2xl text-xs sm:text-sm text-slate-200 relative glow-cyan">
+                <button onclick="app.hideKompy()" class="absolute -top-2 -right-2 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white w-6 h-6 rounded-full flex items-center justify-center border border-slate-600 text-xs">✕</button>
+                <div class="font-bold text-cyan-400 mb-1 flex items-center gap-1.5">
+                    <i class="fa-solid fa-robot"></i> Kompy Bot
+                </div>
+                <p id="kompy-text">Halo! Aku Kompy. Mari jelajahi dunia Sistem Komputer dan dapatkan seluruh Badge master!</p>
+            </div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex-shrink-0 flex items-center justify-center text-2xl shadow-lg border border-cyan-300 animate-float cursor-pointer" onclick="app.speakKompy()">
+                🤖
+            </div>
+        </div>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 0: WELCOME & REGISTRATION -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-welcome" class="py-6 sm:py-12 flex flex-col items-center justify-center text-center">
+            <div class="glass-card p-6 sm:p-10 rounded-3xl max-w-2xl w-full border border-cyan-500/30 glow-cyan relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl"></div>
+                
+                <span class="px-4 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 font-semibold text-xs tracking-wider uppercase mb-4 inline-block">
+                    Informatika Kelas VII • SMPN 1 Tinggimoncong
+                </span>
+                
+                <h1 class="font-orbitron font-black text-3xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500 mb-3 tracking-wide">
+                    PETUALANGAN SISTEM KOMPUTER
+                </h1>
+                
+                <p class="text-slate-300 text-sm sm:text-base mb-6 max-w-lg mx-auto">
+                    Jelajahi komponen hardware, software, dan cara kerja komputer! Selesaikan misi, lawan Boss Battle, dan raih Sertifikat Digital!
+                </p>
+
+                <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-700 text-left mb-6 space-y-2 text-xs sm:text-sm text-slate-300">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-user-tie text-cyan-400"></i> <span><strong>Guru Pengampu:</strong> Syarifuddin, S. Pd., M. Si.</span></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-clock text-amber-400"></i> <span><strong>Alokasi Waktu:</strong> 80 Menit Pembelajaran Interaktif</span></div>
+                </div>
+
+                <!-- Input Student Name -->
+                <div class="space-y-4 max-w-md mx-auto">
+                    <div class="text-left">
+                        <label class="text-xs font-semibold text-cyan-300 mb-1 block">Masukkan Nama Lengkap Siswa:</label>
+                        <input type="text" id="input-student-name" placeholder="Contoh: Andi Muhammad Rizky" class="w-full bg-slate-900/90 border border-slate-600 focus:border-cyan-400 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 text-sm font-medium">
+                    </div>
+
+                    <button onclick="app.startAdventure()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-orbitron font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center gap-3 text-base">
+                        <span>MULAI PETUALANGAN</span>
+                        <i class="fa-solid fa-rocket"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 1: ADVENTURE MAP (MENU UTAMA) -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-map" class="hidden py-4 space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
+                <div>
+                    <h2 class="font-orbitron text-xl text-cyan-400 font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-map"></i> PETA PETUALANGAN
+                    </h2>
+                    <p class="text-slate-400 text-xs">Selesaikan setiap level secara berurutan untuk membuka tantangan berikutnya.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="app.showLeaderboard()" class="bg-slate-700 hover:bg-slate-600 text-cyan-300 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-2 border border-slate-600">
+                        <i class="fa-solid fa-trophy text-amber-400"></i> Peringkat
+                    </button>
+                    <button onclick="app.showCertificate()" id="map-cert-btn" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-file-certificate"></i> Sertifikat
+                    </button>
+                </div>
+            </div>
+
+            <!-- Node Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                
+                <!-- Level 1 Node -->
+                <div id="node-level1" class="glass-card p-5 rounded-2xl border border-cyan-500/40 relative overflow-hidden group hover:border-cyan-400 transition cursor-pointer" onclick="app.openLevel(1)">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-lg border border-cyan-500/30">1</span>
+                        <span class="status-badge bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-full font-semibold border border-emerald-500/30">Terbuka</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-slate-100 text-base mb-1 group-hover:text-cyan-300">Pengenalan Sistem Komputer</h3>
+                    <p class="text-slate-400 text-xs mb-3">Konsep Hardware, Software, & Brainware + Mini Challenge Sorting.</p>
+                    <div class="flex justify-between items-center text-xs text-cyan-400 font-semibold">
+                        <span>+15 XP Maksimal</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+
+                <!-- Level 2 Node -->
+                <div id="node-level2" class="glass-card p-5 rounded-2xl border border-slate-700/60 relative overflow-hidden group transition cursor-pointer opacity-75" onclick="app.openLevel(2)">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-lg border border-slate-700">2</span>
+                        <span class="status-badge bg-slate-800 text-slate-400 text-xs px-2.5 py-1 rounded-full font-semibold border border-slate-700">🔒 Terkunci</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-slate-200 text-base mb-1">Hardware (Input-Proses-Output)</h3>
+                    <p class="text-slate-400 text-xs mb-3">Fungsi Keyboard, CPU, RAM, Monitor + Categorization Challenge.</p>
+                    <div class="flex justify-between items-center text-xs text-slate-400 font-semibold">
+                        <span>+50 XP Maksimal</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Level 3 Node -->
+                <div id="node-level3" class="glass-card p-5 rounded-2xl border border-slate-700/60 relative overflow-hidden group transition cursor-pointer opacity-75" onclick="app.openLevel(3)">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-lg border border-slate-700">3</span>
+                        <span class="status-badge bg-slate-800 text-slate-400 text-xs px-2.5 py-1 rounded-full font-semibold border border-slate-700">🔒 Terkunci</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-slate-200 text-base mb-1">Penyimpanan & Software</h3>
+                    <p class="text-slate-400 text-xs mb-3">Sistem Operasi, Aplikasi, HDD/SSD + Tebak Fungsi Quiz.</p>
+                    <div class="flex justify-between items-center text-xs text-slate-400 font-semibold">
+                        <span>+30 XP Maksimal</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Mission 1: Detective -->
+                <div id="node-mission1" class="glass-card p-5 rounded-2xl border border-slate-700/60 relative overflow-hidden group transition cursor-pointer opacity-75" onclick="app.openMission(1)">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="w-10 h-10 rounded-xl bg-purple-950/60 text-purple-400 flex items-center justify-center font-bold text-lg border border-purple-500/30">🕵️</span>
+                        <span class="status-badge bg-slate-800 text-slate-400 text-xs px-2.5 py-1 rounded-full font-semibold border border-slate-700">🔒 Terkunci</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-purple-300 text-base mb-1">Misi: Komputer Detektif</h3>
+                    <p class="text-slate-400 text-xs mb-3">Diagnosis 4 kasus kerusakan PC dengan petunjuk clue cards.</p>
+                    <div class="flex justify-between items-center text-xs text-purple-400 font-semibold">
+                        <span>+60 XP Maksimal</span>
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                </div>
+
+                <!-- Mission 2: PC Builder -->
+                <div id="node-mission2" class="glass-card p-5 rounded-2xl border border-slate-700/60 relative overflow-hidden group transition cursor-pointer opacity-75" onclick="app.openMission(2)">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="w-10 h-10 rounded-xl bg-amber-950/60 text-amber-400 flex items-center justify-center font-bold text-lg border border-amber-500/30">🛠️</span>
+                        <span class="status-badge bg-slate-800 text-slate-400 text-xs px-2.5 py-1 rounded-full font-semibold border border-slate-700">🔒 Terkunci</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-amber-300 text-base mb-1">Misi: PC Builder Challenge</h3>
+                    <p class="text-slate-400 text-xs mb-3">Rakit rakitan PC Gamer, PC Kantor, dan PC DesainerGrafis!</p>
+                    <div class="flex justify-between items-center text-xs text-amber-400 font-semibold">
+                        <span>+90 XP Maksimal</span>
+                        <i class="fa-solid fa-wrench"></i>
+                    </div>
+                </div>
+
+                <!-- Boss Battle Node -->
+                <div id="node-boss" class="glass-card p-5 rounded-2xl border border-rose-900/60 bg-gradient-to-br from-slate-900 via-slate-900 to-rose-950/40 relative overflow-hidden group transition cursor-pointer opacity-75" onclick="app.openBossBattle()">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center font-bold text-lg animate-pulse">👹</span>
+                        <span class="status-badge bg-slate-800 text-slate-400 text-xs px-2.5 py-1 rounded-full font-semibold border border-slate-700">🔒 Terkunci</span>
+                    </div>
+                    <h3 class="font-orbitron font-black text-rose-400 text-base mb-1">BOSS BATTLE KUIS 10 SOAL</h3>
+                    <p class="text-slate-400 text-xs mb-3">Tantangan akhir 10 Soal berbatas waktu 20s/soal. Buktikan keahlianmu!</p>
+                    <div class="flex justify-between items-center text-xs text-rose-400 font-semibold">
+                        <span>Skor Maksimal 100</span>
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 2: LEVEL 1 (PENGENALAN SISTEM KOMPUTER) -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-level1" class="hidden py-4 space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="app.showScreen('map')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl flex items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> Peta Utama
+                </button>
+                <span class="text-cyan-400 font-orbitron font-bold text-sm">LEVEL 1 dari 3</span>
+            </div>
+
+            <!-- Material Card -->
+            <div class="glass-card p-6 rounded-3xl border border-cyan-500/30 space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl font-bold">📚</div>
+                    <h2 class="font-orbitron text-xl font-bold text-slate-100">Apa itu Sistem Komputer?</h2>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    <strong class="text-cyan-300">Sistem Komputer</strong> adalah kumpulan perangkat-perangkat komputer yang saling berhubungan dan berinteraksi satu sama lain untuk mengolah data sehingga menghasilkan informasi yang berguna bagi pengguna.
+                </p>
+                
+                <h3 class="font-semibold text-slate-200 text-sm pt-2">3 Elemen Utama Sistem Komputer:</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                        <div class="text-cyan-400 font-bold text-sm mb-1"><i class="fa-solid fa-microchip"></i> 1. Hardware</div>
+                        <p class="text-slate-400 text-xs">Perangkat keras yang memiliki bentuk fisik nyata dan dapat disentuh (contoh: Keyboard, CPU, Monitor).</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                        <div class="text-indigo-400 font-bold text-sm mb-1"><i class="fa-solid fa-code"></i> 2. Software</div>
+                        <p class="text-slate-400 text-xs">Perangkat lunak berupa program/instruksi tidak berwujud fisik (contoh: Windows, MS Word, Web Browser).</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                        <div class="text-emerald-400 font-bold text-sm mb-1"><i class="fa-solid fa-user-gear"></i> 3. Brainware</div>
+                        <p class="text-slate-400 text-xs">Pengguna atau manusia yang mengoperasikan dan memberi perintah pada sistem komputer.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MINI CHALLENGE LEVEL 1 -->
+            <div class="glass-card p-6 rounded-3xl border border-amber-500/30 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-orbitron text-base font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-gamepad"></i> MINI CHALLENGE: Kelompokkan Elemen!
+                    </h3>
+                    <span class="text-xs bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-full border border-amber-500/30 font-semibold">+5 XP / Benar</span>
+                </div>
+                <p class="text-slate-300 text-xs">Klik kategori yang tepat untuk setiap item di bawah ini:</p>
+
+                <div id="l1-items-container" class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                    <!-- Items generated via JS -->
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button onclick="app.completeLevel1()" id="btn-finish-l1" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm font-orbitron transition shadow-lg flex items-center gap-2">
+                        <span>Lanjut ke Level 2</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 3: LEVEL 2 (HARDWARE: INPUT, PROSES, OUTPUT) -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-level2" class="hidden py-4 space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="app.showScreen('map')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl flex items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> Peta Utama
+                </button>
+                <span class="text-cyan-400 font-orbitron font-bold text-sm">LEVEL 2 dari 3</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Card Input -->
+                <div class="glass-card p-5 rounded-2xl border border-cyan-500/30">
+                    <div class="flex items-center gap-2 text-cyan-400 font-bold text-base mb-2">
+                        <i class="fa-solid fa-keyboard"></i> Perangkat Input
+                    </div>
+                    <p class="text-slate-300 text-xs mb-3">Memasukkan data atau perintah dari luar ke dalam komputer.</p>
+                    <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+                        <li><strong>Keyboard:</strong> Mengetik teks & angka</li>
+                        <li><strong>Mouse:</strong> Menggerakkan kursor</li>
+                        <li><strong>Scanner & Webcam:</strong> Mengambil foto/dokumen</li>
+                        <li><strong>Mikrofon:</strong> Memasukkan suara</li>
+                    </ul>
+                </div>
+                <!-- Card Process -->
+                <div class="glass-card p-5 rounded-2xl border border-purple-500/30">
+                    <div class="flex items-center gap-2 text-purple-400 font-bold text-base mb-2">
+                        <i class="fa-solid fa-cpu"></i> Perangkat Proses
+                    </div>
+                    <p class="text-slate-300 text-xs mb-3">Mengolah data yang dimasukkan oleh perangkat input.</p>
+                    <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+                        <li><strong>CPU:</strong> Otak pemroses data utama</li>
+                        <li><strong>RAM:</strong> Memori penyimpanan sementara</li>
+                        <li><strong>Motherboard:</strong> Papan sirkuit penghubung</li>
+                    </ul>
+                </div>
+                <!-- Card Output -->
+                <div class="glass-card p-5 rounded-2xl border border-emerald-500/30">
+                    <div class="flex items-center gap-2 text-emerald-400 font-bold text-base mb-2">
+                        <i class="fa-solid fa-desktop"></i> Perangkat Output
+                    </div>
+                    <p class="text-slate-300 text-xs mb-3">Menampilkan hasil pengolahan data kepada pengguna.</p>
+                    <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+                        <li><strong>Monitor:</strong> Menampilkan visual/gambar</li>
+                        <li><strong>Printer:</strong> Mencetak hasil ke kertas</li>
+                        <li><strong>Speaker:</strong> Mengeluarkan suara</li>
+                        <li><strong>Proyektor:</strong> Memancarkan layar besar</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- MINI CHALLENGE LEVEL 2 -->
+            <div class="glass-card p-6 rounded-3xl border border-amber-500/30 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-orbitron text-base font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders"></i> MINI CHALLENGE: Klasifikasi Hardware
+                    </h3>
+                    <span class="text-xs bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-full border border-amber-500/30 font-semibold">+5 XP Benar / -2 XP Salah</span>
+                </div>
+                <p class="text-slate-300 text-xs">Pilih kategori yang tepat untuk 10 nama perangkat keras berikut:</p>
+
+                <div id="l2-quiz-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button onclick="app.completeLevel2()" id="btn-finish-l2" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm font-orbitron transition shadow-lg flex items-center gap-2">
+                        <span>Selesai & Lanjut Level 3</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 4: LEVEL 3 (PENYIMPANAN & SOFTWARE) -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-level3" class="hidden py-4 space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="app.showScreen('map')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl flex items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> Peta Utama
+                </button>
+                <span class="text-cyan-400 font-orbitron font-bold text-sm">LEVEL 3 dari 3</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Storage -->
+                <div class="glass-card p-6 rounded-3xl border border-indigo-500/30 space-y-3">
+                    <h3 class="font-orbitron font-bold text-indigo-400 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-hard-drive"></i> Perangkat Penyimpanan (Storage)
+                    </h3>
+                    <p class="text-slate-300 text-xs">Menyimpan data dan berkas secara permanen (non-volatile) maupun sementara.</p>
+                    <div class="space-y-2 text-xs text-slate-300">
+                        <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700">
+                            <strong>HDD & SSD:</strong> Penyimpanan utama internal PC. SSD jauh lebih cepat dari HDD.
+                        </div>
+                        <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700">
+                            <strong>Flashdisk & Memory Card:</strong> Penyimpanan portabel yang mudah dibawa.
+                        </div>
+                        <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700">
+                            <strong>Cloud Storage:</strong> Penyimpanan berbasis internet (Google Drive, OneDrive).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Software -->
+                <div class="glass-card p-6 rounded-3xl border border-teal-500/30 space-y-3">
+                    <h3 class="font-orbitron font-bold text-teal-400 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-window-restore"></i> Perangkat Lunak (Software)
+                    </h3>
+                    <p class="text-slate-300 text-xs">Instruksi terprogram yang menjalankan tugas spesifik di komputer.</p>
+                    <div class="space-y-2 text-xs text-slate-300">
+                        <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700">
+                            <strong>Sistem Operasi (OS):</strong> Mengelola hardware dan software dasar. <br><em class="text-slate-400">Contoh: Windows, macOS, Linux, Android.</em>
+                        </div>
+                        <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700">
+                            <strong>Software Aplikasi:</strong> Membantu pekerjaan pengguna secara spesifik. <br><em class="text-slate-400">Contoh: MS Word, Excel, Chrome, Photoshop.</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MINI CHALLENGE LEVEL 3 -->
+            <div class="glass-card p-6 rounded-3xl border border-amber-500/30 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-orbitron text-base font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question"></i> MINI CHALLENGE: Tebak Fungsi!
+                    </h3>
+                    <span class="text-xs bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-full border border-amber-500/30 font-semibold">+10 XP / Jawaban Tepat</span>
+                </div>
+
+                <div id="l3-riddle-container" class="space-y-4">
+                    <!-- Riddle JS -->
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button onclick="app.completeLevel3()" id="btn-finish-l3" class="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 text-white font-bold px-6 py-2.5 rounded-xl text-sm font-orbitron transition shadow-lg flex items-center gap-2">
+                        <span>Buka Misi Komputer Detektif</span>
+                        <i class="fa-solid fa-user-secret"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 5: MISI 1 (KOMPUTER DETEKTIF) -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-mission1" class="hidden py-4 space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="app.showScreen('map')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl flex items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> Peta Utama
+                </button>
+                <span class="text-purple-400 font-orbitron font-bold text-sm">MISI 1: DETEKTIF KOMPUTER</span>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl border border-purple-500/40 space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🕵️</span>
+                    <div>
+                        <h2 class="font-orbitron text-xl font-bold text-purple-300">Markas Komputer Detektif</h2>
+                        <p class="text-slate-300 text-xs">Pilih tindakan diagnosis yang tepat untuk menyelesaikan 4 kasus laporan warga!</p>
+                    </div>
+                </div>
+
+                <div id="detective-cases-container" class="space-y-4 pt-2">
+                    <!-- Cases inserted via JS -->
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button onclick="app.completeMission1()" id="btn-finish-m1" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm font-orbitron transition shadow-lg flex items-center gap-2">
+                        <span>Buka Misi PC Builder</span>
+                        <i class="fa-solid fa-wrench"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 6: MISI 2 (PC BUILDER CHALLENGE) -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-mission2" class="hidden py-4 space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="app.showScreen('map')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl flex items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> Peta Utama
+                </button>
+                <span class="text-amber-400 font-orbitron font-bold text-sm">MISI 2: PC BUILDER</span>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl border border-amber-500/40 space-y-4">
+                <div class="flex justify-between items-center flex-wrap gap-2">
+                    <div>
+                        <h2 class="font-orbitron text-xl font-bold text-amber-300 flex items-center gap-2">
+                            <i class="fa-solid fa-microchip"></i> Rakit PC Sesuai Kebutuhan
+                        </h2>
+                        <p class="text-slate-300 text-xs">Pilih komponen yang pas dari Toko Virtual agar sesuai anggaran dan spesifikasi target.</p>
+                    </div>
+                    <!-- Scenario Switcher -->
+                    <div id="pc-scenario-tabs" class="flex bg-slate-900/80 p-1 rounded-xl border border-slate-700 text-xs">
+                        <button onclick="app.switchPcScenario('gamer')" id="tab-pc-gamer" class="px-3 py-1.5 rounded-lg font-bold text-slate-300 hover:text-white transition">🎮 PC Gamer</button>
+                        <button onclick="app.switchPcScenario('office')" id="tab-pc-office" class="px-3 py-1.5 rounded-lg font-bold text-slate-300 hover:text-white transition">🏢 PC Kantor</button>
+                        <button onclick="app.switchPcScenario('designer')" id="tab-pc-designer" class="px-3 py-1.5 rounded-lg font-bold text-slate-300 hover:text-white transition">🎨 PC Desainer</button>
+                    </div>
+                </div>
+
+                <!-- Active Scenario Brief -->
+                <div id="pc-scenario-brief" class="bg-slate-900/60 p-4 rounded-2xl border border-amber-500/30 text-xs text-slate-300 space-y-1">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Part Picker Grid -->
+                <div id="pc-part-picker" class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                    <!-- Parts JS -->
+                </div>
+
+                <div id="pc-build-feedback" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+
+                <div class="flex justify-between items-center pt-4">
+                    <button onclick="app.verifyPcBuild()" class="bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 text-slate-950 font-orbitron font-bold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-check-double"></i> Uji Hasil Rakitan
+                    </button>
+                    <button onclick="app.completeMission2()" id="btn-finish-m2" class="bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm font-orbitron transition shadow-lg flex items-center gap-2">
+                        <span>Menuju BOSS BATTLE</span>
+                        <i class="fa-solid fa-fire"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 7: BOSS BATTLE (KUIS 10 SOAL) -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-boss" class="hidden py-4 space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="app.showScreen('map')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl flex items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> Batal / Keluar
+                </button>
+                <div class="flex items-center gap-3">
+                    <span id="quiz-question-number" class="text-rose-400 font-orbitron font-bold text-sm">Soal 1 dari 10</span>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 sm:p-8 rounded-3xl border border-rose-500/40 space-y-6 relative overflow-hidden">
+                <!-- Timer Bar -->
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs text-slate-400 font-bold">
+                        <span>SISA WAKTU</span>
+                        <span id="quiz-timer-text" class="text-amber-400 font-orbitron">20 Detik</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+                        <div id="quiz-timer-fill" class="bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 h-full w-full transition-all duration-1000"></div>
+                    </div>
+                </div>
+
+                <!-- Question Text -->
+                <div class="space-y-2">
+                    <span class="px-3 py-1 rounded-full bg-rose-950/80 border border-rose-500/40 text-rose-300 font-semibold text-xs tracking-wider uppercase inline-block">
+                        👹 Boss Fight • 10 Poin / Soal
+                    </span>
+                    <h2 id="quiz-question-text" class="font-semibold text-slate-100 text-lg sm:text-xl leading-snug">
+                        Memuat pertanyaan...
+                    </h2>
+                </div>
+
+                <!-- Option Buttons -->
+                <div id="quiz-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Answer Feedback Box -->
+                <div id="quiz-explanation-box" class="hidden p-4 rounded-2xl border text-xs leading-relaxed transition-all">
+                    <!-- Feedback JS -->
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button onclick="app.nextQuestion()" id="btn-quiz-next" class="hidden bg-gradient-to-r from-rose-600 to-red-500 hover:from-rose-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm font-orbitron transition shadow-lg items-center gap-2">
+                        <span>Soal Berikutnya</span>
+                        <i class="fa-solid fa-forward"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 8: REWARD & HASIL AKHIR -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-reward" class="hidden py-6 space-y-6 text-center">
+            <div class="glass-card p-6 sm:p-10 rounded-3xl border border-cyan-500/40 space-y-6 max-w-2xl mx-auto glow-cyan">
+                <div id="reward-badge-icon" class="text-6xl animate-float">🏆</div>
+                
+                <div>
+                    <h2 class="font-orbitron font-black text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500">
+                        HASIL PETUALANGAN AKHIR
+                    </h2>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-1">Sistem Komputer • Kelas VII SMPN 1 Tinggimoncong</p>
+                </div>
+
+                <!-- Final Score Box -->
+                <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-700 max-w-sm mx-auto space-y-2">
+                    <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">SKOR BOSS BATTLE</span>
+                    <div id="final-score-val" class="font-orbitron font-black text-5xl text-cyan-400">0</div>
+                    <div id="final-category-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        Category
+                    </div>
+                </div>
+
+                <p id="final-message-text" class="text-slate-200 text-sm italic max-w-md mx-auto">
+                    "Pesan motivasi akan muncul di sini."
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-3 pt-2">
+                    <button onclick="app.openBossBattle()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-4 py-2.5 rounded-xl text-xs border border-slate-600 flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right text-amber-400"></i> Ulangi Kuis
+                    </button>
+                    <button onclick="app.showScreen('map')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-4 py-2.5 rounded-xl text-xs border border-slate-600 flex items-center gap-2">
+                        <i class="fa-solid fa-house text-cyan-400"></i> Menu Utama
+                    </button>
+                    <button onclick="app.showCertificate()" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs font-orbitron flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-graduation-cap"></i> Unduh Sertifikat Digital
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 9: CERTIFICATE GENERATOR -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-certificate" class="hidden py-4 space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="app.showScreen('map')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl flex items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> Peta Utama
+                </button>
+                <span class="text-emerald-400 font-orbitron font-bold text-sm">SERTIFIKAT DIGITAL</span>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl border border-emerald-500/40 text-center space-y-4">
+                <p class="text-slate-300 text-xs">Berikut adalah sertifikat resmi penyelesaian pembelajaran Sistem Komputer SMPN 1 Tinggimoncong.</p>
+
+                <!-- Canvas Wrapper -->
+                <div class="overflow-x-auto flex justify-center py-2">
+                    <canvas id="certificate-canvas" width="800" height="560" class="rounded-2xl border-2 border-emerald-500/50 shadow-2xl max-w-full h-auto bg-slate-950"></canvas>
+                </div>
+
+                <div class="flex justify-center gap-4 pt-2">
+                    <button onclick="app.downloadCertificate()" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 text-slate-950 font-orbitron font-bold px-6 py-3 rounded-xl text-xs flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-download"></i> Unduh Sertifikat (PNG)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- -->
+        <!-- SCREEN 10: LEADERBOARD -->
+        <!-- ------------------------------------------------------------- -->
+        <section id="screen-leaderboard" class="hidden py-4 space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="app.showScreen('map')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl flex items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> Peta Utama
+                </button>
+                <span class="text-amber-400 font-orbitron font-bold text-sm">PAPAN PERINGKAT TOP 5</span>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl border border-amber-500/40 space-y-4 max-w-xl mx-auto">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                    <h3 class="font-orbitron font-bold text-amber-300 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-trophy text-amber-400"></i> Klasemen Teratas
+                    </h3>
+                    <span class="text-xs text-slate-400">Informatika Kelas VII</span>
+                </div>
+
+                <div id="leaderboard-list" class="space-y-2">
+                    <!-- Generated via JS -->
+                </div>
+
+                <p class="text-slate-400 text-xs text-center italic pt-2">
+                    *Peringkat diperbarui secara otomatis berdasarkan total XP yang diraih.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BADGES MODAL DRAWER -->
+    <div id="modal-badges" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-card bg-slate-900 p-6 rounded-3xl max-w-lg w-full border border-cyan-500/40 space-y-4 relative">
+            <button onclick="app.toggleBadgeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">✕</button>
+
+            <h3 class="font-orbitron font-bold text-cyan-400 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-award"></i> KOLEKSI BADGE PENCAPAIAN
+            </h3>
+            <p class="text-slate-400 text-xs">Raih semua lencana dengan menyelesaikan tantangan pembelajaran!</p>
+
+            <div id="badges-grid-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto p-1">
+                <!-- Badges populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="glass-card border-t border-slate-800 py-3 text-center text-xs text-slate-500 mt-6">
+        <p>© 2026 SMPN 1 Tinggimoncong • Informatika Kelas VII • Guru: Syarifuddin, S. Pd., M. Si.</p>
+    </footer>
+
+    <script>
+        const app = {
+            state: {
+                studentName: 'Siswa',
+                xp: 0,
+                unlockedLevel: 1, // 1 to 6
+                badges: [],
+                l1Answered: 0,
+                l2Answers: {},
+                l3Answers: {},
+                mission1Cases: [false, false, false, false],
+                pcBuildScenario: 'gamer',
+                pcBuildSelected: { cpu: null, ram: null, gpu: null, storage: null },
+                bossCurrentIndex: 0,
+                bossScore: 0,
+                bossAnswers: [],
+                timerInterval: null,
+                timerSeconds: 20,
+                audioEnabled: true
+            },
+
+            // 7 Badges definition
+            badgeDefinitions: [
+                { id: 'explorer', icon: '🚀', title: 'Explorer', desc: 'Menyelesaikan Level 1' },
+                { id: 'hardware_rookie', icon: '🖥️️', title: 'Hardware Rookie', desc: 'Menyelesaikan Level 2' },
+                { id: 'storage_expert', icon: '💾', title: 'Storage Expert', desc: 'Menyelesaikan Level 3' },
+                { id: 'detective', icon: '🕵️', title: 'Detektif Komputer', desc: 'Menyelesaikan Misi 1' },
+                { id: 'pc_builder_pro', icon: '🛠️', title: 'PC Builder Pro', desc: 'Menyelesaikan Misi 2' },
+                { id: 'computer_master', icon: '🏆', title: 'Computer Master', desc: 'Skor Boss Battle >= 90' },
+                { id: 'speed_runner', icon: '⚡', title: 'Speed Runner', desc: 'Menjawab 5 soal berturut-turut dengan cepat' }
+            ],
+
+            // 10 Boss Battle Questions from Prompt
+            bossQuestions: [
+                {
+                    q: "Perangkat yang berfungsi memasukkan data ke komputer disebut...",
+                    options: ["A. Output", "B. Input", "C. Proses", "D. Penyimpanan"],
+                    correct: 1,
+                    exp: "Perangkat Input (seperti Keyboard & Mouse) bertugas memasukkan data atau perintah ke dalam sistem komputer."
+                },
+                {
+                    q: "Otak dari komputer yang bertugas mengolah data adalah...",
+                    options: ["A. RAM", "B. HDD", "C. CPU", "D. Monitor"],
+                    correct: 2,
+                    exp: "CPU (Central Processing Unit) berfungsi sebagai otak utama pengolah seluruh instruksi dan data."
+                },
+                {
+                    q: "Manakah yang termasuk perangkat output?",
+                    options: ["A. Keyboard", "B. Mouse", "C. Monitor", "D. Scanner"],
+                    correct: 2,
+                    exp: "Monitor merupakan perangkat output karena bertugas menampilkan hasil pemrosesan data dalam bentuk visual."
+                },
+                {
+                    q: "RAM termasuk dalam kategori...",
+                    options: ["A. Input device", "B. Output device", "C. Proses device", "D. Storage device"],
+                    correct: 2,
+                    exp: "RAM (Random Access Memory) membantu CPU dalam memproses data sebagai memori pemrosesan sementara."
+                },
+                {
+                    q: "Urutan cara kerja komputer yang benar adalah...",
+                    options: ["A. Output → Proses → Input", "B. Input → Proses → Output", "C. Proses → Input → Output", "D. Output → Input → Proses"],
+                    correct: 1,
+                    exp: "Cara kerja komputer selalu diawali dari penerimaan data (Input), pengolahan data (Proses), dan penyampaian hasil (Output)."
+                },
+                {
+                    q: "Perangkat yang menyimpan data secara permanen adalah...",
+                    options: ["A. RAM", "B. CPU", "C. HDD", "D. Monitor"],
+                    correct: 2,
+                    exp: "HDD (Hard Disk Drive) dan SSD menyimpan berkas dan sistem komputer secara permanen meskipun listrik mati."
+                },
+                {
+                    q: "Manakah yang termasuk software sistem operasi?",
+                    options: ["A. Microsoft Word", "B. Windows", "C. Chrome", "D. Photoshop"],
+                    correct: 1,
+                    exp: "Windows adalah Operating System (OS) yang mengelola dasar perangkat keras dan perangkat lunak komputer."
+                },
+                {
+                    q: "Jika komputer tidak mau menyala sama sekali, kemungkinan masalahnya adalah...",
+                    options: ["A. Kabel power / power supply", "B. Software", "C. Wallpaper", "D. Mouse"],
+                    correct: 0,
+                    exp: "Jika tidak ada indikator daya sama sekali, masalah utama terletak pada arus listrik, kabel power, atau Power Supply Unit."
+                },
+                {
+                    q: "Perbedaan utama HDD dan SSD adalah...",
+                    options: ["A. Warna", "B. Kecepatan akses", "C. Harga saja", "D. Ukuran layar"],
+                    correct: 1,
+                    exp: "SSD menggunakan memori flash sehingga memiliki kecepatan baca/tulis jauh lebih tinggi dibandingkan piringan cakram HDD."
+                },
+                {
+                    q: "Komponen yang menghubungkan semua perangkat komputer adalah...",
+                    options: ["A. Motherboard", "B. Speaker", "C. Printer", "D. Webcam"],
+                    correct: 0,
+                    exp: "Motherboard adalah papan sirkuit utama tempat seluruh komponen (CPU, RAM, GPU, Storage) terhubung satu sama lain."
+                }
+            ],
+
+            init() {
+                this.loadLocalStorage();
+                this.renderLevel1();
+                this.renderLevel2();
+                this.renderLevel3();
+                this.renderMission1();
+                this.renderMission2();
+                this.updateUI();
+            },
+
+            loadLocalStorage() {
+                const saved = localStorage.getItem('sistem_komputer_game_data');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        this.state = { ...this.state, ...parsed };
+                    } catch(e){}
+                }
+            },
+
+            saveLocalStorage() {
+                localStorage.setItem('sistem_komputer_game_data', JSON.stringify(this.state));
+            },
+
+            startAdventure() {
+                const nameInput = document.getElementById('input-student-name').value.trim();
+                if (!nameInput) {
+                    alert('Mohon masukkan nama siswa terlebih dahulu!');
+                    return;
+                }
+                this.state.studentName = nameInput;
+                document.getElementById('player-display-name').innerText = nameInput;
+                document.getElementById('player-dashboard').classList.remove('hidden');
+                this.playSound('click');
+                this.saveLocalStorage();
+                this.showScreen('map');
+                this.setKompyText(`Halo ${this.state.studentName}! Pilih Level 1 pada Peta untuk memulai petualanganmu!`);
+            },
+
+            showScreen(screenId) {
+                const screens = ['welcome', 'map', 'level1', 'level2', 'level3', 'mission1', 'mission2', 'boss', 'reward', 'certificate', 'leaderboard'];
+                screens.forEach(s => {
+                    const el = document.getElementById(`screen-${s}`);
+                    if (el) el.classList.add('hidden');
+                });
+                const target = document.getElementById(`screen-${screenId}`);
+                if (target) target.classList.remove('hidden');
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                this.updateMapNodes();
+            },
+
+            addXP(amount) {
+                this.state.xp += amount;
+                document.getElementById('player-xp').innerText = `${this.state.xp} XP`;
+                const maxXP = 250;
+                const pct = Math.min(100, Math.round((this.state.xp / maxXP) * 100));
+                document.getElementById('xp-bar-fill').style.width = `${pct}%`;
+                this.saveLocalStorage();
+            },
+
+            awardBadge(badgeId) {
+                if (!this.state.badges.includes(badgeId)) {
+                    this.state.badges.push(badgeId);
+                    document.getElementById('badge-count-badge').innerText = this.state.badges.length;
+                    
+                    const badgeObj = this.badgeDefinitions.find(b => b.id === badgeId);
+                    if (badgeObj) {
+                        this.setKompyText(`🎉 SELAMAT! Kamu meraih Badge Baru: [${badgeObj.icon} ${badgeObj.title}]!`);
+                        confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+                        this.playSound('win');
+                    }
+                    this.saveLocalStorage();
+                }
+            },
+
+            updateMapNodes() {
+                // Update node locking status based on unlockedLevel
+                const nodes = [
+                    { id: 'node-level1', lvl: 1 },
+                    { id: 'node-level2', lvl: 2 },
+                    { id: 'node-level3', lvl: 3 },
+                    { id: 'node-mission1', lvl: 4 },
+                    { id: 'node-mission2', lvl: 5 },
+                    { id: 'node-boss', lvl: 6 }
+                ];
+
+                nodes.forEach(n => {
+                    const el = document.getElementById(n.id);
+                    if (!el) return;
+                    const badgeSpan = el.querySelector('.status-badge');
+                    if (this.state.unlockedLevel >= n.lvl) {
+                        el.classList.remove('opacity-75');
+                        if (badgeSpan) {
+                            badgeSpan.className = 'status-badge bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-full font-semibold border border-emerald-500/30';
+                            badgeSpan.innerText = 'Terbuka';
+                        }
+                    } else {
+                        el.classList.add('opacity-75');
+                        if (badgeSpan) {
+                            badgeSpan.className = 'status-badge bg-slate-800 text-slate-400 text-xs px-2.5 py-1 rounded-full font-semibold border border-slate-700';
+                            badgeSpan.innerText = '🔒 Terkunci';
+                        }
+                    }
+                });
+            },
+
+            openLevel(lvl) {
+                if (this.state.unlockedLevel < lvl) {
+                    this.setKompyText(`Selesaikan level sebelumnya terlebih dahulu untuk membuka Level ${lvl}! 🔒`);
+                    this.playSound('error');
+                    return;
+                }
+                this.playSound('click');
+                this.showScreen(`level${lvl}`);
+            },
+
+            openMission(mNum) {
+                const requiredLvl = mNum === 1 ? 4 : 5;
+                if (this.state.unlockedLevel < requiredLvl) {
+                    this.setKompyText(`Selesaikan seluruh level materi sebelumnya untuk membuka Misi ini! 🔒`);
+                    this.playSound('error');
+                    return;
+                }
+                this.playSound('click');
+                this.showScreen(`mission${mNum}`);
+            },
+
+            openBossBattle() {
+                if (this.state.unlockedLevel < 6) {
+                    this.setKompyText(`Selesaikan Misi 1 dan Misi 2 terlebih dahulu untuk memasuki Boss Battle! 🔒`);
+                    this.playSound('error');
+                    return;
+                }
+                this.playSound('click');
+                this.startBossBattle();
+            },
+
+            renderLevel1() {
+                const items = [
+                    { name: 'Keyboard', type: 'hardware', icon: '⌨️' },
+                    { name: 'Windows 11', type: 'software', icon: '🪟' },
+                    { name: 'Siswa / Operator', type: 'brainware', icon: '🧑‍💻' },
+                ];
+                const container = document.getElementById('l1-items-container');
+                container.innerHTML = items.map((item, idx) => `
+                    <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 text-center space-y-3">
+                        <div class="text-3xl">${item.icon}</div>
+                        <div class="font-bold text-slate-200 text-sm">${item.name}</div>
+                        <div class="flex justify-center gap-1.5 flex-wrap">
+                            <button onclick="app.checkL1(${idx}, 'hardware', this)" class="bg-slate-700 hover:bg-cyan-600 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg text-xs font-semibold">Hardware</button>
+                            <button onclick="app.checkL1(${idx}, 'software', this)" class="bg-slate-700 hover:bg-indigo-600 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg text-xs font-semibold">Software</button>
+                            <button onclick="app.checkL1(${idx}, 'brainware', this)" class="bg-slate-700 hover:bg-emerald-600 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg text-xs font-semibold">Brainware</button>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            checkL1(idx, chosen, btn) {
+                const types = ['hardware', 'software', 'brainware'];
+                if (types[idx] === chosen) {
+                    btn.parentElement.innerHTML = `<span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold">✅ Benar +5 XP</span>`;
+                    this.addXP(5);
+                    this.playSound('correct');
+                } else {
+                    this.setKompyText("Kurang tepat! Coba pelajari definisi ketiga elemen tersebut.");
+                    this.playSound('error');
+                }
+            },
+
+            completeLevel1() {
+                if (this.state.unlockedLevel === 1) {
+                    this.state.unlockedLevel = 2;
+                    this.awardBadge('explorer');
+                    this.saveLocalStorage();
+                }
+                this.showScreen('map');
+                this.setKompyText("Hebat! Level 1 selesai. Sekarang Level 2 telah terbuka!");
+            },
+
+            renderLevel2() {
+                const hwItems = [
+                    { name: "Mouse", correct: "input" },
+                    { name: "CPU", correct: "proses" },
+                    { name: "Monitor", correct: "output" },
+                    { name: "Keyboard", correct: "input" },
+                    { name: "RAM", correct: "proses" },
+                    { name: "Printer", correct: "output" },
+                    { name: "Webcam", correct: "input" },
+                    { name: "Speaker", correct: "output" },
+                    { name: "Motherboard", correct: "proses" },
+                    { name: "Proyektor", correct: "output" }
+                ];
+
+                const grid = document.getElementById('l2-quiz-grid');
+                grid.innerHTML = hwItems.map((item, idx) => `
+                    <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex justify-between items-center gap-2">
+                        <span class="font-bold text-xs text-slate-200">${idx+1}. ${item.name}</span>
+                        <select onchange="app.checkL2(${idx}, '${item.correct}', this)" class="bg-slate-900 border border-slate-600 text-slate-300 text-xs rounded-lg px-2 py-1 focus:border-cyan-400">
+                            <option value="">Pilih...</option>
+                            <option value="input">Input</option>
+                            <option value="proses">Proses</option>
+                            <option value="output">Output</option>
+                        </select>
+                    </div>
+                `).join('');
+            },
+
+            checkL2(idx, correctVal, selectEl) {
+                const chosen = selectEl.value;
+                if (!chosen) return;
+                if (chosen === correctVal) {
+                    selectEl.disabled = true;
+                    selectEl.className = 'bg-emerald-950 border border-emerald-500 text-emerald-300 text-xs rounded-lg px-2 py-1 font-bold';
+                    this.addXP(5);
+                    this.playSound('correct');
+                } else {
+                    this.addXP(-2);
+                    this.playSound('error');
+                    this.setKompyText("Awas! Jawaban salah mengurangi 2 XP. Periksa kembali fungsinya.");
+                }
+            },
+
+            completeLevel2() {
+                if (this.state.unlockedLevel === 2) {
+                    this.state.unlockedLevel = 3;
+                    this.awardBadge('hardware_rookie');
+                    this.saveLocalStorage();
+                }
+                this.showScreen('map');
+                this.setKompyText("Luar biasa! Pengetahuan hardware kamu makin mantap. Level 3 terbuka!");
+            },
+
+            renderLevel3() {
+                const riddles = [
+                    {
+                        q: "1. Aku menyimpan data secara permanen di komputer dengan kecepatan sangat tinggi tanpa piringan putar. Siapakah aku?",
+                        options: ["A. RAM", "B. SSD", "C. Power Supply"],
+                        correct: 1
+                    },
+                    {
+                        q: "2. Aku adalah perangkat lunak utama yang mengelola semua hardware dan program lain seperti Windows atau macOS. Siapakah aku?",
+                        options: ["A. Sistem Operasi", "B. Microsoft Excel", "C. Anti-Virus"],
+                        correct: 0
+                    }
+                ];
+
+                const container = document.getElementById('l3-riddle-container');
+                container.innerHTML = riddles.map((r, rIdx) => `
+                    <div class="bg-slate-800/90 p-4 rounded-2xl border border-slate-700 space-y-3">
+                        <p class="text-xs font-semibold text-slate-200">${r.q}</p>
+                        <div class="flex gap-2 flex-wrap">
+                            ${r.options.map((opt, oIdx) => `
+                                <button onclick="app.checkL3(${rIdx}, ${oIdx}, ${r.correct}, this)" class="bg-slate-700 hover:bg-cyan-600 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+                                    ${opt}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            checkL3(rIdx, chosen, correct, btn) {
+                if (chosen === correct) {
+                    btn.parentElement.innerHTML = `<span class="text-xs text-emerald-400 font-bold bg-emerald-950 px-3 py-1 rounded-full border border-emerald-500/40">✅ Benar sekali! +10 XP</span>`;
+                    this.addXP(10);
+                    this.playSound('correct');
+                } else {
+                    this.playSound('error');
+                    this.setKompyText("Tebakanmu kurang tepat. Coba lagi!");
+                }
+            },
+
+            completeLevel3() {
+                if (this.state.unlockedLevel === 3) {
+                    this.state.unlockedLevel = 4;
+                    this.awardBadge('storage_expert');
+                    this.saveLocalStorage();
+                }
+                this.showScreen('map');
+                this.setKompyText("Selamat! Kamu telah menguasai seluruh teori dasar. Misi Detektif terbuka!");
+            },
+
+            renderMission1() {
+                const cases = [
+                    {
+                        title: "Kasus 1: Komputer Mati Total",
+                        symptom: "Komputer tidak mau menyala sama sekali, tidak ada suara kipas maupun lampu indikator.",
+                        clue: "Periksa jalur daya dan aliran listrik utama yang masuk ke CPU.",
+                        options: ["Ganti Monitor", "Cek Power Supply & Kabel Power", "Install ulang Windows"],
+                        correct: 1
+                    },
+                    {
+                        title: "Kasus 2: Layar Biru (Blue Screen)",
+                        symptom: "Saat dinyalakan, muncul layar biru penuh pesan error berulang kali.",
+                        clue: "Masalah sering terjadi pada memori pemrosesan atau bentrok perangkat lunak/driver.",
+                        options: ["Cek RAM / Software Driver", "Ganti Mouse", "Bersihkan Keyboard"],
+                        correct: 0
+                    },
+                    {
+                        title: "Kasus 3: Suara Tidak Keluar",
+                        symptom: "Video diputar dengan lancar namun tidak ada suara sama sekali.",
+                        clue: "Periksa perangkat output audio dan pengaturan driver suara.",
+                        options: ["Ganti CPU", "Cek Koneksi Speaker & Driver Audio", "Tambahkan Harddisk"],
+                        correct: 1
+                    },
+                    {
+                        title: "Kasus 4: Ketikan Tidak Muncul",
+                        symptom: "Siswa mengetik kalimat tetapi tidak ada karakter yang tampil di layar.",
+                        clue: "Periksa port kabel penghubung atau baterai perangkat input pengetikan.",
+                        options: ["Cek Koneksi Kabel Keyboard", "Ganti Proyektor", "Restart Printer"],
+                        correct: 0
+                    }
+                ];
+
+                const container = document.getElementById('detective-cases-container');
+                container.innerHTML = cases.map((c, idx) => `
+                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-purple-300 text-xs sm:text-sm">${c.title}</h4>
+                            <button onclick="app.toggleClue(${idx})" class="text-[11px] text-amber-300 hover:underline flex items-center gap-1">
+                                <i class="fa-solid fa-lightbulb"></i> Petunjuk Clue
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-300 bg-slate-900/60 p-2.5 rounded-xl italic">"${c.symptom}"</p>
+                        <p id="clue-box-${idx}" class="hidden text-xs text-amber-200 bg-amber-950/40 p-2 rounded-lg border border-amber-500/30">
+                            💡 Clue: ${c.clue}
+                        </p>
+                        <div class="flex gap-2 flex-wrap pt-1">
+                            ${c.options.map((opt, oIdx) => `
+                                <button onclick="app.solveCase(${idx}, ${oIdx}, ${c.correct}, this)" class="bg-slate-700 hover:bg-purple-600 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+                                    ${opt}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            toggleClue(idx) {
+                const box = document.getElementById(`clue-box-${idx}`);
+                if (box) box.classList.toggle('hidden');
+            },
+
+            solveCase(cIdx, chosen, correct, btn) {
+                if (chosen === correct) {
+                    btn.parentElement.innerHTML = `<span class="text-xs font-bold text-emerald-400 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-500/40">🕵️ Diagnosis Akurat! +15 XP</span>`;
+                    this.state.mission1Cases[cIdx] = true;
+                    this.addXP(15);
+                    this.playSound('correct');
+                } else {
+                    this.playSound('error');
+                    this.setKompyText("Diagnosis salah! Buka petunjuk Clue Card untuk membantu.");
+                }
+            },
+
+            completeMission1() {
+                if (this.state.unlockedLevel === 4) {
+                    this.state.unlockedLevel = 5;
+                    this.awardBadge('detective');
+                    this.saveLocalStorage();
+                }
+                this.showScreen('map');
+                this.setKompyText("Hebat Detektif! Kasus telah selesai. Misi PC Builder Challenge menanti!");
+            },
+
+            renderMission2() {
+                this.switchPcScenario('gamer');
+            },
+
+            switchPcScenario(scenario) {
+                this.state.pcBuildScenario = scenario;
+                const tabs = ['gamer', 'office', 'designer'];
+                tabs.forEach(t => {
+                    const btn = document.getElementById(`tab-pc-${t}`);
+                    if (btn) {
+                        if (t === scenario) {
+                            btn.className = 'px-3 py-1.5 rounded-lg font-bold bg-amber-500 text-slate-950 transition';
+                        } else {
+                            btn.className = 'px-3 py-1.5 rounded-lg font-bold text-slate-300 hover:text-white transition';
+                        }
+                    }
+                });
+
+                const briefEl = document.getElementById('pc-scenario-brief');
+                if (scenario === 'gamer') {
+                    briefEl.innerHTML = `
+                        <strong>Target Build: PC Gamer SULTAN 🎮</strong><br>
+                        Dibutuhkan: Kartu Grafis (GPU) Kuat, RAM Besar (16GB/32GB), dan SSD Cepat untuk game berat.
+                    `;
+                } else if (scenario === 'office') {
+                    briefEl.innerHTML = `
+                        <strong>Target Build: PC KANTOR HEMAT 🏢</strong><br>
+                        Dibutuhkan: CPU Standar Hemat Daya, RAM 8GB Cukup, dan Storage Hemat (HDD/SSD standar).
+                    `;
+                } else {
+                    briefEl.innerHTML = `
+                        <strong>Target Build: PC DESAINER GRAFIS 🎨</strong><br>
+                        Dibutuhkan: CPU Tinggi, GPU Menengah/Tinggi, RAM Besar, dan Monitor Resolusi Tinggi.
+                    `;
+                }
+
+                this.renderPcPartPicker();
+            },
+
+            renderPcPartPicker() {
+                const picker = document.getElementById('pc-part-picker');
+                picker.innerHTML = `
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+                        <label class="text-xs font-bold text-amber-300 block">Pilih Processor (CPU)</label>
+                        <select onchange="app.state.pcBuildSelected.cpu = this.value" class="w-full bg-slate-900 border border-slate-600 text-xs text-slate-200 rounded-lg p-2">
+                            <option value="">-- Pilih CPU --</option>
+                            <option value="entry">Intel Core i3 / Ryzen 3 (Standar Kantor)</option>
+                            <option value="high">Intel Core i7 / Ryzen 7 (Performa Tinggi)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+                        <label class="text-xs font-bold text-amber-300 block">Pilih Memori (RAM)</label>
+                        <select onchange="app.state.pcBuildSelected.ram = this.value" class="w-full bg-slate-900 border border-slate-600 text-xs text-slate-200 rounded-lg p-2">
+                            <option value="">-- Pilih RAM --</option>
+                            <option value="8gb">8 GB DDR4 (Cukup untuk Kantor)</option>
+                            <option value="32gb">32 GB DDR5 (Besar untuk Game/Desain)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+                        <label class="text-xs font-bold text-amber-300 block">Pilih Kartu Grafis (GPU)</label>
+                        <select onchange="app.state.pcBuildSelected.gpu = this.value" class="w-full bg-slate-900 border border-slate-600 text-xs text-slate-200 rounded-lg p-2">
+                            <option value="">-- Pilih GPU --</option>
+                            <option value="integrated">Grafis Terintegrasi (Bawaan CPU)</option>
+                            <option value="dedicated">NVIDIA RTX Dedicated GPU (Monster Gaming/Render)</option>
+                        </select>
+                    </div>
+                `;
+            },
+
+            verifyPcBuild() {
+                const { cpu, ram, gpu } = this.state.pcBuildSelected;
+                const sc = this.state.pcBuildScenario;
+                const fb = document.getElementById('pc-build-feedback');
+                fb.classList.remove('hidden');
+
+                let isCorrect = false;
+                if (sc === 'gamer' && cpu === 'high' && ram === '32gb' && gpu === 'dedicated') isCorrect = true;
+                if (sc === 'office' && cpu === 'entry' && ram === '8gb' && gpu === 'integrated') isCorrect = true;
+                if (sc === 'designer' && cpu === 'high' && ram === '32gb' && gpu === 'dedicated') isCorrect = true;
+
+                if (isCorrect) {
+                    fb.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-950 border border-emerald-500 text-emerald-300';
+                    fb.innerHTML = '✅ Rakitan Sempurna! Komponen bekerja harmonis tanpa bottleneck! +30 XP';
+                    this.addXP(30);
+                    this.playSound('correct');
+                } else {
+                    fb.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-950 border border-rose-500 text-rose-300';
+                    fb.innerHTML = '⚠️ Rakitan tidak efisien atau spesifikasi tidak sesuai kebutuhan target!';
+                    this.playSound('error');
+                }
+            },
+
+            completeMission2() {
+                if (this.state.unlockedLevel === 5) {
+                    this.state.unlockedLevel = 6;
+                    this.awardBadge('pc_builder_pro');
+                    this.saveLocalStorage();
+                }
+                this.showScreen('map');
+                this.setKompyText("SEMUA PERSIAPAN SELESAI! Pintu BOSS BATTLE kini telah TERBUKA!");
+            },
+
+            startBossBattle() {
+                this.state.bossCurrentIndex = 0;
+                this.state.bossScore = 0;
+                this.state.bossAnswers = [];
+                this.showScreen('boss');
+                this.renderBossQuestion();
+            },
+
+            renderBossQuestion() {
+                const qIdx = this.state.bossCurrentIndex;
+                const qData = this.bossQuestions[qIdx];
+                
+                document.getElementById('quiz-question-number').innerText = `Soal ${qIdx + 1} dari 10`;
+                document.getElementById('quiz-question-text').innerText = qData.q;
+                
+                const expBox = document.getElementById('quiz-explanation-box');
+                expBox.classList.add('hidden');
+                
+                const nextBtn = document.getElementById('btn-quiz-next');
+                nextBtn.classList.add('hidden');
+
+                const grid = document.getElementById('quiz-options-grid');
+                grid.innerHTML = qData.options.map((opt, oIdx) => `
+                    <button onclick="app.submitBossAnswer(${oIdx})" class="quiz-opt-btn bg-slate-800 hover:bg-slate-700 text-slate-100 p-4 rounded-2xl border border-slate-700 text-left text-xs sm:text-sm font-medium transition hover:border-cyan-400 flex items-center justify-between">
+                        <span>${opt}</span>
+                        <i class="fa-regular fa-circle text-slate-500"></i>
+                    </button>
+                `).join('');
+
+                this.startQuizTimer();
+            },
+
+            startQuizTimer() {
+                clearInterval(this.state.timerInterval);
+                this.state.timerSeconds = 20;
+                const textEl = document.getElementById('quiz-timer-text');
+                const fillEl = document.getElementById('quiz-timer-fill');
+
+                fillEl.style.width = '100%';
+                textEl.innerText = `${this.state.timerSeconds} Detik`;
+
+                this.state.timerInterval = setInterval(() => {
+                    this.state.timerSeconds--;
+                    textEl.innerText = `${this.state.timerSeconds} Detik`;
+                    fillEl.style.width = `${(this.state.timerSeconds / 20) * 100}%`;
+
+                    if (this.state.timerSeconds <= 0) {
+                        clearInterval(this.state.timerInterval);
+                        this.submitBossAnswer(-1); // Timeout
+                    }
+                }, 1000);
+            },
+
+            submitBossAnswer(chosenIdx) {
+                clearInterval(this.state.timerInterval);
+                const qIdx = this.state.bossCurrentIndex;
+                const qData = this.bossQuestions[qIdx];
+                const optBtns = document.querySelectorAll('.quiz-opt-btn');
+
+                optBtns.forEach(btn => btn.disabled = true);
+
+                const isCorrect = (chosenIdx === qData.correct);
+                if (isCorrect) {
+                    this.state.bossScore += 10;
+                    this.playSound('correct');
+                    if (optBtns[chosenIdx]) {
+                        optBtns[chosenIdx].className = 'quiz-opt-btn bg-emerald-950 border border-emerald-500 text-emerald-300 p-4 rounded-2xl text-left text-xs sm:text-sm font-bold flex items-center justify-between';
+                    }
+                } else {
+                    this.playSound('error');
+                    if (chosenIdx >= 0 && optBtns[chosenIdx]) {
+                        optBtns[chosenIdx].className = 'quiz-opt-btn bg-rose-950 border border-rose-500 text-rose-300 p-4 rounded-2xl text-left text-xs sm:text-sm font-bold flex items-center justify-between';
+                    }
+                    if (optBtns[qData.correct]) {
+                        optBtns[qData.correct].className = 'quiz-opt-btn bg-emerald-950/60 border border-emerald-500/60 text-emerald-300 p-4 rounded-2xl text-left text-xs sm:text-sm font-semibold flex items-center justify-between';
+                    }
+                }
+
+                // Show Explanation
+                const expBox = document.getElementById('quiz-explanation-box');
+                expBox.classList.remove('hidden');
+                if (isCorrect) {
+                    expBox.className = 'p-4 rounded-2xl border text-xs leading-relaxed bg-emerald-950/80 border-emerald-500/40 text-emerald-200';
+                    expBox.innerHTML = `<strong>✅ JAWABAN BENAR (+10 Poin)</strong><br>${qData.exp}`;
+                } else {
+                    expBox.className = 'p-4 rounded-2xl border text-xs leading-relaxed bg-rose-950/80 border-rose-500/40 text-rose-200';
+                    expBox.innerHTML = `<strong>❌ JAWABAN SALAH</strong><br>${qData.exp}`;
+                }
+
+                const nextBtn = document.getElementById('btn-quiz-next');
+                nextBtn.classList.remove('hidden');
+            },
+
+            nextQuestion() {
+                this.state.bossCurrentIndex++;
+                if (this.state.bossCurrentIndex < this.bossQuestions.length) {
+                    this.renderBossQuestion();
+                } else {
+                    this.finishBossBattle();
+                }
+            },
+
+            finishBossBattle() {
+                const score = this.state.bossScore;
+                document.getElementById('final-score-val').innerText = `${score}/100`;
+
+                let category = '';
+                let badgeIcon = '';
+                let msg = '';
+
+                if (score >= 90) {
+                    category = '🏆 Computer Master';
+                    badgeIcon = '🏆';
+                    msg = '"Luar biasa! Kamu menguasai sistem komputer dengan sangat sempurna!"';
+                    this.awardBadge('computer_master');
+                } else if (score >= 70) {
+                    category = '🥇 Hardware Expert';
+                    badgeIcon = '🥇';
+                    msg = '"Hebat! Pemahaman sistem komputermu sudah sangat baik."';
+                } else if (score >= 50) {
+                    category = '🥈 Tech Rookie';
+                    badgeIcon = '🥈';
+                    msg = '"Cukup baik. Pelajari lagi bagian-bagian yang masih membingungkan."';
+                } else {
+                    category = '🌱 Newbie Explorer';
+                    badgeIcon = '🌱';
+                    msg = '"Jangan menyerah! Coba ulas materi dan ulangi Boss Battle lagi ya."';
+                }
+
+                document.getElementById('reward-badge-icon').innerText = badgeIcon;
+                document.getElementById('final-category-badge').innerText = category;
+                document.getElementById('final-message-text').innerText = msg;
+
+                this.addXP(score);
+                this.saveLocalStorage();
+                this.showScreen('reward');
+                confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+            },
+
+            showCertificate() {
+                this.showScreen('certificate');
+                const canvas = document.getElementById('certificate-canvas');
+                const ctx = canvas.getContext('2d');
+
+                // Background
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Outer Border
+                ctx.strokeStyle = '#06b6d4';
+                ctx.lineWidth = 10;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+                // Inner Accent Border
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(32, 32, canvas.width - 64, canvas.height - 64);
+
+                // Header Title
+                ctx.fillStyle = '#06b6d4';
+                ctx.font = 'bold 22px Orbitron, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('SMPN 1 TINGGIMONCONG', canvas.width / 2, 85);
+
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'bold 30px Orbitron, sans-serif';
+                ctx.fillText('SERTIFIKAT KELULUSAN', canvas.width / 2, 130);
+
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '14px Plus Jakarta Sans, sans-serif';
+                ctx.fillText('Diberikan secara resmi kepada:', canvas.width / 2, 175);
+
+                // Student Name
+                ctx.fillStyle = '#fbbf24';
+                ctx.font = 'bold 32px Plus Jakarta Sans, sans-serif';
+                ctx.fillText(this.state.studentName.toUpperCase(), canvas.width / 2, 230);
+
+                // Content
+                ctx.fillStyle = '#e2e8f0';
+                ctx.font = '15px Plus Jakarta Sans, sans-serif';
+                ctx.fillText('Telah berhasil menyelesaikan seluruh modul & tantangan interaktif', canvas.width / 2, 280);
+                ctx.fillText('Materi: SISTEM KOMPUTER (INFORMATIKA KELAS VII)', canvas.width / 2, 310);
+
+                ctx.fillStyle = '#10b981';
+                ctx.font = 'bold 16px Orbitron, sans-serif';
+                ctx.fillText(`TOTAL SKOR AKHIR: ${this.state.bossScore} / 100`, canvas.width / 2, 355);
+
+                // Date & Teacher Signature Area
+                const today = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+                
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '13px Plus Jakarta Sans, sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(`Tinggimoncong, ${today}`, 80, 430);
+                ctx.fillText('Guru Pengampu Informatika,', 80, 450);
+
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'bold 15px Plus Jakarta Sans, sans-serif';
+                ctx.fillText('Syarifuddin, S. Pd., M. Si.', 80, 510);
+
+                // Stamp / Watermark
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#06b6d4';
+                ctx.font = 'bold 14px Orbitron, sans-serif';
+                ctx.fillText('VERIFIED DIGITAL BADGE', canvas.width - 80, 450);
+                ctx.fillStyle = '#10b981';
+                ctx.fillText('⚡ PETUALANGAN KOMPUTER', canvas.width - 80, 475);
+            },
+
+            downloadCertificate() {
+                const canvas = document.getElementById('certificate-canvas');
+                const image = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                link.download = `Sertifikat_Sistem_Komputer_${this.state.studentName}.png`;
+                link.href = image;
+                link.click();
+            },
+
+            showLeaderboard() {
+                this.showScreen('leaderboard');
+                const defaultList = [
+                    { name: "Andi Ahmad", xp: 240, badge: "🏆" },
+                    { name: "Nur Aisyah", xp: 210, badge: "🥇" },
+                    { name: "Fajar Pratama", xp: 195, badge: "🥇" },
+                    { name: "Siti Rahma", xp: 180, badge: "🥈" },
+                ];
+
+                // Insert current user into list
+                let userList = [...defaultList, { name: this.state.studentName, xp: this.state.xp, badge: "⭐" }];
+                userList.sort((a, b) => b.xp - a.xp);
+                userList = userList.slice(0, 5); // Top 5 only
+
+                const listEl = document.getElementById('leaderboard-list');
+                listEl.innerHTML = userList.map((item, idx) => `
+                    <div class="bg-slate-800/80 p-3.5 rounded-2xl border ${item.name === this.state.studentName ? 'border-cyan-400 bg-cyan-950/40' : 'border-slate-700'} flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-full bg-slate-900 flex items-center justify-center font-bold text-xs text-amber-400 border border-slate-700">#${idx+1}</span>
+                            <span class="font-bold text-xs sm:text-sm text-slate-100">${item.name} ${item.name === this.state.studentName ? '(Kamu)' : ''}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-amber-300 font-orbitron font-bold">${item.xp} XP</span>
+                            <span>${item.badge}</span>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            toggleBadgeModal() {
+                const m = document.getElementById('modal-badges');
+                m.classList.toggle('hidden');
+
+                const container = document.getElementById('badges-grid-container');
+                container.innerHTML = this.badgeDefinitions.map(b => {
+                    const owned = this.state.badges.includes(b.id);
+                    return `
+                        <div class="bg-slate-800 p-3 rounded-2xl border ${owned ? 'border-amber-400 bg-amber-950/20' : 'border-slate-700 opacity-50'} text-center space-y-1">
+                            <div class="text-2xl">${b.icon}</div>
+                            <div class="font-bold text-xs ${owned ? 'text-amber-300' : 'text-slate-400'}">${b.title}</div>
+                            <div class="text-[10px] text-slate-400 leading-tight">${b.desc}</div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            setKompyText(text) {
+                document.getElementById('kompy-text').innerText = text;
+                const k = document.getElementById('kompy-guide');
+                k.classList.remove('translate-y-20');
+            },
+
+            hideKompy() {
+                document.getElementById('kompy-guide').classList.add('translate-y-20');
+            },
+
+            speakKompy() {
+                this.playSound('click');
+                this.setKompyText("Semangat terus belajarnya! Jika bingung, ulas kembali kartu materi di setiap level ya!");
+            },
+
+            toggleAudio() {
+                this.state.audioEnabled = !this.state.audioEnabled;
+                const btn = document.getElementById('audio-btn');
+                btn.innerHTML = this.state.audioEnabled ? '<i class="fa-solid fa-volume-high"></i>' : '<i class="fa-solid fa-volume-xmark"></i>';
+            },
+
+            playSound(type) {
+                if (!this.state.audioEnabled) return;
+                try {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    if (type === 'click') {
+                        osc.frequency.setValueAtTime(600, ctx.currentTime);
+                        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.05);
+                    } else if (type === 'correct') {
+                        osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                        osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08);
+                        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.2);
+                    } else if (type === 'error') {
+                        osc.frequency.setValueAtTime(200, ctx.currentTime);
+                        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.15);
+                    } else if (type === 'win') {
+                        osc.frequency.setValueAtTime(440, ctx.currentTime);
+                        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
+                        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.3);
+                    }
+                } catch(e){}
+            }
+        };
+
+        window.onload = function() {
+            app.init();
+        };
+    </script>
+</body>
+</html>
+```
