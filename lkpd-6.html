@@ -1,0 +1,1569 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Interaktif Informatika VII - Sistem Komputer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            user-select: none;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .badge-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .85; transform: scale(1.03); }
+        }
+
+        .drop-zone {
+            min-height: 80px;
+            transition: all 0.2s ease;
+        }
+
+        .drop-zone.drag-over {
+            background-color: #e0effe;
+            border-color: #2563eb;
+            transform: scale(1.01);
+        }
+
+        .draggable-item {
+            cursor: grab;
+            touch-action: none;
+        }
+
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+
+        .selected-touch {
+            ring: 3px solid #3b82f6;
+            background-color: #eff6ff !important;
+        }
+
+        /* Print Specific Styles for Certificate */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #certificate-printable-area, #certificate-printable-area * {
+                visibility: visible;
+            }
+            #certificate-printable-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-blue-200">
+
+    <!-- Top Header -->
+    <header class="no-print bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-slate-800 leading-tight text-sm md:text-base">LKPD INTERAKTIF INFORMATIKA</h1>
+                    <p class="text-xs text-slate-500 font-medium">SMPN 1 Tinggimoncong • Kelas VII</p>
+                </div>
+            </div>
+
+            <div id="user-badge" class="hidden items-center space-x-3 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+                <i class="fa-solid fa-circle-user text-blue-600 text-lg"></i>
+                <div class="text-xs text-right">
+                    <span id="badge-nama" class="font-bold text-slate-800 block leading-none">Nama Siswa</span>
+                    <span id="badge-info" class="text-slate-500 text-[10px]">Kelas VII • Absen 0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- 1. HALAMAN AWAL (LOGIN / IDENTITAS) -->
+        <section id="view-welcome" class="max-w-2xl mx-auto my-4 transition-all duration-300">
+            <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl border border-blue-100 text-center relative overflow-hidden">
+                <div class="absolute -right-12 -top-12 w-40 h-40 bg-blue-100 rounded-full blur-2xl opacity-60"></div>
+                <div class="absolute -left-12 -bottom-12 w-40 h-40 bg-indigo-100 rounded-full blur-2xl opacity-60"></div>
+
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 font-semibold text-xs mb-4 border border-blue-200">
+                    <i class="fa-solid fa-graduation-cap"></i> Modul Sistem Komputer
+                </div>
+
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">Mengenal Sistem Komputer</h2>
+                <p class="text-slate-600 text-sm mb-6">Hardware (Perangkat Keras), Software (Perangkat Lunak) & Brainware (Pengguna)</p>
+
+                <!-- Grid Visual Illustration Icons -->
+                <div class="grid grid-cols-4 gap-3 bg-slate-50 p-4 rounded-2xl mb-6 border border-slate-200/80">
+                    <div class="flex flex-col items-center p-2 rounded-lg bg-white shadow-sm border border-slate-100">
+                        <span class="text-2xl mb-1">🖥️</span>
+                        <span class="text-[10px] font-medium text-slate-600">Monitor</span>
+                    </div>
+                    <div class="flex flex-col items-center p-2 rounded-lg bg-white shadow-sm border border-slate-100">
+                        <span class="text-2xl mb-1">⌨️</span>
+                        <span class="text-[10px] font-medium text-slate-600">Keyboard</span>
+                    </div>
+                    <div class="flex flex-col items-center p-2 rounded-lg bg-white shadow-sm border border-slate-100">
+                        <span class="text-2xl mb-1">⚙️</span>
+                        <span class="text-[10px] font-medium text-slate-600">CPU</span>
+                    </div>
+                    <div class="flex flex-col items-center p-2 rounded-lg bg-white shadow-sm border border-slate-100">
+                        <span class="text-2xl mb-1">📀</span>
+                        <span class="text-[10px] font-medium text-slate-600">Software</span>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-500 mb-6 bg-blue-50/50 p-3 rounded-xl border border-blue-100 text-left space-y-1">
+                    <p><strong>Guru Pengampu:</strong> Syarifuddin, S. Pd., M. Si.</p>
+                    <p><strong>Alokasi Waktu:</strong> ±80 Menit • 30 Aktivitas Interaktif</p>
+                </div>
+
+                <!-- Form Identitas -->
+                <form id="form-identitas" onsubmit="handleStartLkpd(event)" class="text-left space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa <span class="text-red-500">*</span></label>
+                        <input type="text" id="input-nama" required placeholder="Masukkan nama lengkapmu..." class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Kelas <span class="text-red-500">*</span></label>
+                            <select id="input-kelas" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm">
+                                <option value="">Pilih Kelas</option>
+                                <option value="VII.1">VII.1</option>
+                                <option value="VII.2">VII.2</option>
+                                <option value="VII.3">VII.3</option>
+                                <option value="VII.4">VII.4</option>
+                                <option value="VII.5">VII.5</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Absen <span class="text-red-500">*</span></label>
+                            <input type="number" id="input-absen" min="1" max="50" required placeholder="Contoh: 12" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-600/40 transition transform active:scale-95 flex items-center justify-center gap-2 text-base">
+                        🚀 MULAI LKPD
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 2. HALAMAN PETUNJUK -->
+        <section id="view-petunjuk" class="hidden max-w-2xl mx-auto my-4 transition-all duration-300">
+            <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl border border-slate-200">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        📌
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">PETUNJUK PENGERJAAN</h2>
+                        <p class="text-xs text-slate-500">Bacalah petunjuk di bawah ini sebelum mulai</p>
+                    </div>
+                </div>
+
+                <ol class="space-y-3 text-xs md:text-sm text-slate-700 mb-6 border-y border-slate-100 py-4 list-decimal pl-5 leading-relaxed">
+                    <li>Bacalah setiap pertanyaan dan petunjuk aktivitas dengan teliti.</li>
+                    <li>Kerjakan semua <strong>30 aktivitas</strong> yang terbagi ke dalam 5 bagian utama.</li>
+                    <li>Beberapa soal menggunakan fitur interaktif seperti <strong>pilihan ganda, kuis kartu, dan Drag-and-Drop</strong>.</li>
+                    <li>Setelah selesai, sistem akan menghitung nilai akhir secara otomatis.</li>
+                    <li>Kamu berhak mendapatkan <strong>Sertifikat Resmi</strong> berdasarkan hasil nilai pengerjaan.</li>
+                    <li>Kamu boleh mengerjakan LKPD <strong>berulang kali</strong> untuk memperbaiki nilai. Setiap percobaan akan dicatat dalam riwayat.</li>
+                </ol>
+
+                <div class="flex justify-between items-center">
+                    <button onclick="switchView('welcome')" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 transition">
+                        ← Kembali
+                    </button>
+                    <button onclick="startExercise()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition transform active:scale-95 flex items-center gap-2 text-sm">
+                        ▶️ MULAI MENGERJAKAN
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. MAIN DASHBOARD LKPD & EXERCISE VIEWS -->
+        <section id="view-dashboard" class="hidden space-y-6">
+            <!-- Student Header & Progress Bar -->
+            <div class="glass-card rounded-2xl p-4 md:p-6 shadow-md border border-slate-200">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 id="dash-nama" class="text-lg font-bold text-slate-800">Nama Siswa</h2>
+                            <span id="dash-percobaan" class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">Percobaan ke-1</span>
+                        </div>
+                        <p id="dash-detail" class="text-xs text-slate-500">Kelas: VII.1 • Absen: 10</p>
+                    </div>
+
+                    <!-- Best Score Display -->
+                    <div class="flex items-center gap-3 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl">
+                        <div class="text-amber-500 text-2xl">🏆</div>
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-amber-700 tracking-wider block">Nilai Terbaik</span>
+                            <span id="dash-best-score" class="text-lg font-extrabold text-amber-900">0 / 100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overall Progress -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                        <span>Progress Pengerjaan</span>
+                        <span id="progress-text">0 / 30 Aktivitas (0%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-slate-200">
+                        <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-300 w-0"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs for Activities -->
+            <div class="flex overflow-x-auto space-x-2 pb-2 scrollbar-none border-b border-slate-200 text-xs md:text-sm font-semibold">
+                <button onclick="selectActTab(1)" id="tab-btn-1" class="act-tab-btn px-4 py-2.5 rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-blue-600 text-white shadow-sm">
+                    🖥️ Act 1: Hardware
+                </button>
+                <button onclick="selectActTab(2)" id="tab-btn-2" class="act-tab-btn px-4 py-2.5 rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100">
+                    📀 Act 2: Software
+                </button>
+                <button onclick="selectActTab(3)" id="tab-btn-3" class="act-tab-btn px-4 py-2.5 rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100">
+                    👨‍💻 Act 3: Brainware
+                </button>
+                <button onclick="selectActTab(4)" id="tab-btn-4" class="act-tab-btn px-4 py-2.5 rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100">
+                    🔄 Act 4: Hubungan
+                </button>
+                <button onclick="selectActTab(5)" id="tab-btn-5" class="act-tab-btn px-4 py-2.5 rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100">
+                    🎯 Act 5: Evaluasi
+                </button>
+            </div>
+
+            <!-- Tab Content Containers -->
+            <div id="activity-container" class="space-y-6">
+                <!-- Questions dynamically rendered or switched here -->
+            </div>
+
+            <!-- Bottom Finish Button Banner -->
+            <div class="glass-card rounded-2xl p-6 shadow-lg border border-blue-200 text-center flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-left">
+                    <h3 class="font-bold text-slate-800 text-base">Sudah menyelesaikan semua soal?</h3>
+                    <p class="text-xs text-slate-500">Pastikan seluruh pertanyaan telah terisi untuk mendapatkan nilai maksimal.</p>
+                </div>
+                <button onclick="finishLkpd()" class="w-full md:w-auto px-8 py-3.5 bg-green-600 hover:bg-green-700 text-white font-extrabold rounded-xl shadow-lg shadow-green-600/30 transition transform active:scale-95 flex items-center justify-center gap-2 text-sm">
+                    🏁 SELESAIKAN & LIHAT HASIL
+                </button>
+            </div>
+        </section>
+
+        <!-- 4. HALAMAN RESULT & SERTIFIKAT -->
+        <section id="view-result" class="hidden space-y-6 max-w-4xl mx-auto">
+            <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl text-center border border-slate-200">
+                <div class="inline-block p-4 rounded-full bg-blue-50 mb-3" id="result-icon">
+                    🏆
+                </div>
+                <h2 class="text-2xl font-extrabold text-slate-800 mb-1">Hasil Pengerjaan LKPD</h2>
+                <p class="text-xs text-slate-500 mb-6">Sistem Komputer (Hardware, Software & Brainware)</p>
+
+                <!-- Score Cards Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Jawaban Benar</span>
+                        <span id="res-correct" class="text-xl md:text-2xl font-extrabold text-blue-600">0 / 30</span>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Nilai Akhir</span>
+                        <span id="res-score" class="text-xl md:text-2xl font-extrabold text-indigo-600">0 / 100</span>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Predikat</span>
+                        <span id="res-predikat" class="text-sm md:text-base font-extrabold text-emerald-600">SANGAT BAIK</span>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Percobaan</span>
+                        <span id="res-attempt" class="text-xl md:text-2xl font-extrabold text-amber-600">Ke-1</span>
+                    </div>
+                </div>
+
+                <!-- Feedback Message -->
+                <div id="res-feedback" class="p-4 rounded-2xl bg-blue-50 text-blue-900 border border-blue-200 text-xs md:text-sm font-medium mb-6">
+                    "Luar biasa! Kamu telah memahami materi Sistem Komputer dengan baik."
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap justify-center gap-3 no-print">
+                    <button onclick="retryLkpd()" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition transform active:scale-95 flex items-center gap-2 text-xs md:text-sm">
+                        🔄 COBA LAGI (Acak Soal)
+                    </button>
+                    <button onclick="scrollToCertificate()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition transform active:scale-95 flex items-center gap-2 text-xs md:text-sm">
+                        🎓 LIHAT SERTIFIKAT
+                    </button>
+                </div>
+            </div>
+
+            <!-- CERTIFICATE DISPLAY AREA -->
+            <div id="certificate-printable-area" class="bg-white rounded-3xl p-6 md:p-10 shadow-2xl border-8 border-double border-blue-900 relative overflow-hidden my-8">
+                <!-- Certificate Decorative Elements -->
+                <div class="absolute top-0 left-0 w-32 h-32 border-t-8 border-l-8 border-amber-500 rounded-tl-2xl"></div>
+                <div class="absolute top-0 right-0 w-32 h-32 border-t-8 border-r-8 border-amber-500 rounded-tr-2xl"></div>
+                <div class="absolute bottom-0 left-0 w-32 h-32 border-b-8 border-l-8 border-amber-500 rounded-bl-2xl"></div>
+                <div class="absolute bottom-0 right-0 w-32 h-32 border-b-8 border-r-8 border-amber-500 rounded-br-2xl"></div>
+
+                <div class="text-center space-y-4 max-w-2xl mx-auto py-4">
+                    <div class="flex justify-center items-center gap-3">
+                        <span class="text-4xl">🎓</span>
+                        <div>
+                            <h2 class="text-xs tracking-widest font-extrabold uppercase text-slate-500">SMPN 1 TINGGIMONCONG</h2>
+                            <h3 class="text-xl md:text-2xl font-black text-blue-900 uppercase">SERTIFIKAT PENYELESAIAN LKPD</h3>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-slate-500 italic">Diberikan sebagai penghargaan kepada peserta didik:</p>
+
+                    <!-- Student Name -->
+                    <div class="py-2 border-b-2 border-slate-300">
+                        <h1 id="cert-nama" class="text-2xl md:text-3xl font-extrabold text-slate-800 uppercase tracking-wide">NAMA LENGKAP SISWA</h1>
+                        <p id="cert-kelas-absen" class="text-xs text-slate-600 font-semibold mt-1">Kelas: VII.1 • Nomor Absen: 12</p>
+                    </div>
+
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        Telah berhasil menyelesaikan Lembar Kerja Peserta Didik (LKPD) Interaktif Mata Pelajaran Informatika dengan Topik Materi: <br>
+                        <strong class="text-slate-900">"Sistem Komputer: Hardware, Software & Brainware"</strong>
+                    </p>
+
+                    <!-- Certificate Scores Row -->
+                    <div class="grid grid-cols-3 gap-2 py-3 px-4 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold block">Nilai Akhir</span>
+                            <span id="cert-score" class="text-lg font-black text-blue-700">95 / 100</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold block">Predikat</span>
+                            <span id="cert-predikat" class="text-sm font-black text-emerald-600">SANGAT BAIK</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold block">Percobaan</span>
+                            <span id="cert-attempt" class="text-sm font-black text-amber-600">Ke-1</span>
+                        </div>
+                    </div>
+
+                    <!-- Signatures & Date Row -->
+                    <div class="grid grid-cols-2 gap-6 pt-6 text-xs text-slate-700">
+                        <div class="text-left">
+                            <p class="text-[10px] text-slate-400">Tanggal Penyelesaian:</p>
+                            <p id="cert-date" class="font-bold text-slate-800">18 Agustus 2026</p>
+                            <div class="mt-4 pt-2 border-t border-slate-300">
+                                <p class="font-bold">SMPN 1 Tinggimoncong</p>
+                                <p class="text-[10px] text-slate-500">Kabupaten Gowa</p>
+                            </div>
+                        </div>
+                        <div class="text-right flex flex-col justify-end items-end">
+                            <div class="w-28 border-b border-dashed border-slate-400 mb-1 text-center text-[10px] text-slate-300 italic">Tanda Tangan Guru</div>
+                            <p class="font-bold text-slate-900">Syarifuddin, S. Pd., M. Si.</p>
+                            <p class="text-[10px] text-slate-500">Guru Mata Pelajaran Informatika</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Print / Save Action Buttons -->
+            <div class="flex justify-center gap-3 no-print pb-8">
+                <button onclick="window.print()" class="px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow-lg transition flex items-center gap-2 text-xs md:text-sm">
+                    🖨️ CETAK / SIMPAN PDF
+                </button>
+            </div>
+
+            <!-- 15. RIWAYAT HASIL PENGERJAAN -->
+            <div class="glass-card rounded-3xl p-6 shadow-lg border border-slate-200 no-print">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        📊 RIWAYAT PENGERJAAN
+                    </h3>
+                    <button onclick="confirmResetHistory()" class="text-xs text-red-500 hover:text-red-700 font-semibold underline">
+                        🔄 Reset Riwayat
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-600 font-bold">
+                                <th class="p-2.5">Percobaan</th>
+                                <th class="p-2.5">Tanggal</th>
+                                <th class="p-2.5">Benar</th>
+                                <th class="p-2.5">Nilai</th>
+                                <th class="p-2.5">Predikat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="no-print bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+        <p>© 2026 SMPN 1 Tinggimoncong • LKPD Informatika Kelas VII</p>
+        <p class="mt-1 text-[10px] text-slate-400">Diampu oleh: Syarifuddin, S. Pd., M. Si.</p>
+    </footer>
+
+    <!-- Modal Confirmation for Reset -->
+    <div id="modal-reset" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
+            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                ⚠️
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Mulai dari Awal?</h3>
+            <p class="text-xs text-slate-500 leading-relaxed">Apakah kamu yakin ingin menghapus seluruh riwayat pengerjaan dan nilai di perangkat ini?</p>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeResetModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">
+                    Batal
+                </button>
+                <button onclick="executeResetHistory()" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs">
+                    Ya, Hapus Riwayat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let currentUser = {
+            nama: '',
+            kelas: '',
+            absen: ''
+        };
+
+        let currentAttempt = 1;
+        let userAnswers = {}; // Stores questionId -> answer
+        let activeTab = 1;
+        let isShuffled = false;
+
+        // Base Data Questions List (30 Items Total)
+        const rawQuestions = [
+            // --- AKTIVITAS 1: HARDWARE (Q1 - Q5) ---
+            {
+                id: 1,
+                act: 1,
+                title: "Soal 1 — Kenali Hardware Input",
+                type: "multi-select",
+                question: "Manakah dari perangkat berikut yang termasuk hardware INPUT? (Bisa pilih lebih dari satu)",
+                options: [
+                    { id: "kb", text: "⌨️️ Keyboard", correct: true },
+                    { id: "ms", text: "🖱️ Mouse", correct: true },
+                    { id: "mn", text: "🖥️ Monitor", correct: false },
+                    { id: "cpu", text: "⚙️ CPU", correct: false },
+                    { id: "hd", text: "💾 Hard Disk", correct: false },
+                    { id: "spk", text: "🔊 Speaker", correct: false }
+                ]
+            },
+            {
+                id: 2,
+                act: 1,
+                title: "Soal 2 — Kategori Monitor",
+                type: "single",
+                question: "Perangkat Monitor 🖥️ termasuk ke dalam kategori hardware...",
+                options: [
+                    { id: "A", text: "A. Input (Masukan)" },
+                    { id: "B", text: "B. Output (Keluaran)", correct: true },
+                    { id: "C", text: "C. Proses" },
+                    { id: "D", text: "D. Penyimpanan" }
+                ]
+            },
+            {
+                id: 3,
+                act: 1,
+                title: "Soal 3 — Tugas CPU",
+                type: "single",
+                question: "Perangkat CPU ⚙️ bertugas untuk...",
+                options: [
+                    { id: "A", text: "A. Menampilkan gambar ke layar" },
+                    { id: "B", text: "B. Mengolah data dan instruksi", correct: true },
+                    { id: "C", text: "C. Menyimpan data secara permanen" },
+                    { id: "D", text: "D. Mencetak dokumen ke kertas" }
+                ]
+            },
+            {
+                id: 4,
+                act: 1,
+                title: "Soal 4 — Kelompokkan Kategori Hardware",
+                type: "category-match",
+                question: "Cocokkan setiap perangkat hardware berikut ke dalam kategori fungsinya yang tepat:",
+                items: [
+                    { id: "q4_1", text: "⌨️ Keyboard", target: "Input" },
+                    { id: "q4_2", text: "🖱️ Mouse", target: "Input" },
+                    { id: "q4_3", text: "🎤 Mikrofon", target: "Input" },
+                    { id: "q4_4", text: "🖥️ Monitor", target: "Output" },
+                    { id: "q4_5", text: "🔊 Speaker", target: "Output" },
+                    { id: "q4_6", text: "🖨️ Printer", target: "Output" },
+                    { id: "q4_7", text: "⚙️ CPU", target: "Proses" },
+                    { id: "q4_8", text: "💾 Hard Disk", target: "Penyimpanan" }
+                ],
+                categories: ["Input", "Output", "Proses", "Penyimpanan"]
+            },
+            {
+                id: 5,
+                act: 1,
+                title: "Soal 5 — Ciri-Ciri Hardware",
+                type: "card-pick",
+                question: "Pilih apakah item di bawah ini termasuk HARDWARE atau BUKAN HARDWARE:",
+                items: [
+                    { id: "q5_1", text: "Keyboard ⌨️", isHardware: true },
+                    { id: "q5_2", text: "Microsoft Word 📄", isHardware: false },
+                    { id: "q5_3", text: "Mouse 🖱️", isHardware: true },
+                    { id: "q5_4", text: "Google Chrome 🌐", isHardware: false },
+                    { id: "q5_5", text: "Monitor 🖥️", isHardware: true },
+                    { id: "q5_6", text: "Windows 11 🪟", isHardware: false }
+                ],
+                hint: "Hardware adalah perangkat fisik komputer yang dapat dilihat dan disentuh secara langsung."
+            },
+
+            // --- AKTIVITAS 2: SOFTWARE (Q6 - Q10) ---
+            {
+                id: 6,
+                act: 2,
+                title: "Soal 6 — Pengertian Software",
+                type: "single",
+                question: "Apakah yang dimaksud dengan Software (Perangkat Lunak)?",
+                options: [
+                    { id: "A", text: "A. Perangkat fisik yang bisa disentuh" },
+                    { id: "B", text: "B. Program/perintah yang berjalan di dalam komputer", correct: true },
+                    { id: "C", text: "C. Manusia yang menjalankan komputer" },
+                    { id: "D", text: "D. Kabel penghubung daya listrik" }
+                ]
+            },
+            {
+                id: 7,
+                act: 2,
+                title: "Soal 7 — Sistem Operasi vs Aplikasi",
+                type: "category-match",
+                question: "Tentukan apakah software berikut termasuk Sistem Operasi atau Aplikasi:",
+                items: [
+                    { id: "q7_1", text: "🪟 Windows 11", target: "Sistem Operasi" },
+                    { id: "q7_2", text: "📄 Microsoft Word", target: "Aplikasi" },
+                    { id: "q7_3", text: "🤖 Android", target: "Sistem Operasi" },
+                    { id: "q7_4", text: "🌐 Google Chrome", target: "Aplikasi" },
+                    { id: "q7_5", text: "🐧 Linux", target: "Sistem Operasi" },
+                    { id: "q7_6", text: "💬 WhatsApp", target: "Aplikasi" },
+                    { id: "q7_7", text: "🍎 macOS", target: "Sistem Operasi" },
+                    { id: "q7_8", text: "📊 Microsoft Excel", target: "Aplikasi" }
+                ],
+                categories: ["Sistem Operasi", "Aplikasi"]
+            },
+            {
+                id: 8,
+                act: 2,
+                title: "Soal 8 — Hardware atau Software?",
+                type: "category-match",
+                question: "Pisahkan objek-objek komputer berikut ke dalam kategori Hardware atau Software:",
+                items: [
+                    { id: "q8_1", text: "⌨️ Keyboard", target: "Hardware" },
+                    { id: "q8_2", text: "📄 MS Word", target: "Software" },
+                    { id: "q8_3", text: "🖥️ Monitor", target: "Hardware" },
+                    { id: "q8_4", text: "🌐 Google Chrome", target: "Software" },
+                    { id: "q8_5", text: "🖱️ Mouse", target: "Hardware" },
+                    { id: "q8_6", text: "🎨 Paint", target: "Software" },
+                    { id: "q8_7", text: "🔊 Speaker", target: "Hardware" },
+                    { id: "q8_8", text: "🪟 Windows 10", target: "Software" },
+                    { id: "q8_9", text: "💾 Flashdisk", target: "Hardware" },
+                    { id: "q8_10", text: "📱 WhatsApp", target: "Software" }
+                ],
+                categories: ["Hardware", "Software"]
+            },
+            {
+                id: 9,
+                act: 2,
+                title: "Soal 9 — Fungsi Sistem Operasi",
+                type: "single",
+                question: "Fungsi utama dari Sistem Operasi (Operating System) adalah...",
+                options: [
+                    { id: "A", text: "A. Menampilkan gambar fisik di monitor" },
+                    { id: "B", text: "B. Mengatur dan mengendalikan seluruh sistem komputer", correct: true },
+                    { id: "C", text: "C. Mencetak dokumen pada kertas" },
+                    { id: "D", text: "D. Menyimpan foto ke dalam flashdisk" }
+                ]
+            },
+            {
+                id: 10,
+                act: 2,
+                title: "Soal 10 — Skenario Tanpa OS",
+                type: "single",
+                question: "Apabila sebuah komputer baru tidak memiliki Sistem Operasi sama sekali, apa yang akan terjadi?",
+                options: [
+                    { id: "A", text: "A. Komputer tetap dapat digunakan dengan normal" },
+                    { id: "B", text: "B. Komputer tidak dapat booting / tidak bisa digunakan", correct: true },
+                    { id: "C", text: "C. Komputer akan berjalan jauh lebih cepat" },
+                    { id: "D", text: "D. Komputer memutar musik otomatis" }
+                ]
+            },
+
+            // --- AKTIVITAS 3: BRAINWARE (Q11 - Q15) ---
+            {
+                id: 11,
+                act: 3,
+                title: "Soal 11 — Pengertian Brainware",
+                type: "single",
+                question: "Dalam sistem komputer, apakah yang dimaksud dengan Brainware?",
+                options: [
+                    { id: "A", text: "A. Perangkat fisik elektronik komputer" },
+                    { id: "B", text: "B. Program aplikasi pengolah kata" },
+                    { id: "C", text: "C. Manusia yang mengoperasikan/menggunakan komputer", correct: true },
+                    { id: "D", text: "D. Kabel jaringan penyambung internet" }
+                ]
+            },
+            {
+                id: 12,
+                act: 3,
+                title: "Soal 12 — Tebak Jenis Brainware",
+                type: "scenario-select",
+                question: "Tentukan peran Brainware yang sesuai dengan situasi pekerjaan berikut:",
+                scenarios: [
+                    { id: "s12_1", text: "Andi sedang merancang dan membuat aplikasi game edukasi.", options: ["Programmer", "Operator", "Teknisi"], correct: "Programmer" },
+                    { id: "s12_2", text: "Bu Rina menggunakan komputer untuk mengetik surat sekolah.", options: ["Programmer", "Operator", "Teknisi"], correct: "Operator" },
+                    { id: "s12_3", text: "Pak Doni membongkar dan memperbaiki PC yang rusak.", options: ["Programmer", "Teknisi", "Analis Sistem"], correct: "Teknisi" },
+                    { id: "s12_4", text: "Pak Budi merancang arsitektur sistem informasi baru.", options: ["Operator", "Analis Sistem", "Administrator"], correct: "Analis Sistem" },
+                    { id: "s12_5", text: "Bu Sari mengatur keamanan dan jaringan komputer kantor.", options: ["Administrator", "Programmer", "Operator"], correct: "Administrator" }
+                ]
+            },
+            {
+                id: 13,
+                act: 3,
+                title: "Soal 13 — Brainware atau Bukan?",
+                type: "card-pick",
+                question: "Pilih apakah item di bawah ini merupakan BRAINWARE atau BUKAN BRAINWARE:",
+                items: [
+                    { id: "q13_1", text: "Siswa menggunakan komputer 👨‍🎓", isHardware: true },
+                    { id: "q13_2", text: "Keyboard Komputer ⌨️", isHardware: false },
+                    { id: "q13_3", text: "Programmer Aplikasi 👨‍💻", isHardware: true },
+                    { id: "q13_4", text: "Microsoft Word 📄", isHardware: false },
+                    { id: "q13_5", text: "Teknisi Komputer 🛠️", isHardware: true },
+                    { id: "q13_6", text: "Monitor Layar 🖥️", isHardware: false }
+                ]
+            },
+            {
+                id: 14,
+                act: 3,
+                title: "Soal 14 — Tugas Jenis Brainware",
+                type: "category-match",
+                question: "Jodohkan jenis brainware berikut dengan tugas utamanya yang paling tepat:",
+                items: [
+                    { id: "q14_1", text: "👨‍💻 Programmer", target: "Membuat program" },
+                    { id: "q14_2", text: "🖥️ Operator", target: "Menjalankan komputer" },
+                    { id: "q14_3", text: "🛠️ Teknisi", target: "Memperbaiki komputer" },
+                    { id: "q14_4", text: "📊 Analis Sistem", target: "Merancang sistem" },
+                    { id: "q14_5", text: "🗂️ Administrator", target: "Mengatur jaringan" }
+                ],
+                categories: ["Membuat program", "Menjalankan komputer", "Memperbaiki komputer", "Merancang sistem", "Mengatur jaringan"]
+            },
+            {
+                id: 15,
+                act: 3,
+                title: "Soal 15 — Peran Penting Brainware",
+                type: "single",
+                question: "Mengapa Brainware sangat penting dalam sistem komputer?",
+                options: [
+                    { id: "A", text: "A. Karena brainware adalah komponen paling mahal" },
+                    { id: "B", text: "B. Karena tanpa manusia, komputer tidak memiliki guna/tujuan", correct: true },
+                    { id: "C", text: "C. Karena brainware adalah program komputer" },
+                    { id: "D", text: "D. Karena brainware mensuplai daya listrik" }
+                ]
+            },
+
+            // --- AKTIVITAS 4: HUBUNGAN KETIGANYA (Q16 - Q20) ---
+            {
+                id: 16,
+                act: 4,
+                title: "Soal 16 — Alur Kerja Sistem Komputer",
+                type: "single",
+                question: "Urutan alur kerja sistem komputer yang benar dalam mengeksekusi instruksi adalah...",
+                options: [
+                    { id: "A", text: "A. Hardware → Software → Brainware" },
+                    { id: "B", text: "B. Brainware → Software → Hardware", correct: true },
+                    { id: "C", text: "C. Software → Hardware → Brainware" },
+                    { id: "D", text: "D. Hardware → Brainware → Software" }
+                ]
+            },
+            {
+                id: 17,
+                act: 4,
+                title: "Soal 17 — Identifikasi Peran Komponen",
+                type: "category-match",
+                question: "Tentukan elemen yang berperan pada setiap aktivitas di bawah ini:",
+                items: [
+                    { id: "q17_1", text: "Rani menekan tombol keyboard", target: "Brainware" },
+                    { id: "q17_2", text: "Word memproses huruf yang diketik", target: "Software" },
+                    { id: "q17_3", text: "Monitor menampilkan tulisan di layar", target: "Hardware" },
+                    { id: "q17_4", text: "Budi mengklik ikon browser Chrome", target: "Brainware" },
+                    { id: "q17_5", text: "Chrome mengunduh file dari internet", target: "Software" },
+                    { id: "q17_6", text: "CPU melakukan perhitungan matematika", target: "Hardware" }
+                ],
+                categories: ["Brainware", "Software", "Hardware"]
+            },
+            {
+                id: 18,
+                act: 4,
+                title: "Soal 18 — Analogi Menyetir Mobil",
+                type: "category-match",
+                question: "Berdasarkan analogi 'Orang Menyetir Mobil', cocokkan komponen komputer dengan analoginya:",
+                items: [
+                    { id: "q18_1", text: "👨‍‍💼 Brainware", target: "Pengemudi Mobil" },
+                    { id: "q18_2", text: "🧭 Software", target: "Petunjuk / Navigasi / Aturan" },
+                    { id: "q18_3", text: "🚗 Hardware", target: "Fisik Mobil" }
+                ],
+                categories: ["Pengemudi Mobil", "Petunjuk / Navigasi / Aturan", "Fisik Mobil"]
+            },
+            {
+                id: 19,
+                act: 4,
+                title: "Soal 19 — Urutan Kasus Mengetik Dokumen",
+                type: "sequence-sort",
+                question: "Urutkan tahapan kejadian saat Rani mengetik 'HALO' di MS Word dari langkah 1 sampai 5:",
+                steps: [
+                    { id: "st_1", order: 1, text: "Rani membuka program MS Word (Brainware memberi perintah)" },
+                    { id: "st_2", order: 2, text: "MS Word meminta keyboard menerima input ketikan (Software beraksi)" },
+                    { id: "st_3", order: 3, text: "Keyboard mengirim sinyal listrik data ketikan ke CPU (Hardware)" },
+                    { id: "st_4", order: 4, text: "CPU mengolah data dan Monitor menampilkan tulisan 'HALO' (Hardware)" },
+                    { id: "st_5", order: 5, text: "File 'halo.docx' tersimpan ke dalam Hard Disk (Hardware)" }
+                ]
+            },
+            {
+                id: 20,
+                act: 4,
+                title: "Soal 20 — Kesimpulan Sistem Komputer",
+                type: "single",
+                question: "Sistem Komputer dapat bekerja dengan baik dan menghasilkan keluaran yang bermanfaat apabila...",
+                options: [
+                    { id: "A", text: "A. Hanya memiliki hardware yang canggih" },
+                    { id: "B", text: "B. Hanya memiliki software terbaru" },
+                    { id: "C", text: "C. Hardware, Software, dan Brainware saling bekerja sama", correct: true },
+                    { id: "D", text: "D. Hanya ada manusia tanpa perangkat lunak" }
+                ]
+            },
+
+            // --- AKTIVITAS 5: EVALUASI AKHIR (Q21 - Q30) ---
+            {
+                id: 21,
+                act: 5,
+                title: "Soal 21 — Evaluasi: Definisi Fisik",
+                type: "single",
+                question: "Perangkat komputer yang berwujud fisik, dapat dilihat dan disentuh disebut...",
+                options: [
+                    { id: "A", text: "A. Software" },
+                    { id: "B", text: "B. Hardware", correct: true },
+                    { id: "C", text: "C. Brainware" },
+                    { id: "D", text: "D. Malware" }
+                ]
+            },
+            {
+                id: 22,
+                act: 5,
+                title: "Soal 22 — Evaluasi: Program Komputer",
+                type: "single",
+                question: "Kumpulan instruksi atau program yang berjalan di dalam komputer disebut...",
+                options: [
+                    { id: "A", text: "A. Hardware" },
+                    { id: "B", text: "B. Software", correct: true },
+                    { id: "C", text: "C. Brainware" },
+                    { id: "D", text: "D. Firmware" }
+                ]
+            },
+            {
+                id: 23,
+                act: 5,
+                title: "Soal 23 — Evaluasi: Komponen Manusia",
+                type: "single",
+                question: "Komponen manusia yang menggunakan, mengoperasikan, atau merancang komputer adalah...",
+                options: [
+                    { id: "A", text: "A. Hardware" },
+                    { id: "B", text: "B. Software" },
+                    { id: "C", text: "C. Brainware", correct: true },
+                    { id: "D", text: "D. Userware" }
+                ]
+            },
+            {
+                id: 24,
+                act: 5,
+                title: "Soal 24 — Evaluasi: Contoh OS",
+                type: "single",
+                question: "Manakah di bawah ini yang merupakan contoh Sistem Operasi?",
+                options: [
+                    { id: "A", text: "A. Microsoft Word" },
+                    { id: "B", text: "B. Microsoft Windows 11", correct: true },
+                    { id: "C", text: "C. Google Chrome" },
+                    { id: "D", text: "D. WhatsApp Messenger" }
+                ]
+            },
+            {
+                id: 25,
+                act: 5,
+                title: "Soal 25 — Evaluasi: Pembuat Program",
+                type: "single",
+                question: "Seseorang yang memiliki keahlian membuat dan merancang kode program komputer disebut...",
+                options: [
+                    { id: "A", text: "A. Operator" },
+                    { id: "B", text: "B. Programmer", correct: true },
+                    { id: "C", text: "C. Teknisi" },
+                    { id: "D", text: "D. Graphic Designer" }
+                ]
+            },
+            {
+                id: 26,
+                act: 5,
+                title: "Soal 26 — Evaluasi: Pusat Pengolah",
+                type: "single",
+                question: "Komponen komputer yang berfungsi sebagai otak pengolah utama data adalah...",
+                options: [
+                    { id: "A", text: "A. Monitor" },
+                    { id: "B", text: "B. CPU (Central Processing Unit)", correct: true },
+                    { id: "C", text: "C. Speaker" },
+                    { id: "D", text: "D. Mouse" }
+                ]
+            },
+            {
+                id: 27,
+                act: 5,
+                title: "Soal 27 — Evaluasi: Dampak Tanpa Software",
+                type: "single",
+                question: "Jika komputer hanya memiliki hardware tanpa software sama sekali, maka...",
+                options: [
+                    { id: "A", text: "A. Komputer tetap dapat digunakan untuk mengetik" },
+                    { id: "B", text: "B. Komputer mati total / tidak bisa digunakan", correct: true },
+                    { id: "C", text: "C. Komputer memproses data lebih cepat" },
+                    { id: "D", text: "D. Komputer langsung terhubung ke internet" }
+                ]
+            },
+            {
+                id: 28,
+                act: 5,
+                title: "Soal 28 — Evaluasi Benar/Salah (Hardware)",
+                type: "single",
+                question: "Pernyataan: 'Keyboard ⌨️ merupakan salah satu contoh perangkat Hardware.'",
+                options: [
+                    { id: "BENAR", text: "✅ BENAR", correct: true },
+                    { id: "SALAH", text: "❌ SALAH" }
+                ]
+            },
+            {
+                id: 29,
+                act: 5,
+                title: "Soal 29 — Evaluasi Benar/Salah (Software)",
+                type: "single",
+                question: "Pernyataan: 'Microsoft Word 📄 merupakan perangkat Hardware yang bisa disentuh.'",
+                options: [
+                    { id: "BENAR", text: "✅ BENAR" },
+                    { id: "SALAH", text: "❌ SALAH (Microsoft Word adalah Software)", correct: true }
+                ]
+            },
+            {
+                id: 30,
+                act: 5,
+                title: "Soal 30 — Evaluasi Kelompok Tiga Komponen",
+                type: "category-match",
+                question: "Jodohkan ketiga objek berikut ke kategori komponen utama sistem komputer:",
+                items: [
+                    { id: "q30_1", text: "⌨️ Keyboard", target: "Hardware" },
+                    { id: "q30_2", text: "📀 Windows 11", target: "Software" },
+                    { id: "q30_3", text: "👨‍💻 Programmer", target: "Brainware" }
+                ],
+                categories: ["Hardware", "Software", "Brainware"]
+            }
+        ];
+
+        // Working active questions array (shuffled on retry)
+        let questions = JSON.parse(JSON.stringify(rawQuestions));
+
+        // Initialization
+        window.onload = function() {
+            loadSavedHistory();
+            updateBestScoreUI();
+        };
+
+        // Form Submission Handler
+        function handleStartLkpd(e) {
+            e.preventDefault();
+            const nama = document.getElementById('input-nama').value.trim();
+            const kelas = document.getElementById('input-kelas').value;
+            const absen = document.getElementById('input-absen').value;
+
+            if (!nama || !kelas || !absen) {
+                alert('Silahkan isi seluruh identitas terlebih dahulu!');
+                return;
+            }
+
+            currentUser.nama = nama;
+            currentUser.kelas = kelas;
+            currentUser.absen = absen;
+
+            // Update UI Header
+            document.getElementById('badge-nama').innerText = nama;
+            document.getElementById('badge-info').innerText = `Kelas ${kelas} • Absen ${absen}`;
+            document.getElementById('user-badge').classList.remove('hidden');
+            document.getElementById('user-badge').classList.add('flex');
+
+            switchView('petunjuk');
+        }
+
+        function startExercise() {
+            switchView('dashboard');
+            renderDashboardInfo();
+            renderQuestions();
+            updateProgressBar();
+        }
+
+        function switchView(viewName) {
+            document.getElementById('view-welcome').classList.add('hidden');
+            document.getElementById('view-petunjuk').classList.add('hidden');
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-result').classList.add('hidden');
+
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderDashboardInfo() {
+            document.getElementById('dash-nama').innerText = currentUser.nama;
+            document.getElementById('dash-detail').innerText = `Kelas: ${currentUser.kelas} • Nomor Absen: ${currentUser.absen}`;
+            document.getElementById('dash-percobaan').innerText = `Percobaan ke-${currentAttempt}`;
+        }
+
+        // Tab Selection
+        function selectActTab(tabNum) {
+            activeTab = tabNum;
+            document.querySelectorAll('.act-tab-btn').forEach((btn, idx) => {
+                if (idx + 1 === tabNum) {
+                    btn.className = "act-tab-btn px-4 py-2.5 rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-blue-600 text-white shadow-sm font-bold";
+                } else {
+                    btn.className = "act-tab-btn px-4 py-2.5 rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 font-semibold";
+                }
+            });
+            renderQuestions();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('activity-container');
+            container.innerHTML = '';
+
+            const currentQuestions = questions.filter(q => q.act === activeTab);
+
+            // Special Mini Simulation Box on Activity 4
+            if (activeTab === 4) {
+                container.appendChild(createSimInteractiveNode());
+            }
+
+            currentQuestions.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-2xl p-5 md:p-6 shadow-md border border-slate-200 transition";
+
+                let qHTML = `
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-bold px-3 py-1 rounded-full bg-blue-100 text-blue-800">${q.title}</span>
+                        <span id="status-q-${q.id}" class="text-xs font-semibold text-slate-400">Belum diisi</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm md:text-base mb-4 leading-relaxed">${q.question}</h3>
+                `;
+
+                // Single Choice
+                if (q.type === 'single') {
+                    qHTML += `<div class="space-y-2">`;
+                    q.options.forEach(opt => {
+                        const isChecked = userAnswers[q.id] === opt.id ? 'checked' : '';
+                        qHTML += `
+                            <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="radio" name="q_${q.id}" value="${opt.id}" ${isChecked} onchange="saveAnswer(${q.id}, '${opt.id}')" class="mt-1 text-blue-600 focus:ring-blue-500">
+                                <span class="text-xs md:text-sm text-slate-700 font-medium">${opt.text}</span>
+                            </label>
+                        `;
+                    });
+                    qHTML += `</div>`;
+                }
+
+                // Multi-select
+                else if (q.type === 'multi-select') {
+                    const currentAns = userAnswers[q.id] || [];
+                    qHTML += `<div class="grid grid-cols-2 md:grid-cols-3 gap-2">`;
+                    q.options.forEach(opt => {
+                        const isChecked = currentAns.includes(opt.id) ? 'checked' : '';
+                        qHTML += `
+                            <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="checkbox" value="${opt.id}" ${isChecked} onchange="saveMultiAnswer(${q.id}, '${opt.id}')" class="rounded text-blue-600 focus:ring-blue-500">
+                                <span class="text-xs md:text-sm text-slate-700 font-medium">${opt.text}</span>
+                            </label>
+                        `;
+                    });
+                    qHTML += `</div>`;
+                }
+
+                // Scenario Select
+                else if (q.type === 'scenario-select') {
+                    const currentAns = userAnswers[q.id] || {};
+                    qHTML += `<div class="space-y-3">`;
+                    q.scenarios.forEach((sc, sIdx) => {
+                        const selectedVal = currentAns[sc.id] || '';
+                        qHTML += `
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                                <span class="text-xs text-slate-700 font-medium">"${sc.text}"</span>
+                                <select onchange="saveScenarioAnswer(${q.id}, '${sc.id}', this.value)" class="text-xs p-2 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                                    <option value="">-- Pilih Role --</option>
+                                    ${sc.options.map(o => `<option value="${o}" ${selectedVal === o ? 'selected' : ''}>${o}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                    qHTML += `</div>`;
+                }
+
+                // Card Pick (Hardware vs Bukan)
+                else if (q.type === 'card-pick') {
+                    const currentAns = userAnswers[q.id] || {};
+                    qHTML += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
+                    q.items.forEach(it => {
+                        const val = currentAns[it.id];
+                        qHTML += `
+                            <div class="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between gap-2 shadow-sm">
+                                <span class="text-xs font-bold text-slate-800">${it.text}</span>
+                                <div class="flex gap-1 text-[11px]">
+                                    <button onclick="saveCardPick(${q.id}, '${it.id}', true)" class="px-2.5 py-1.5 rounded-lg border font-semibold ${val === true ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                                        YA
+                                    </button>
+                                    <button onclick="saveCardPick(${q.id}, '${it.id}', false)" class="px-2.5 py-1.5 rounded-lg border font-semibold ${val === false ? 'bg-amber-600 text-white border-amber-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                                        BUKAN
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    qHTML += `</div>`;
+                    if (q.hint) {
+                        qHTML += `<p class="mt-3 text-[11px] text-blue-600 bg-blue-50 p-2 rounded-lg border border-blue-100"><i class="fa-solid fa-circle-info mr-1"></i> ${q.hint}</p>`;
+                    }
+                }
+
+                // Category Matching (Drag & Drop / Tap Friendly)
+                else if (q.type === 'category-match') {
+                    const currentAns = userAnswers[q.id] || {};
+                    qHTML += `
+                        <p class="text-[11px] text-slate-500 mb-2 italic">Petunjuk: Klik item, lalu klik kategori tujuan untuk menjodohkan.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Items Pool -->
+                            <div>
+                                <span class="text-xs font-bold text-slate-600 block mb-2">Pilihan Objek:</span>
+                                <div class="flex flex-wrap gap-2">
+                                    ${q.items.map(it => {
+                                        const assignedCategory = currentAns[it.id];
+                                        if (assignedCategory) return ''; // Already assigned
+                                        return `
+                                            <button onclick="handleMatchSelect('${q.id}', '${it.id}')" id="match-item-${q.id}-${it.id}" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-semibold rounded-lg border border-blue-200 transition">
+                                                ${it.text}
+                                            </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Target Categories -->
+                            <div>
+                                <span class="text-xs font-bold text-slate-600 block mb-2">Kategori Tujuan:</span>
+                                <div class="space-y-2">
+                                    ${q.categories.map(cat => {
+                                        const assignedItems = q.items.filter(it => currentAns[it.id] === cat);
+                                        return `
+                                            <div onclick="handleMatchTarget('${q.id}', '${cat}')" class="p-2.5 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-100/80 cursor-pointer transition">
+                                                <div class="flex justify-between items-center mb-1">
+                                                    <span class="text-xs font-bold text-slate-700">${cat}</span>
+                                                    <span class="text-[10px] text-slate-400">Klik di sini</span>
+                                                </div>
+                                                <div class="flex flex-wrap gap-1">
+                                                    ${assignedItems.map(it => `
+                                                        <span class="inline-flex items-center gap-1 text-[11px] bg-white border border-slate-200 px-2 py-0.5 rounded-md shadow-sm">
+                                                            ${it.text}
+                                                            <button onclick="event.stopPropagation(); unmatchItem('${q.id}', '${it.id}')" class="text-red-500 font-bold ml-1">×</button>
+                                                        </span>
+                                                    `).join('')}
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Sequence Sorting
+                else if (q.type === 'sequence-sort') {
+                    const currentAns = userAnswers[q.id] || q.steps.map(s => s.id); // default order
+                    qHTML += `
+                        <p class="text-[11px] text-slate-500 mb-2 italic">Gunakan tombol Panah (▲ / ▼) untuk mengurutkan langkah secara tepat dari awal hingga akhir:</p>
+                        <div class="space-y-2">
+                            ${currentAns.map((stepId, idx) => {
+                                const stepObj = q.steps.find(s => s.id === stepId);
+                                return `
+                                    <div class="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between gap-3 shadow-sm">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center">${idx + 1}</span>
+                                            <span class="text-xs text-slate-700 font-medium">${stepObj.text}</span>
+                                        </div>
+                                        <div class="flex gap-1">
+                                            <button onclick="moveStep(${q.id}, ${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="px-2 py-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 rounded text-xs font-bold">▲</button>
+                                            <button onclick="moveStep(${q.id}, ${idx}, 1)" ${idx === currentAns.length - 1 ? 'disabled' : ''} class="px-2 py-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 rounded text-xs font-bold">▼</button>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = qHTML;
+                container.appendChild(card);
+
+                // Update Question Status indicator
+                updateQuestionStatusUI(q.id);
+            });
+        }
+
+        // Interactive Mini Simulation Component for Activity 4
+        function createSimInteractiveNode() {
+            const div = document.createElement('div');
+            div.className = "bg-gradient-to-br from-indigo-900 to-blue-900 text-white rounded-3xl p-6 shadow-xl space-y-4 mb-6";
+            div.innerHTML = `
+                <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-300">💡 Mini Simulasi Interaktif</span>
+                    <span class="text-[10px] bg-indigo-800/80 px-2.5 py-1 rounded-full text-indigo-200">Siklus Sistem Komputer</span>
+                </div>
+                <h4 class="font-bold text-sm md:text-base">Bagaimana Ketiganya Bekerja Bersama?</h4>
+                <p class="text-xs text-indigo-200 leading-relaxed">Klik tombol jalankan simulasi di bawah untuk melihat aliran perintah dari Pengguna (Brainware) ke Perangkat Lunak (Software) hingga diproses oleh Hardware!</p>
+                
+                <div class="grid grid-cols-3 gap-2 text-center py-3">
+                    <div id="sim-step-1" class="p-3 rounded-2xl bg-indigo-800/40 border border-indigo-700 transition">
+                        <div class="text-2xl mb-1">👨‍💻</div>
+                        <span class="text-xs font-bold block">1. Brainware</span>
+                        <span class="text-[10px] text-indigo-300 block">Memberi Perintah</span>
+                    </div>
+                    <div id="sim-step-2" class="p-3 rounded-2xl bg-indigo-800/40 border border-indigo-700 transition">
+                        <div class="text-2xl mb-1">📀</div>
+                        <span class="text-xs font-bold block">2. Software</span>
+                        <span class="text-[10px] text-indigo-300 block">Menerjemahkan</span>
+                    </div>
+                    <div id="sim-step-3" class="p-3 rounded-2xl bg-indigo-800/40 border border-indigo-700 transition">
+                        <div class="text-2xl mb-1">🖥️</div>
+                        <span class="text-xs font-bold block">3. Hardware</span>
+                        <span class="text-[10px] text-indigo-300 block">Eksekusi & Hasil</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center bg-indigo-950/60 p-3 rounded-xl border border-indigo-800">
+                    <span id="sim-text-status" class="text-xs text-indigo-200 italic">Klik tombol untuk memulai alur simulasi...</span>
+                    <button onclick="runSimulationAnimation()" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl text-xs shadow-md transition transform active:scale-95">
+                        ▶️ Jalankan Simulasi
+                    </button>
+                </div>
+            `;
+            return div;
+        }
+
+        function runSimulationAnimation() {
+            const s1 = document.getElementById('sim-step-1');
+            const s2 = document.getElementById('sim-step-2');
+            const s3 = document.getElementById('sim-step-3');
+            const status = document.getElementById('sim-text-status');
+
+            // Step 1
+            s1.className = "p-3 rounded-2xl bg-amber-500 text-slate-900 font-bold scale-105 border border-amber-300 transition duration-300";
+            s2.className = "p-3 rounded-2xl bg-indigo-800/40 border border-indigo-700 opacity-50";
+            s3.className = "p-3 rounded-2xl bg-indigo-800/40 border border-indigo-700 opacity-50";
+            status.innerText = "Langkah 1: Rani (Brainware) mengklik ikon MS Word...";
+
+            setTimeout(() => {
+                s1.className = "p-3 rounded-2xl bg-indigo-800/40 border border-indigo-700 opacity-50";
+                s2.className = "p-3 rounded-2xl bg-blue-500 text-white font-bold scale-105 border border-blue-300 transition duration-300";
+                status.innerText = "Langkah 2: Software MS Word memproses & meminta CPU bekerja...";
+            }, 1200);
+
+            setTimeout(() => {
+                s2.className = "p-3 rounded-2xl bg-indigo-800/40 border border-indigo-700 opacity-50";
+                s3.className = "p-3 rounded-2xl bg-emerald-500 text-slate-900 font-bold scale-105 border border-emerald-300 transition duration-300";
+                status.innerText = "Langkah 3: Hardware CPU mengolah & Monitor menampilkan halaman Word!";
+            }, 2400);
+
+            setTimeout(() => {
+                s1.className = "p-3 rounded-2xl bg-indigo-800/40 border border-indigo-700";
+                s2.className = "p-3 rounded-2xl bg-indigo-800/40 border border-indigo-700";
+                s3.className = "p-3 rounded-2xl bg-indigo-800/40 border border-indigo-700";
+                status.innerText = "✅ Simulasi selesai! Ketiganya terhubung erat.";
+            }, 3600);
+        }
+
+        // --- ANSWER SAVING LOGIC ---
+        function saveAnswer(qId, val) {
+            userAnswers[qId] = val;
+            updateQuestionStatusUI(qId);
+            updateProgressBar();
+        }
+
+        function saveMultiAnswer(qId, val) {
+            if (!userAnswers[qId]) userAnswers[qId] = [];
+            const arr = userAnswers[qId];
+            const idx = arr.indexOf(val);
+            if (idx > -1) arr.splice(idx, 1);
+            else arr.push(val);
+
+            updateQuestionStatusUI(qId);
+            updateProgressBar();
+        }
+
+        function saveScenarioAnswer(qId, sId, val) {
+            if (!userAnswers[qId]) userAnswers[qId] = {};
+            userAnswers[qId][sId] = val;
+            updateQuestionStatusUI(qId);
+            updateProgressBar();
+        }
+
+        function saveCardPick(qId, itemId, isHardware) {
+            if (!userAnswers[qId]) userAnswers[qId] = {};
+            userAnswers[qId][itemId] = isHardware;
+            renderQuestions();
+            updateProgressBar();
+        }
+
+        let selectedMatchItem = null;
+        function handleMatchSelect(qId, itemId) {
+            selectedMatchItem = itemId;
+            renderQuestions();
+        }
+
+        function handleMatchTarget(qId, categoryName) {
+            if (!selectedMatchItem) return;
+            if (!userAnswers[qId]) userAnswers[qId] = {};
+            userAnswers[qId][selectedMatchItem] = categoryName;
+            selectedMatchItem = null;
+            renderQuestions();
+            updateProgressBar();
+        }
+
+        function unmatchItem(qId, itemId) {
+            if (userAnswers[qId] && userAnswers[qId][itemId]) {
+                delete userAnswers[qId][itemId];
+                renderQuestions();
+                updateProgressBar();
+            }
+        }
+
+        function moveStep(qId, idx, dir) {
+            const qObj = questions.find(q => q.id === qId);
+            if (!userAnswers[qId]) {
+                userAnswers[qId] = qObj.steps.map(s => s.id);
+            }
+            const arr = userAnswers[qId];
+            const targetIdx = idx + dir;
+            if (targetIdx < 0 || targetIdx >= arr.length) return;
+
+            const temp = arr[idx];
+            arr[idx] = arr[targetIdx];
+            arr[targetIdx] = temp;
+
+            renderQuestions();
+            updateProgressBar();
+        }
+
+        function updateQuestionStatusUI(qId) {
+            const el = document.getElementById(`status-q-${qId}`);
+            if (!el) return;
+
+            const isFilled = isQuestionAnswered(qId);
+            if (isFilled) {
+                el.innerText = "✓ Sudah dijawab";
+                el.className = "text-xs font-semibold text-emerald-600";
+            } else {
+                el.innerText = "Belum diisi";
+                el.className = "text-xs font-semibold text-slate-400";
+            }
+        }
+
+        function isQuestionAnswered(qId) {
+            const ans = userAnswers[qId];
+            if (ans === undefined || ans === null) return false;
+            if (Array.isArray(ans)) return ans.length > 0;
+            if (typeof ans === 'object') return Object.keys(ans).length > 0;
+            return ans !== '';
+        }
+
+        function updateProgressBar() {
+            let answeredCount = 0;
+            questions.forEach(q => {
+                if (isQuestionAnswered(q.id)) answeredCount++;
+            });
+
+            const percent = Math.round((answeredCount / questions.length) * 100);
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-text').innerText = `${answeredCount} / ${questions.length} Aktivitas (${percent}%)`;
+        }
+
+        function finishLkpd() {
+            let totalCorrect = 0;
+
+            questions.forEach(q => {
+                const ans = userAnswers[q.id];
+
+                if (q.type === 'single') {
+                    const correctOpt = q.options.find(o => o.correct);
+                    if (ans === correctOpt.id) totalCorrect++;
+                }
+                else if (q.type === 'multi-select') {
+                    const correctIds = q.options.filter(o => o.correct).map(o => o.id);
+                    const userArr = ans || [];
+                    const isSame = correctIds.length === userArr.length && correctIds.every(id => userArr.includes(id));
+                    if (isSame) totalCorrect++;
+                }
+                else if (q.type === 'scenario-select') {
+                    const userSc = ans || {};
+                    let allCorrect = true;
+                    q.scenarios.forEach(sc => {
+                        if (userSc[sc.id] !== sc.correct) allCorrect = false;
+                    });
+                    if (allCorrect) totalCorrect++;
+                }
+                else if (q.type === 'card-pick') {
+                    const userObj = ans || {};
+                    let allCorrect = true;
+                    q.items.forEach(it => {
+                        if (userObj[it.id] !== it.isHardware) allCorrect = false;
+                    });
+                    if (allCorrect) totalCorrect++;
+                }
+                else if (q.type === 'category-match') {
+                    const userObj = ans || {};
+                    let allCorrect = true;
+                    q.items.forEach(it => {
+                        if (userObj[it.id] !== it.target) allCorrect = false;
+                    });
+                    if (allCorrect) totalCorrect++;
+                }
+                else if (q.type === 'sequence-sort') {
+                    const userArr = ans || [];
+                    const targetOrder = q.steps.sort((a,b) => a.order - b.order).map(s => s.id);
+                    const isSame = JSON.stringify(userArr) === JSON.stringify(targetOrder);
+                    if (isSame) totalCorrect++;
+                }
+            });
+
+            // Calculate Score (3.33 points each approx -> Total 100)
+            const finalScore = Math.round((totalCorrect / questions.length) * 100);
+
+            // Predikat calculation
+            let predikat = "";
+            let feedback = "";
+            let badgeIcon = "🏆";
+
+            if (finalScore >= 90) {
+                predikat = "🏆 SANGAT BAIK";
+                feedback = "Luar biasa! Kamu sudah sangat memahami sistem komputer (hardware, software, dan brainware).";
+                badgeIcon = "🏆";
+            } else if (finalScore >= 80) {
+                predikat = "🥇 BAIK";
+                feedback = "Hebat! Pemahamanmu sudah baik. Terus berlatih agar semakin mahir.";
+                badgeIcon = "🥇";
+            } else if (finalScore >= 70) {
+                predikat = "🥈 CUKUP";
+                feedback = "Cukup baik. Pelajari kembali beberapa bagian yang masih kurang.";
+                badgeIcon = "🥈";
+            } else {
+                predikat = "🌱 PERLU BERLATIH";
+                feedback = "Jangan menyerah! Pelajari kembali materi dan coba LKPD sekali lagi.";
+                badgeIcon = "🌱";
+            }
+
+            // Save Attempt Record
+            const attemptData = {
+                attempt: currentAttempt,
+                date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+                correct: totalCorrect,
+                score: finalScore,
+                predikat: predikat
+            };
+
+            saveHistoryToLocalStorage(attemptData);
+
+            // Populate Result Screen UI
+            document.getElementById('res-correct').innerText = `${totalCorrect} / ${questions.length}`;
+            document.getElementById('res-score').innerText = `${finalScore} / 100`;
+            document.getElementById('res-predikat').innerText = predikat;
+            document.getElementById('res-attempt').innerText = `Ke-${currentAttempt}`;
+            document.getElementById('res-feedback').innerText = feedback;
+            document.getElementById('result-icon').innerText = badgeIcon;
+
+            // Populate Certificate
+            document.getElementById('cert-nama').innerText = currentUser.nama;
+            document.getElementById('cert-kelas-absen').innerText = `Kelas: ${currentUser.kelas} • Nomor Absen: ${currentUser.absen}`;
+            document.getElementById('cert-score').innerText = `${finalScore} / 100`;
+            document.getElementById('cert-predikat').innerText = predikat;
+            document.getElementById('cert-attempt').innerText = `Ke-${currentAttempt}`;
+            document.getElementById('cert-date').innerText = attemptData.date;
+
+            // Trigger Confetti if high score
+            if (finalScore >= 80 && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+
+            switchView('result');
+            renderHistoryTable();
+            updateBestScoreUI();
+        }
+
+        function retryLkpd() {
+            currentAttempt++;
+            userAnswers = {};
+
+            // Shuffle questions and options sequence on retry
+            questions = JSON.parse(JSON.stringify(rawQuestions));
+            shuffleArray(questions);
+            questions.forEach(q => {
+                if (q.options) shuffleArray(q.options);
+            });
+
+            isShuffled = true;
+            selectActTab(1);
+            switchView('dashboard');
+            renderDashboardInfo();
+            updateProgressBar();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function scrollToCertificate() {
+            document.getElementById('certificate-printable-area').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Local Storage History Management
+        function getHistory() {
+            const key = `lkpd_history_${currentUser.nama}_${currentUser.kelas}`;
+            return JSON.parse(localStorage.getItem(key) || '[]');
+        }
+
+        function saveHistoryToLocalStorage(data) {
+            const key = `lkpd_history_${currentUser.nama}_${currentUser.kelas}`;
+            const history = getHistory();
+            history.push(data);
+            localStorage.setItem(key, JSON.stringify(history));
+        }
+
+        function loadSavedHistory() {
+            renderHistoryTable();
+        }
+
+        function renderHistoryTable() {
+            const tbody = document.getElementById('history-table-body');
+            if (!tbody) return;
+            const history = getHistory();
+
+            if (history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400 italic">Belum ada riwayat pengerjaan.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = history.map(item => `
+                <tr class="border-b border-slate-100 hover:bg-slate-50">
+                    <td class="p-2.5 font-bold text-slate-800">Ke-${item.attempt}</td>
+                    <td class="p-2.5 text-slate-600">${item.date}</td>
+                    <td class="p-2.5 text-slate-600">${item.correct} / 30</td>
+                    <td class="p-2.5 font-bold text-blue-600">${item.score} / 100</td>
+                    <td class="p-2.5 font-semibold text-slate-700">${item.predikat}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateBestScoreUI() {
+            const history = getHistory();
+            if (history.length === 0) return;
+            const best = history.reduce((max, h) => h.score > max ? h.score : max, 0);
+            document.getElementById('dash-best-score').innerText = `${best} / 100`;
+        }
+
+        function confirmResetHistory() {
+            document.getElementById('modal-reset').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('modal-reset').classList.add('hidden');
+        }
+
+        function executeResetHistory() {
+            const key = `lkpd_history_${currentUser.nama}_${currentUser.kelas}`;
+            localStorage.removeItem(key);
+            closeResetModal();
+            renderHistoryTable();
+            document.getElementById('dash-best-score').innerText = `0 / 100`;
+            alert('Riwayat pengerjaan berhasil dihapus!');
+        }
+    </script>
+</body>
+</html>
+```
