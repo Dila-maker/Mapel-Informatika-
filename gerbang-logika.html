@@ -1,0 +1,1960 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Gerbang Logika - Presentasi Interaktif Informatika Kelas VIII</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & Fredoka -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'],
+                    },
+                    colors: {
+                        gateAnd: '#2563eb',
+                        gateOr: '#059669',
+                        gateNot: '#e11d48',
+                        gateNand: '#9333ea',
+                        gateNor: '#d97706',
+                        gateXor: '#0891b2',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            color: #f8fafc;
+            user-select: none;
+            overflow-x: hidden;
+        }
+        .font-display {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .glow-blue { box-shadow: 0 0 25px rgba(37, 99, 235, 0.4); }
+        .glow-green { box-shadow: 0 0 25px rgba(5, 150, 105, 0.4); }
+        .glow-amber { box-shadow: 0 0 25px rgba(217, 119, 6, 0.4); }
+        .glow-rose { box-shadow: 0 0 25px rgba(225, 29, 72, 0.4); }
+        .glow-purple { box-shadow: 0 0 25px rgba(147, 51, 234, 0.4); }
+
+        .bulb-on {
+            filter: drop-shadow(0 0 18px #facc15) drop-shadow(0 0 35px #eab308);
+            fill: #facc15;
+        }
+        .bulb-off {
+            fill: #475569;
+            filter: none;
+        }
+
+        /* Smooth transitions */
+        .slide-enter {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-100 antialiased relative">
+
+    <!-- TOP NAVBAR -->
+    <header class="w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-4 py-3 sticky top-0 z-50 flex items-center justify-between">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="goToSlide(0)">
+            <span class="text-2xl">⚡</span>
+            <div>
+                <h1 class="font-display text-lg font-bold bg-gradient-to-r from-amber-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent">
+                    PETUALANGAN GERBANG LOGIKA
+                </h1>
+                <p class="text-xs text-slate-400 hidden sm:block">SMPN 1 Tinggimoncong • Informatika VIII</p>
+            </div>
+        </div>
+
+        <!-- Slide Navigator Indicator -->
+        <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700">
+            <button onclick="goToDashboard()" class="text-xs font-semibold text-amber-400 hover:text-amber-300 px-2 py-0.5 rounded bg-slate-700/50 hover:bg-slate-700 transition">
+                🗺️ Peta Pos
+            </button>
+            <span class="text-slate-600">|</span>
+            <span id="slideIndicator" class="text-xs font-bold text-slate-300">Slide 1 / 25</span>
+        </div>
+
+        <!-- Controls (Sound, Fullscreen) -->
+        <div class="flex items-center space-x-2">
+            <button id="soundToggleBtn" onclick="toggleSound()" class="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white transition" title="Toggle Sound">
+                🔊
+            </button>
+            <button onclick="toggleFullscreen()" class="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white transition" title="Fullscreen">
+                ⛶
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+        <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+        <div id="slideViewport" class="w-full">
+            <!-- Slide contents will be dynamically rendered here -->
+        </div>
+    </main>
+
+    <!-- BOTTOM CONTROL BAR -->
+    <footer id="bottomNav" class="w-full bg-slate-900/90 border-t border-slate-800 px-4 py-3 sticky bottom-0 z-40">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <button id="prevBtn" onclick="prevSlide()" class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed">
+                <span>⬅️</span>
+                <span class="hidden sm:inline">Sebelumnya</span>
+            </button>
+
+            <!-- Dots Indicator -->
+            <div id="dotsContainer" class="flex items-center space-x-1 sm:space-x-1.5 overflow-x-auto max-w-[50vw] py-1 px-2">
+                <!-- Dots populated by JS -->
+            </div>
+
+            <button id="nextBtn" onclick="nextSlide()" class="flex items-center space-x-2 px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-600/30 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                <span class="hidden sm:inline">Berikutnya</span>
+                <span>➡️</span>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        // Sound FX System using Web Audio API
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                const now = ctx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.linearRampToValueAtTime(140, now + 0.2);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'toggle') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.setValueAtTime(900, now + 0.04);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'win') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const o = ctx.createOscillator();
+                        const g = ctx.createGain();
+                        o.type = 'triangle';
+                        o.connect(g);
+                        g.connect(ctx.destination);
+                        o.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        g.gain.setValueAtTime(0.15, now + idx * 0.08);
+                        g.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.25);
+                        o.start(now + idx * 0.08);
+                        o.stop(now + idx * 0.08 + 0.25);
+                    });
+                }
+            } catch(e) {
+                console.log('Audio playback error:', e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundToggleBtn').innerText = soundEnabled ? '🔊' : '🔇';
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Simple Canvas Confetti
+        function triggerConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#facc15', '#38bdf8', '#4ade80', '#f43f5e', '#a855f7', '#fb923c'];
+
+            for (let i = 0; i < 70; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 16,
+                    vy: (Math.random() - 0.7) * 16,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 8 + 4,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+
+            let start = null;
+            function animate(timestamp) {
+                if (!start) start = timestamp;
+                const progress = timestamp - start;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.3; // gravity
+                    p.rotation += p.rotationSpeed;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                });
+
+                if (progress < 2500) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            requestAnimationFrame(animate);
+            playSound('win');
+        }
+
+        let currentSlide = 0;
+
+        // Slide list metadata
+        const slides = [
+            { id: 'cover', title: 'Halaman Pembuka', pos: 'Cover' },
+            { id: 'dashboard', title: 'Peta Petualangan', pos: 'Dashboard' },
+            { id: 'pos1_1', title: 'Pos 1: Konsep 0 & 1', pos: 'Pos 1' },
+            { id: 'pos1_2', title: 'Pos 1: Mini Game 8 Lampu', pos: 'Pos 1' },
+            { id: 'pos2_1', title: 'Pos 2: Karakter Gerbang AND', pos: 'Pos 2' },
+            { id: 'pos2_2', title: 'Pos 2: Tabel Kebenaran AND', pos: 'Pos 2' },
+            { id: 'pos2_3', title: 'Pos 2: Game Brankas AND', pos: 'Pos 2' },
+            { id: 'pos2_4', title: 'Pos 2: Soal Gerbang AND', pos: 'Pos 2' },
+            { id: 'pos3_1', title: 'Pos 3: Karakter Gerbang OR', pos: 'Pos 3' },
+            { id: 'pos3_2', title: 'Pos 3: Tabel Kebenaran OR', pos: 'Pos 3' },
+            { id: 'pos3_3', title: 'Pos 3: Game Pintu OR', pos: 'Pos 3' },
+            { id: 'pos3_4', title: 'Pos 3: Soal Gerbang OR', pos: 'Pos 3' },
+            { id: 'pos4_1', title: 'Pos 4: Karakter Gerbang NOT', pos: 'Pos 4' },
+            { id: 'pos4_2', title: 'Pos 4: Tabel Kebenaran NOT', pos: 'Pos 4' },
+            { id: 'pos4_3', title: 'Pos 4: Game Cermin Ajaib', pos: 'Pos 4' },
+            { id: 'pos4_4', title: 'Pos 4: Soal Gerbang NOT', pos: 'Pos 4' },
+            { id: 'pos5_1', title: 'Pos 5: Tiga Gerbang Spesial', pos: 'Pos 5' },
+            { id: 'pos5_2', title: 'Pos 5: Tabel Kebenaran Lengkap', pos: 'Pos 5' },
+            { id: 'pos5_3', title: 'Pos 5: Mini Game Tebak Gerbang', pos: 'Pos 5' },
+            { id: 'pos5_4', title: 'Pos 5: Simulator Gerbang Interaktif', pos: 'Pos 5' },
+            { id: 'pos5_5', title: 'Pos 5: Soal Gerbang Spesial', pos: 'Pos 5' },
+            { id: 'pos6_1', title: 'Pos 6: Mission Lampu Ruangan', pos: 'Pos 6' },
+            { id: 'pos6_2', title: 'Pos 6: Battle of Gates (Tim)', pos: 'Pos 6' },
+            { id: 'pos6_3', title: 'Pos 6: Builder Rangkaian Papan', pos: 'Pos 6' },
+            { id: 'summary', title: 'Rangkuman & Refleksi', pos: 'Penutup' }
+        ];
+
+        // State for interactive games
+        let lampState = [0, 0, 0, 0, 0, 0, 0, 0];
+        let vaultState = { A: 0, B: 0 };
+        let doorState = { A: 0, B: 0 };
+        let mirrorInput = 0;
+        let simState = { gate: 'AND', A: 0, B: 0 };
+        let teamScores = { AND: 0, OR: 0, NOT: 0 };
+        let quizState = {};
+        let circuitBuilderState = { gate1: 'AND', gate2: 'OR', A: 1, B: 1 };
+
+        function goToSlide(index) {
+            if (index < 0 || index >= slides.length) return;
+            currentSlide = index;
+            renderSlide();
+            updateNavigationUI();
+            playSound('click');
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        function goToDashboard() {
+            goToSlide(1);
+        }
+
+        function updateNavigationUI() {
+            document.getElementById('slideIndicator').innerText = `Slide ${currentSlide + 1} / ${slides.length} (${slides[currentSlide].pos})`;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === slides.length - 1;
+
+            // Render Dots
+            const dotsContainer = document.getElementById('dotsContainer');
+            dotsContainer.innerHTML = '';
+            slides.forEach((s, idx) => {
+                const dot = document.createElement('button');
+                dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-amber-400 w-5' : 'bg-slate-700 hover:bg-slate-500'}`;
+                dot.title = s.title;
+                dot.onclick = () => goToSlide(idx);
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        // Keyboard listener
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        function renderSlide() {
+            const viewport = document.getElementById('slideViewport');
+            const slide = slides[currentSlide];
+
+            let contentHTML = '';
+
+            switch(slide.id) {
+                case 'cover':
+                    contentHTML = renderCover();
+                    break;
+                case 'dashboard':
+                    contentHTML = renderDashboard();
+                    break;
+                case 'pos1_1':
+                    contentHTML = renderPos1_1();
+                    break;
+                case 'pos1_2':
+                    contentHTML = renderPos1_2();
+                    break;
+                case 'pos2_1':
+                    contentHTML = renderPos2_1();
+                    break;
+                case 'pos2_2':
+                    contentHTML = renderPos2_2();
+                    break;
+                case 'pos2_3':
+                    contentHTML = renderPos2_3();
+                    break;
+                case 'pos2_4':
+                    contentHTML = renderPos2_4();
+                    break;
+                case 'pos3_1':
+                    contentHTML = renderPos3_1();
+                    break;
+                case 'pos3_2':
+                    contentHTML = renderPos3_2();
+                    break;
+                case 'pos3_3':
+                    contentHTML = renderPos3_3();
+                    break;
+                case 'pos3_4':
+                    contentHTML = renderPos3_4();
+                    break;
+                case 'pos4_1':
+                    contentHTML = renderPos4_1();
+                    break;
+                case 'pos4_2':
+                    contentHTML = renderPos4_2();
+                    break;
+                case 'pos4_3':
+                    contentHTML = renderPos4_3();
+                    break;
+                case 'pos4_4':
+                    contentHTML = renderPos4_4();
+                    break;
+                case 'pos5_1':
+                    contentHTML = renderPos5_1();
+                    break;
+                case 'pos5_2':
+                    contentHTML = renderPos5_2();
+                    break;
+                case 'pos5_3':
+                    contentHTML = renderPos5_3();
+                    break;
+                case 'pos5_4':
+                    contentHTML = renderPos5_4();
+                    break;
+                case 'pos5_5':
+                    contentHTML = renderPos5_5();
+                    break;
+                case 'pos6_1':
+                    contentHTML = renderPos6_1();
+                    break;
+                case 'pos6_2':
+                    contentHTML = renderPos6_2();
+                    break;
+                case 'pos6_3':
+                    contentHTML = renderPos6_3();
+                    break;
+                case 'summary':
+                    contentHTML = renderSummary();
+                    break;
+                default:
+                    contentHTML = `<div class="text-center py-20">Slide tidak ditemukan</div>`;
+            }
+
+            viewport.innerHTML = `<div class="slide-enter">${contentHTML}</div>`;
+        }
+
+
+        // COVER SLIDE
+        function renderCover() {
+            return `
+                <div class="text-center py-8 sm:py-12 px-4 max-w-4xl mx-auto flex flex-col items-center justify-center">
+                    <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 mb-6 animate-pulse">
+                        <span class="text-lg">🌟</span>
+                        <span class="text-xs sm:text-sm font-semibold tracking-wide uppercase">Presentasi Interaktif Informatika Kelas VIII</span>
+                    </div>
+
+                    <h1 class="font-display text-4xl sm:text-6xl font-extrabold tracking-tight mb-4 text-white leading-tight">
+                        PETUALANGAN <span class="bg-gradient-to-r from-amber-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent">GERBANG LOGIKA</span>
+                    </h1>
+
+                    <p class="text-lg sm:text-2xl font-medium text-slate-300 italic mb-8">
+                        "Mengarungi Dunia Ajaib 0 dan 1"
+                    </p>
+
+                    <!-- School & Teacher Info Card -->
+                    <div class="glass-card rounded-2xl p-6 mb-8 w-full max-w-lg shadow-xl border border-slate-700/50">
+                        <div class="flex items-center justify-center space-x-4 mb-3">
+                            <span class="text-3xl">🏫</span>
+                            <div class="text-left">
+                                <h3 class="font-bold text-white text-base sm:text-lg">SMPN 1 Tinggimoncong</h3>
+                                <p class="text-sm text-slate-400">Mata Pelajaran: Informatika (Materi Gerbang Logika)</p>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-700/60 flex items-center justify-between text-xs sm:text-sm text-slate-300">
+                            <span>👨‍🏫 Guru Pengampu:</span>
+                            <span class="font-bold text-amber-300">Syarifuddin, S. Pd., M. Si.</span>
+                        </div>
+                    </div>
+
+                    <!-- Icons Animation strip -->
+                    <div class="flex items-center justify-center gap-4 text-3xl sm:text-4xl mb-10 text-slate-300">
+                        <span class="hover:scale-125 transition transform">⚡</span>
+                        <span class="hover:scale-125 transition transform">⚙️</span>
+                        <span class="hover:scale-125 transition transform">🔌</span>
+                        <span class="hover:scale-125 transition transform">💡</span>
+                        <span class="hover:scale-125 transition transform">🚪</span>
+                        <span class="hover:scale-125 transition transform text-amber-400 font-bold">0️⃣</span>
+                        <span class="hover:scale-125 transition transform text-sky-400 font-bold">1️⃣</span>
+                        <span class="hover:scale-125 transition transform">🤖</span>
+                    </div>
+
+                    <button onclick="goToSlide(1)" class="group relative inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-indigo-600 to-sky-500 font-display text-xl font-bold text-white shadow-2xl shadow-indigo-500/40 hover:scale-105 active:scale-95 transition duration-200">
+                        <span>🚀 MULAI PETUALANGAN</span>
+                        <span class="ml-3 group-hover:translate-x-1 transition">➔</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        // DASHBOARD SLIDE
+        function renderDashboard() {
+            const posts = [
+                { num: 1, title: 'Dunia 0 dan 1', desc: 'Konsep Arus & Lampu Digital', color: 'bg-amber-500/20 border-amber-500/50 text-amber-300', slideIdx: 2, icon: '🟡' },
+                { num: 2, title: 'Gerbang AND', desc: 'Si Ketat (Syarat Kedua Saklar)', color: 'bg-blue-500/20 border-blue-500/50 text-blue-300', slideIdx: 4, icon: '🔵' },
+                { num: 3, title: 'Gerbang OR', desc: 'Si Pemurah (Salah Satu Saklar)', color: 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300', slideIdx: 8, icon: '🟢' },
+                { num: 4, title: 'Gerbang NOT', desc: 'Si Pembalik Nilai Input', color: 'bg-rose-500/20 border-rose-500/50 text-rose-300', slideIdx: 12, icon: '🔴' },
+                { num: 5, title: 'Gerbang Spesial', desc: 'NAND, NOR, & XOR Simulator', color: 'bg-purple-500/20 border-purple-500/50 text-purple-300', slideIdx: 16, icon: '🟣' },
+                { num: 6, title: 'Simulasi & Battle', desc: 'Aktivitas Kelas & Kompetisi Tim', color: 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300', slideIdx: 21, icon: '🏁' },
+            ];
+
+            const progressPct = Math.round((currentSlide / (slides.length - 1)) * 100);
+
+            return `
+                <div class="py-4">
+                    <div class="text-center mb-6">
+                        <h2 class="font-display text-3xl font-extrabold text-white mb-2">🗺️ PETA PETUALANGAN LOGIKA</h2>
+                        <p class="text-slate-400 text-sm">Pilih pos petualangan atau lanjutkan perjalanan secara runtut</p>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="glass-card rounded-xl p-4 mb-8 max-w-2xl mx-auto">
+                        <div class="flex justify-between items-center text-xs text-slate-300 font-semibold mb-2">
+                            <span>Kemajuan Petualangan</span>
+                            <span class="text-amber-400">${progressPct}% Selesai</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden p-0.5 border border-slate-700">
+                            <div class="bg-gradient-to-r from-amber-400 via-emerald-400 to-indigo-500 h-full rounded-full transition-all duration-500" style="width: ${progressPct}%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Pos Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+                        ${posts.map(p => `
+                            <div onclick="goToSlide(${p.slideIdx})" class="glass-card rounded-2xl p-5 border cursor-pointer hover:scale-[1.03] transition duration-200 group flex flex-col justify-between ${p.color}">
+                                <div class="flex items-start justify-between mb-3">
+                                    <span class="text-3xl">${p.icon}</span>
+                                    <span class="px-2.5 py-1 rounded-md bg-slate-900/60 text-xs font-bold text-slate-300 border border-slate-700">
+                                        Pos ${p.num}
+                                    </span>
+                                </div>
+                                <div>
+                                    <h3 class="font-display text-xl font-bold text-white group-hover:text-amber-300 transition mb-1">
+                                        ${p.title}
+                                    </h3>
+                                    <p class="text-xs text-slate-300">${p.desc}</p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-end text-xs font-bold text-slate-300 group-hover:translate-x-1 transition">
+                                    Buka Pos ➔
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 1.1 SLIDE
+        function renderPos1_1() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-amber-400">
+                        <span class="text-2xl">🟡</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 1: DUNIA 0 DAN 1 (MATERI)</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Concept Card 0 -->
+                        <div class="glass-card rounded-2xl p-6 border-l-4 border-slate-500 flex flex-col items-center text-center">
+                            <div class="w-24 h-24 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center mb-4">
+                                <svg class="w-16 h-16 bulb-off" viewBox="0 0 24 24"><path d="M12 2A7 7 0 0 0 5 9c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74A7 7 0 0 0 12 2zm-3 18a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1z"/></svg>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 font-extrabold text-lg mb-2">0 (NOL)</span>
+                            <h3 class="font-bold text-white text-lg">Tidak Ada Arus (OFF)</h3>
+                            <p class="text-sm text-slate-400 mt-2">Sinyal listrik mati atau bernilai SALAH (False).</p>
+                        </div>
+
+                        <!-- Concept Card 1 -->
+                        <div class="glass-card rounded-2xl p-6 border-l-4 border-amber-400 flex flex-col items-center text-center glow-amber">
+                            <div class="w-24 h-24 rounded-full bg-amber-500/10 border-2 border-amber-400/50 flex items-center justify-center mb-4">
+                                <svg class="w-16 h-16 bulb-on" viewBox="0 0 24 24"><path d="M12 2A7 7 0 0 0 5 9c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74A7 7 0 0 0 12 2zm-3 18a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1z"/></svg>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 font-extrabold text-lg mb-2">1 (SATU)</span>
+                            <h3 class="font-bold text-white text-lg">Ada Arus Listrik (ON)</h3>
+                            <p class="text-sm text-slate-400 mt-2">Sinyal listrik mengalir atau bernilai BENAR (True).</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="font-bold text-amber-300 text-lg mb-3 flex items-center gap-2">
+                            <span>🧠</span> Mengapa Komputer Menggunakan 0 dan 1?
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
+                            Komputer adalah sirkuit elektronik raksasa. Komputer lebih mudah dan stabil membedakan dua kondisi ekstrim: <strong>Ada Tegangan Listrik (1)</strong> atau <strong>Tidak Ada Tegangan (0)</strong>. Sistem ini dinamakan <strong>Sistem Digital / Biner</strong>.
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 1.2 SLIDE (MINI GAME 8 LAMPU)
+        function renderPos1_2() {
+            const allOn = lampState.every(v => v === 1);
+            const allOff = lampState.every(v => v === 0);
+
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3 text-amber-400">
+                            <span class="text-2xl">🎮</span>
+                            <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 1: MINI GAME - "NYALAKAN LAMPU!"</h2>
+                        </div>
+                        <button onclick="resetLamps()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700">
+                            🔄 Reset Lampu
+                        </button>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 text-center">
+                        <p class="text-slate-300 mb-6 text-sm sm:text-base">
+                            Klik setiap lampu di bawah untuk mengubah kondisinya (0 ↔ 1).
+                        </p>
+
+                        <!-- Missions Banner -->
+                        <div class="flex flex-wrap gap-3 justify-center mb-8">
+                            <div class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border ${allOn ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300' : 'bg-slate-800 border-slate-700 text-slate-400'}">
+                                Misi A: Buat Semua Lampu Bernilai 1! ${allOn ? '✅' : '⏳'}
+                            </div>
+                            <div class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border ${allOff ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300' : 'bg-slate-800 border-slate-700 text-slate-400'}">
+                                Misi B: Buat Semua Lampu Bernilai 0! ${allOff ? '✅' : '⏳'}
+                            </div>
+                        </div>
+
+                        <!-- 8 Bulbs Grid -->
+                        <div class="grid grid-cols-4 sm:grid-cols-8 gap-3 sm:gap-4 mb-6">
+                            ${lampState.map((state, idx) => `
+                                <div onclick="toggleLamp(${idx})" class="flex flex-col items-center justify-center p-3 rounded-xl bg-slate-800/80 border border-slate-700 cursor-pointer hover:scale-105 active:scale-95 transition">
+                                    <svg class="w-12 h-12 mb-2 ${state === 1 ? 'bulb-on' : 'bulb-off'}" viewBox="0 0 24 24"><path d="M12 2A7 7 0 0 0 5 9c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74A7 7 0 0 0 12 2zm-3 18a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1z"/></svg>
+                                    <span class="font-extrabold text-lg ${state === 1 ? 'text-amber-400' : 'text-slate-500'}">
+                                        ${state}
+                                    </span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        ${(allOn || allOff) ? `
+                            <div class="p-4 rounded-xl bg-emerald-500/20 border border-emerald-500 text-emerald-300 font-bold text-center animate-bounce">
+                                🎉 Hebat! Kamu sudah sangat paham konsep dunia 0 dan 1!
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleLamp(idx) {
+            lampState[idx] = lampState[idx] === 1 ? 0 : 1;
+            playSound('toggle');
+            if (lampState.every(v => v === 1) || lampState.every(v => v === 0)) {
+                triggerConfetti();
+            }
+            renderSlide();
+        }
+
+        function resetLamps() {
+            lampState = [0, 0, 0, 0, 0, 0, 0, 0];
+            playSound('click');
+            renderSlide();
+        }
+
+        // POS 2.1 SLIDE (GERBANG AND - KARAKTER)
+        function renderPos2_1() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-blue-400">
+                        <span class="text-2xl">🔵</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 2: GERBANG AND (SI KETAT)</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Character Card -->
+                        <div class="glass-card rounded-2xl p-6 border-2 border-blue-500 text-center glow-blue flex flex-col items-center">
+                            <div class="text-6xl mb-3">🤖</div>
+                            <h3 class="font-display text-2xl font-bold text-blue-400 mb-1">Si Ketat AND</h3>
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 font-semibold mb-3">Symbol: ∧ / D-Shape</span>
+                            <p class="text-sm text-slate-300 italic">
+                                "Aku hanya menyalakan lampu jika KEDUA saklarku dinyalakan sekaligus!"
+                            </p>
+                        </div>
+
+                        <!-- Circuit Schematic Card -->
+                        <div class="glass-card rounded-2xl p-6 md:col-span-2 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-white text-lg mb-3 flex items-center gap-2">
+                                    <span>🔌</span> Simbol Rangkaian AND
+                                </h3>
+                                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex items-center justify-center my-2">
+                                    <svg class="w-64 h-32" viewBox="0 0 200 100">
+                                        <!-- Inputs -->
+                                        <line x1="20" y1="35" x2="60" y2="35" stroke="#60a5fa" stroke-width="4"/>
+                                        <line x1="20" y1="65" x2="60" y2="65" stroke="#60a5fa" stroke-width="4"/>
+                                        <text x="5" y="40" fill="#93c5fd" font-size="14" font-weight="bold">A</text>
+                                        <text x="5" y="70" fill="#93c5fd" font-size="14" font-weight="bold">B</text>
+                                        <!-- AND Gate Shape -->
+                                        <path d="M 60 20 L 100 20 A 30 30 0 0 1 100 80 L 60 80 Z" fill="#1e3a8a" stroke="#3b82f6" stroke-width="4"/>
+                                        <text x="75" y="55" fill="#ffffff" font-size="16" font-weight="bold">AND</text>
+                                        <!-- Output -->
+                                        <line x1="130" y1="50" x2="170" y2="50" stroke="#60a5fa" stroke-width="4"/>
+                                        <text x="180" y="55" fill="#93c5fd" font-size="14" font-weight="bold">Q</text>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
+                                <h4 class="font-bold text-blue-300 text-sm mb-1">🗝️ Analogi Dunia Nyata:</h4>
+                                <p class="text-xs sm:text-sm text-slate-300">
+                                    Seperti <strong>2 Kunci Peti Harta Karun</strong> yang terpasang secara seri. Peti baru bisa terbuka jika Kunci A DAN Kunci B diputar bersamaan!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 2.2 SLIDE (TABEL KEBENARAN AND)
+        function renderPos2_2() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-blue-400">
+                        <span class="text-2xl">📊</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 2: TABEL KEBENARAN GERBANG AND</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <!-- Truth Table -->
+                        <div class="glass-card rounded-2xl p-6 overflow-hidden border border-blue-500/40">
+                            <table class="w-full text-center text-sm sm:text-base">
+                                <thead>
+                                    <tr class="bg-blue-600/30 text-blue-300 border-b border-blue-500/40">
+                                        <th class="py-3 px-4">Input A</th>
+                                        <th class="py-3 px-4">Input B</th>
+                                        <th class="py-3 px-4">Output (A AND B)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700/60 font-mono">
+                                    <tr class="hover:bg-slate-800/50">
+                                        <td class="py-3">0</td>
+                                        <td class="py-3">0</td>
+                                        <td class="py-3 font-bold text-rose-400">0 🔴</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/50">
+                                        <td class="py-3">0</td>
+                                        <td class="py-3">1</td>
+                                        <td class="py-3 font-bold text-rose-400">0 🔴</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/50">
+                                        <td class="py-3">1</td>
+                                        <td class="py-3">0</td>
+                                        <td class="py-3 font-bold text-rose-400">0 🔴</td>
+                                    </tr>
+                                    <tr class="bg-blue-500/20 font-bold hover:bg-blue-500/30">
+                                        <td class="py-3 text-blue-300">1</td>
+                                        <td class="py-3 text-blue-300">1</td>
+                                        <td class="py-3 text-emerald-400 text-lg">1 🟢</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pattern Note Card -->
+                        <div class="space-y-4">
+                            <div class="glass-card rounded-2xl p-6 border-l-4 border-blue-500">
+                                <h3 class="font-bold text-blue-300 text-lg mb-2">⚡ RUMUS INGATAN AND:</h3>
+                                <p class="text-slate-300 text-sm leading-relaxed mb-3">
+                                    "Output bernilai <strong>1 ONLY IF ALL</strong> input bernilai 1."
+                                </p>
+                                <div class="p-3 bg-slate-900/80 rounded-lg text-xs font-mono text-amber-300">
+                                    1 AND 1 = 1 <br>
+                                    Lainnya = 0
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-slate-800/60 border border-slate-700 text-xs text-slate-300">
+                                💡 <strong>Tips Guru:</strong> Bayangkan seperti perkalian matematika dasar (1 x 1 = 1, 1 x 0 = 0).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 2.3 SLIDE (MINI GAME BRANKAS AND)
+        function renderPos2_3() {
+            const output = vaultState.A && vaultState.B ? 1 : 0;
+
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3 text-blue-400">
+                            <span class="text-2xl">🎮</span>
+                            <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 2: GAME - "PECAHKAN BRANKAS AND!"</h2>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 text-center border-2 ${output ? 'border-emerald-500 glow-green' : 'border-blue-500/40'}">
+                        <p class="text-slate-300 mb-6 text-sm">
+                            Tekan Saklar A dan B untuk membuka Brankas Harta Karun. Saklar ON = 1, OFF = 0.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center my-6">
+                            <!-- Switch A -->
+                            <div class="flex flex-col items-center">
+                                <span class="font-bold text-blue-300 mb-2">SAKLAR A</span>
+                                <button onclick="toggleVault('A')" class="w-20 h-20 rounded-2xl font-extrabold text-2xl shadow-lg transition duration-200 ${vaultState.A ? 'bg-blue-600 text-white glow-blue' : 'bg-slate-800 text-slate-500 border border-slate-700'}">
+                                    ${vaultState.A}
+                                </button>
+                                <span class="text-xs text-slate-400 mt-2">${vaultState.A ? 'ON (1)' : 'OFF (0)'}</span>
+                            </div>
+
+                            <!-- Gate Animation -->
+                            <div class="flex flex-col items-center justify-center p-4 bg-slate-900/60 rounded-xl border border-slate-800">
+                                <span class="font-bold text-blue-400 text-sm mb-2">GERBANG AND</span>
+                                <div class="text-4xl my-2">🤖</div>
+                                <span class="text-xs font-mono text-slate-400">
+                                    ${vaultState.A} AND ${vaultState.B} = <strong class="${output ? 'text-emerald-400' : 'text-rose-400'}">${output}</strong>
+                                </span>
+                            </div>
+
+                            <!-- Switch B -->
+                            <div class="flex flex-col items-center">
+                                <span class="font-bold text-blue-300 mb-2">SAKLAR B</span>
+                                <button onclick="toggleVault('B')" class="w-20 h-20 rounded-2xl font-extrabold text-2xl shadow-lg transition duration-200 ${vaultState.B ? 'bg-blue-600 text-white glow-blue' : 'bg-slate-800 text-slate-500 border border-slate-700'}">
+                                    ${vaultState.B}
+                                </button>
+                                <span class="text-xs text-slate-400 mt-2">${vaultState.B ? 'ON (1)' : 'OFF (0)'}</span>
+                            </div>
+                        </div>
+
+                        <!-- Vault Display -->
+                        <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col items-center">
+                            <div class="text-6xl mb-3 transition-transform duration-300 ${output ? 'scale-110' : ''}">
+                                ${output ? '🔓' : '🔐'}
+                            </div>
+                            <h3 class="font-display text-2xl font-bold ${output ? 'text-emerald-400' : 'text-slate-400'}">
+                                ${output ? '🎉 BRANKAS TERBUKA!' : '🔴 BRANKAS TERKUNCI'}
+                            </h3>
+                            <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                                ${output ? 'Luar biasa! Kedua saklar ON (1 AND 1 = 1).' : 'Brankas belum terbuka. Ingat: Gerbang AND butuh KEDUA saklar bernilai 1!'}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleVault(sw) {
+            vaultState[sw] = vaultState[sw] === 1 ? 0 : 1;
+            playSound('toggle');
+            if (vaultState.A && vaultState.B) {
+                triggerConfetti();
+            }
+            renderSlide();
+        }
+
+        // POS 2.4 SLIDE (SOAL GERBANG AND)
+        function renderPos2_4() {
+            return renderQuizSlide({
+                posNum: '2',
+                gateName: 'AND',
+                gateColor: 'text-blue-400',
+                question: 'Jika Saklar A = 1 dan Saklar B = 0, maka output gerbang AND adalah...',
+                options: [
+                    { key: 'A', text: '0', correct: true },
+                    { key: 'B', text: '1', correct: false },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak dapat ditentukan', correct: false }
+                ],
+                explanation: 'Gerbang AND membutuhkan KEDUA input bernilai 1 untuk menghasilkan 1. Karena Input B = 0, maka hasilnya adalah 0.'
+            });
+        }
+
+        // POS 3.1 SLIDE (GERBANG OR - KARAKTER)
+        function renderPos3_1() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-emerald-400">
+                        <span class="text-2xl">🟢</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 3: GERBANG OR (SI PEMURAH)</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Character Card -->
+                        <div class="glass-card rounded-2xl p-6 border-2 border-emerald-500 text-center glow-green flex flex-col items-center">
+                            <div class="text-6xl mb-3">🤖</div>
+                            <h3 class="font-display text-2xl font-bold text-emerald-400 mb-1">Si Pemurah OR</h3>
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold mb-3">Symbol: ∨ / Curved Shape</span>
+                            <p class="text-sm text-slate-300 italic">
+                                "Aku menyalakan lampu jika SALAH SATU saklarku dinyalakan!"
+                            </p>
+                        </div>
+
+                        <!-- Circuit Schematic Card -->
+                        <div class="glass-card rounded-2xl p-6 md:col-span-2 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-white text-lg mb-3 flex items-center gap-2">
+                                    <span>🔌</span> Simbol Rangkaian OR
+                                </h3>
+                                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex items-center justify-center my-2">
+                                    <svg class="w-64 h-32" viewBox="0 0 200 100">
+                                        <!-- Inputs -->
+                                        <line x1="20" y1="35" x2="65" y2="35" stroke="#34d399" stroke-width="4"/>
+                                        <line x1="20" y1="65" x2="65" y2="65" stroke="#34d399" stroke-width="4"/>
+                                        <text x="5" y="40" fill="#a7f3d0" font-size="14" font-weight="bold">A</text>
+                                        <text x="5" y="70" fill="#a7f3d0" font-size="14" font-weight="bold">B</text>
+                                        <!-- OR Gate Shape -->
+                                        <path d="M 50 20 Q 70 50 50 80 Q 100 80 130 50 Q 100 20 50 20 Z" fill="#064e3b" stroke="#10b981" stroke-width="4"/>
+                                        <text x="75" y="55" fill="#ffffff" font-size="16" font-weight="bold">OR</text>
+                                        <!-- Output -->
+                                        <line x1="130" y1="50" x2="170" y2="50" stroke="#34d399" stroke-width="4"/>
+                                        <text x="180" y="55" fill="#a7f3d0" font-size="14" font-weight="bold">Q</text>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+                                <h4 class="font-bold text-emerald-300 text-sm mb-1">🚪 Analogi Dunia Nyata:</h4>
+                                <p class="text-xs sm:text-sm text-slate-300">
+                                    Seperti <strong>2 Pintu Masuk Ruangan</strong> yang terpasang paralel. Cukup buka Pintu A ATAU Pintu B, seseorang sudah bisa masuk ke dalam ruangan!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 3.2 SLIDE (TABEL KEBENARAN OR)
+        function renderPos3_2() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-emerald-400">
+                        <span class="text-2xl">📊</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 3: TABEL KEBENARAN GERBANG OR</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <!-- Truth Table -->
+                        <div class="glass-card rounded-2xl p-6 overflow-hidden border border-emerald-500/40">
+                            <table class="w-full text-center text-sm sm:text-base">
+                                <thead>
+                                    <tr class="bg-emerald-600/30 text-emerald-300 border-b border-emerald-500/40">
+                                        <th class="py-3 px-4">Input A</th>
+                                        <th class="py-3 px-4">Input B</th>
+                                        <th class="py-3 px-4">Output (A OR B)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700/60 font-mono">
+                                    <tr class="bg-rose-500/10 hover:bg-rose-500/20">
+                                        <td class="py-3">0</td>
+                                        <td class="py-3">0</td>
+                                        <td class="py-3 font-bold text-rose-400 text-lg">0 🔴</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/50">
+                                        <td class="py-3">0</td>
+                                        <td class="py-3">1</td>
+                                        <td class="py-3 font-bold text-emerald-400">1 🟢</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/50">
+                                        <td class="py-3">1</td>
+                                        <td class="py-3">0</td>
+                                        <td class="py-3 font-bold text-emerald-400">1 🟢</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/50">
+                                        <td class="py-3">1</td>
+                                        <td class="py-3">1</td>
+                                        <td class="py-3 font-bold text-emerald-400">1 🟢</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pattern Note Card -->
+                        <div class="space-y-4">
+                            <div class="glass-card rounded-2xl p-6 border-l-4 border-emerald-500">
+                                <h3 class="font-bold text-emerald-300 text-lg mb-2">⚡ RUMUS INGATAN OR:</h3>
+                                <p class="text-slate-300 text-sm leading-relaxed mb-3">
+                                    "Output bernilai <strong>0 HANYA JIKA KEDUA</strong> input bernilai 0."
+                                </p>
+                                <div class="p-3 bg-slate-900/80 rounded-lg text-xs font-mono text-emerald-300">
+                                    0 OR 0 = 0 <br>
+                                    Ada angka 1 = Output 1
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 3.3 SLIDE (MINI GAME PINTU OR)
+        function renderPos3_3() {
+            const output = doorState.A || doorState.B ? 1 : 0;
+
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3 text-emerald-400">
+                            <span class="text-2xl">🎮</span>
+                            <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 3: GAME - "BUKA PINTU OR!"</h2>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 text-center border-2 ${output ? 'border-emerald-500 glow-green' : 'border-slate-700'}">
+                        <p class="text-slate-300 mb-6 text-sm">
+                            Buka salah satu atau kedua pintu agar karakter bisa masuk ke dalam ruangan.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                            <!-- Door A -->
+                            <div onclick="toggleDoor('A')" class="p-5 rounded-2xl bg-slate-800 border-2 cursor-pointer transition hover:scale-[1.02] ${doorState.A ? 'border-emerald-400 bg-emerald-950/40' : 'border-slate-700'}">
+                                <div class="text-5xl mb-2">${doorState.A ? '🚪' : '🔒'}</div>
+                                <h4 class="font-bold text-emerald-300">PINTU A (Input A)</h4>
+                                <span class="text-xs px-2 py-0.5 rounded ${doorState.A ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-700 text-slate-400'}">
+                                    Status: ${doorState.A ? 'TERBUKA (1)' : 'TERTUTUP (0)'}
+                                </span>
+                            </div>
+
+                            <!-- Door B -->
+                            <div onclick="toggleDoor('B')" class="p-5 rounded-2xl bg-slate-800 border-2 cursor-pointer transition hover:scale-[1.02] ${doorState.B ? 'border-emerald-400 bg-emerald-950/40' : 'border-slate-700'}">
+                                <div class="text-5xl mb-2">${doorState.B ? '🚪' : '🔒'}</div>
+                                <h4 class="font-bold text-emerald-300">PINTU B (Input B)</h4>
+                                <span class="text-xs px-2 py-0.5 rounded ${doorState.B ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-700 text-slate-400'}">
+                                    Status: ${doorState.B ? 'TERBUKA (1)' : 'TERTUTUP (0)'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Room Status -->
+                        <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col items-center">
+                            <div class="text-6xl mb-3">
+                                ${output ? '🏃‍♂️🏠' : '🚫🏠'}
+                            </div>
+                            <h3 class="font-display text-2xl font-bold ${output ? 'text-emerald-400' : 'text-rose-400'}">
+                                ${output ? '🎉 BISA MASUK RUANGAN!' : '🔴 BELUM BISA MASUK'}
+                            </h3>
+                            <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                                ${output ? 'Hebat! Pintu terbuka, arus logika bernilai 1.' : 'Kedua pintu tertutup (0 OR 0 = 0). Buka salah satu pintu!'}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleDoor(d) {
+            doorState[d] = doorState[d] === 1 ? 0 : 1;
+            playSound('toggle');
+            if (doorState.A || doorState.B) {
+                triggerConfetti();
+            }
+            renderSlide();
+        }
+
+        // POS 3.4 SLIDE (SOAL GERBANG OR)
+        function renderPos3_4() {
+            return renderQuizSlide({
+                posNum: '3',
+                gateName: 'OR',
+                gateColor: 'text-emerald-400',
+                question: 'Jika Saklar A = 0 dan Saklar B = 1, maka output gerbang OR adalah...',
+                options: [
+                    { key: 'A', text: '0', correct: false },
+                    { key: 'B', text: '1', correct: true },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak dapat ditentukan', correct: false }
+                ],
+                explanation: 'Gerbang OR hanya butuh SALAH SATU input bernilai 1 untuk menghasilkan output 1. Karena Input B = 1, hasilnya adalah 1.'
+            });
+        }
+
+        // POS 4.1 SLIDE (GERBANG NOT - KARAKTER)
+        function renderPos4_1() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-rose-400">
+                        <span class="text-2xl">🔴</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 4: GERBANG NOT (SI PEMBALIK)</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Character Card -->
+                        <div class="glass-card rounded-2xl p-6 border-2 border-rose-500 text-center glow-rose flex flex-col items-center">
+                            <div class="text-6xl mb-3">🤖</div>
+                            <h3 class="font-display text-2xl font-bold text-rose-400 mb-1">Si Pembalik NOT</h3>
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 font-semibold mb-3">Symbol: △ dengan bulatan</span>
+                            <p class="text-sm text-slate-300 italic">
+                                "Aku selalu MEMBALIK nilai inputku! Jika masuk 1, kuubah jadi 0!"
+                            </p>
+                        </div>
+
+                        <!-- Circuit Schematic Card -->
+                        <div class="glass-card rounded-2xl p-6 md:col-span-2 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-white text-lg mb-3 flex items-center gap-2">
+                                    <span>🔌</span> Simbol Rangkaian NOT (Inverter)
+                                </h3>
+                                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex items-center justify-center my-2">
+                                    <svg class="w-64 h-32" viewBox="0 0 200 100">
+                                        <!-- Input -->
+                                        <line x1="20" y1="50" x2="70" y2="50" stroke="#fb7185" stroke-width="4"/>
+                                        <text x="5" y="55" fill="#fecdd3" font-size="14" font-weight="bold">A</text>
+                                        <!-- Triangle -->
+                                        <polygon points="70,25 120,50 70,75" fill="#881337" stroke="#f43f5e" stroke-width="4"/>
+                                        <!-- Inverter Circle -->
+                                        <circle cx="127" cy="50" r="7" fill="#881337" stroke="#f43f5e" stroke-width="3"/>
+                                        <!-- Output -->
+                                        <line x1="134" y1="50" x2="170" y2="50" stroke="#fb7185" stroke-width="4"/>
+                                        <text x="180" y="55" fill="#fecdd3" font-size="14" font-weight="bold">Q</text>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30">
+                                <h4 class="font-bold text-rose-300 text-sm mb-1">🔄 Ciri Khas Utama:</h4>
+                                <p class="text-xs sm:text-sm text-slate-300">
+                                    Gerbang NOT adalah <strong>satu-satunya gerbang dasar yang hanya memiliki 1 input</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 4.2 SLIDE (TABEL KEBENARAN NOT)
+        function renderPos4_2() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-rose-400">
+                        <span class="text-2xl">📊</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 4: TABEL KEBENARAN GERBANG NOT</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <!-- Truth Table -->
+                        <div class="glass-card rounded-2xl p-6 overflow-hidden border border-rose-500/40">
+                            <table class="w-full text-center text-sm sm:text-base">
+                                <thead>
+                                    <tr class="bg-rose-600/30 text-rose-300 border-b border-rose-500/40">
+                                        <th class="py-3 px-4">Input A</th>
+                                        <th class="py-3 px-4">Output (NOT A)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700/60 font-mono">
+                                    <tr class="hover:bg-slate-800/50">
+                                        <td class="py-4 text-rose-300 font-bold">0</td>
+                                        <td class="py-4 text-emerald-400 font-bold text-lg">1 🟢</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/50">
+                                        <td class="py-4 text-rose-300 font-bold">1</td>
+                                        <td class="py-4 text-rose-400 font-bold text-lg">0 🔴</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pattern Note Card -->
+                        <div class="space-y-4">
+                            <div class="glass-card rounded-2xl p-6 border-l-4 border-rose-500">
+                                <h3 class="font-bold text-rose-300 text-lg mb-2">⚡ RUMUS INGATAN NOT:</h3>
+                                <p class="text-slate-300 text-sm leading-relaxed mb-3">
+                                    "Kebalikan dari input!"
+                                </p>
+                                <div class="p-3 bg-slate-900/80 rounded-lg text-xs font-mono text-rose-300">
+                                    NOT 0 = 1 <br>
+                                    NOT 1 = 0
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 4.3 SLIDE (MINI GAME CERMIN AJAIB NOT)
+        function renderPos4_3() {
+            const output = mirrorInput === 1 ? 0 : 1;
+
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3 text-rose-400">
+                            <span class="text-2xl">🪞</span>
+                            <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 4: GAME - "CERMIN AJAIB NOT"</h2>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 text-center border-2 border-rose-500/40">
+                        <p class="text-slate-300 mb-6 text-sm">
+                            Ubah nilai input di depan cermin ajaib dan amati pantulan kebalikannya!
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-8 my-8">
+                            <!-- Input Box -->
+                            <div class="flex flex-col items-center">
+                                <span class="font-bold text-slate-300 mb-2">INPUT A</span>
+                                <button onclick="toggleMirror()" class="w-24 h-24 rounded-2xl font-extrabold text-3xl shadow-xl transition hover:scale-105 active:scale-95 ${mirrorInput ? 'bg-amber-500 text-slate-900' : 'bg-slate-800 text-slate-400 border border-slate-700'}">
+                                    ${mirrorInput}
+                                </button>
+                                <span class="text-xs text-slate-400 mt-2">Klik untuk membalik</span>
+                            </div>
+
+                            <!-- Magic Mirror -->
+                            <div class="p-6 rounded-full bg-gradient-to-br from-rose-500/20 to-purple-500/20 border-4 border-rose-400 glow-rose flex flex-col items-center justify-center w-36 h-36">
+                                <span class="text-4xl">🪞</span>
+                                <span class="text-xs font-bold text-rose-300 mt-1">NOT GATE</span>
+                            </div>
+
+                            <!-- Output Box -->
+                            <div class="flex flex-col items-center">
+                                <span class="font-bold text-slate-300 mb-2">OUTPUT (NOT A)</span>
+                                <div class="w-24 h-24 rounded-2xl font-extrabold text-3xl shadow-xl flex items-center justify-center border-2 ${output ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-slate-900 border-rose-500 text-rose-400'}">
+                                    ${output}
+                                </div>
+                                <span class="text-xs text-slate-400 mt-2">Pantulan Cermin</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-rose-300 font-semibold text-sm">
+                            🎉 Benar! Gerbang NOT selalu membalikkan keadaan sinyal input!
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleMirror() {
+            mirrorInput = mirrorInput === 1 ? 0 : 1;
+            playSound('toggle');
+            renderSlide();
+        }
+
+        // POS 4.4 SLIDE (SOAL GERBANG NOT)
+        function renderPos4_4() {
+            return renderQuizSlide({
+                posNum: '4',
+                gateName: 'NOT',
+                gateColor: 'text-rose-400',
+                question: 'Gerbang NOT dengan nilai input 0 akan menghasilkan output...',
+                options: [
+                    { key: 'A', text: '0', correct: false },
+                    { key: 'B', text: '1', correct: true },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak ada jawaban', correct: false }
+                ],
+                explanation: 'Gerbang NOT berfungsi membalikkan sinyal logika. Jika input 0, maka outputnya adalah 1.'
+            });
+        }
+
+        // POS 5.1 SLIDE (GERBANG SPESIAL: NAND, NOR, XOR)
+        function renderPos5_1() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-purple-400">
+                        <span class="text-2xl">🟣</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 5: GERBANG SPESIAL (NAND, NOR, XOR)</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- NAND -->
+                        <div class="glass-card rounded-2xl p-5 border border-purple-500/50 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="font-display text-xl font-bold text-purple-300">NAND Gate</h3>
+                                    <span class="text-2xl">🤖</span>
+                                </div>
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">NOT + AND</span>
+                                <p class="text-xs text-slate-300 mt-3">
+                                    Kebalikan mutlak dari AND. Output 0 HANYA JIKA kedua input bernilai 1.
+                                </p>
+                            </div>
+                            <div class="mt-4 p-2 rounded bg-slate-900 text-center font-mono text-xs text-purple-300">
+                                NAND = NOT(A AND B)
+                            </div>
+                        </div>
+
+                        <!-- NOR -->
+                        <div class="glass-card rounded-2xl p-5 border border-amber-500/50 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="font-display text-xl font-bold text-amber-300">NOR Gate</h3>
+                                    <span class="text-2xl">🤖</span>
+                                </div>
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">NOT + OR</span>
+                                <p class="text-xs text-slate-300 mt-3">
+                                    Kebalikan mutlak dari OR. Output 1 HANYA JIKA kedua input bernilai 0.
+                                </p>
+                            </div>
+                            <div class="mt-4 p-2 rounded bg-slate-900 text-center font-mono text-xs text-amber-300">
+                                NOR = NOT(A OR B)
+                            </div>
+                        </div>
+
+                        <!-- XOR -->
+                        <div class="glass-card rounded-2xl p-5 border border-cyan-500/50 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="font-display text-xl font-bold text-cyan-300">XOR Gate</h3>
+                                    <span class="text-2xl">🤖</span>
+                                </div>
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">Exclusive OR</span>
+                                <p class="text-xs text-slate-300 mt-3">
+                                    Si Pemilih Beda! Output 1 HANYA JIKA kedua input BERBEDA nilainya (1 dan 0).
+                                </p>
+                            </div>
+                            <div class="mt-4 p-2 rounded bg-slate-900 text-center font-mono text-xs text-cyan-300">
+                                XOR = A ⊕ B (Si Beda)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 5.2 SLIDE (TABEL KEBENARAN LENGKAP)
+        function renderPos5_2() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-purple-400">
+                        <span class="text-2xl">📊</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 5: TABEL KEBENARAN GERBANG LENGKAP</h2>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-4 overflow-x-auto border border-purple-500/40">
+                        <table class="w-full text-center text-xs sm:text-sm font-mono">
+                            <thead>
+                                <tr class="bg-slate-800 text-slate-200 border-b border-slate-700">
+                                    <th class="py-3 px-2">A</th>
+                                    <th class="py-3 px-2">B</th>
+                                    <th class="py-3 px-2 text-blue-400">AND</th>
+                                    <th class="py-3 px-2 text-emerald-400">OR</th>
+                                    <th class="py-3 px-2 text-purple-400">NAND</th>
+                                    <th class="py-3 px-2 text-amber-400">NOR</th>
+                                    <th class="py-3 px-2 text-cyan-400">XOR</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <tr class="hover:bg-slate-800/50">
+                                    <td class="py-2.5 font-bold">0</td>
+                                    <td class="py-2.5 font-bold">0</td>
+                                    <td class="py-2.5 text-rose-400">0</td>
+                                    <td class="py-2.5 text-rose-400">0</td>
+                                    <td class="py-2.5 text-emerald-400 font-bold">1</td>
+                                    <td class="py-2.5 text-emerald-400 font-bold">1</td>
+                                    <td class="py-2.5 text-rose-400">0</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/50">
+                                    <td class="py-2.5 font-bold">0</td>
+                                    <td class="py-2.5 font-bold">1</td>
+                                    <td class="py-2.5 text-rose-400">0</td>
+                                    <td class="py-2.5 text-emerald-400">1</td>
+                                    <td class="py-2.5 text-emerald-400 font-bold">1</td>
+                                    <td class="py-2.5 text-rose-400">0</td>
+                                    <td class="py-2.5 text-emerald-400 font-bold">1</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/50">
+                                    <td class="py-2.5 font-bold">1</td>
+                                    <td class="py-2.5 font-bold">0</td>
+                                    <td class="py-2.5 text-rose-400">0</td>
+                                    <td class="py-2.5 text-emerald-400">1</td>
+                                    <td class="py-2.5 text-emerald-400 font-bold">1</td>
+                                    <td class="py-2.5 text-rose-400">0</td>
+                                    <td class="py-2.5 text-emerald-400 font-bold">1</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/50">
+                                    <td class="py-2.5 font-bold">1</td>
+                                    <td class="py-2.5 font-bold">1</td>
+                                    <td class="py-2.5 text-emerald-400">1</td>
+                                    <td class="py-2.5 text-emerald-400">1</td>
+                                    <td class="py-2.5 text-rose-400">0</td>
+                                    <td class="py-2.5 text-rose-400">0</td>
+                                    <td class="py-2.5 text-rose-400">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-300">
+                            💡 <strong>Rahasia NAND:</strong> Lakukan operasi AND dulu, lalu balikkan hasilnya dengan NOT!
+                        </div>
+                        <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300">
+                            💡 <strong>Rahasia NOR:</strong> Lakukan operasi OR dulu, lalu balikkan hasilnya dengan NOT!
+                        </div>
+                        <div class="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300">
+                            💡 <strong>Rahasia XOR:</strong> Bernilai 1 jika nilainya BEDA (1 dan 0). Jika KEMBAR (1-1 / 0-0) bernilai 0!
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 5.3 SLIDE (MINI GAME TEBAK GERBANG)
+        function renderPos5_3() {
+            const scenarios = [
+                { id: 1, text: '"Output 1 HANYA JIKA Saklar A=1 DAN Saklar B=1"', answer: 'AND' },
+                { id: 2, text: '"Output 1 JIKA SALAH SATU input bernilai 1"', answer: 'OR' },
+                { id: 3, text: '"Output SELALU MEMBALIKKAN nilai input dasar"', answer: 'NOT' },
+                { id: 4, text: '"Output 0 HANYA JIKA KEDUA input bernilai 1 (Kebalikan AND)"', answer: 'NAND' },
+                { id: 5, text: '"Output 1 HANYA JIKA kedua input BERBEDA nilainya"', answer: 'XOR' },
+            ];
+
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-purple-400">
+                        <span class="text-2xl">🎮</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 5: MINI GAME - "TEBAK GERBANG!"</h2>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6">
+                        <p class="text-slate-300 text-sm mb-6">
+                            Pilih jenis gerbang logika yang sesuai dengan pernyataan aturan di bawah ini!
+                        </p>
+
+                        <div class="space-y-4">
+                            ${scenarios.map((sc, idx) => {
+                                const userAns = quizState[`tebak_${sc.id}`];
+                                const isCorrect = userAns === sc.answer;
+
+                                return `
+                                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                                        <div class="flex items-start space-x-3">
+                                            <span class="font-extrabold text-amber-400 text-lg">${idx + 1}.</span>
+                                            <p class="text-sm font-semibold text-slate-200">${sc.text}</p>
+                                        </div>
+
+                                        <div class="flex items-center space-x-2 shrink-0">
+                                            ${['AND', 'OR', 'NOT', 'NAND', 'XOR'].map(g => `
+                                                <button onclick="answerTebak(${sc.id}, '${g}', '${sc.answer}')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${userAns === g ? (isCorrect ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white') : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'}">
+                                                    ${g}
+                                                </button>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function answerTebak(scId, selected, correct) {
+            quizState[`tebak_${scId}`] = selected;
+            if (selected === correct) {
+                playSound('correct');
+            } else {
+                playSound('wrong');
+            }
+            renderSlide();
+        }
+
+        // POS 5.4 SLIDE (SIMULATOR GERBANG INTERAKTIF)
+        function renderPos5_4() {
+            const { gate, A, B } = simState;
+
+            let out = 0;
+            if (gate === 'AND') out = A && B ? 1 : 0;
+            else if (gate === 'OR') out = A || B ? 1 : 0;
+            else if (gate === 'NOT') out = A ? 0 : 1;
+            else if (gate === 'NAND') out = !(A && B) ? 1 : 0;
+            else if (gate === 'NOR') out = !(A || B) ? 1 : 0;
+            else if (gate === 'XOR') out = (A ^ B) ? 1 : 0;
+
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3 text-purple-400">
+                            <span class="text-2xl">⚡</span>
+                            <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 5: SIMULATOR GERBANG INTERAKTIF</h2>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 border-2 border-purple-500/50 glow-purple">
+                        <p class="text-slate-300 text-sm text-center mb-6">
+                            Pilih gerbang logika dan ubah nilai Saklar A & B untuk menguji output secara langsung!
+                        </p>
+
+                        <!-- Gate Selector Tabs -->
+                        <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
+                            ${['AND', 'OR', 'NOT', 'NAND', 'NOR', 'XOR'].map(g => `
+                                <button onclick="setSimGate('${g}')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition ${gate === g ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/40 scale-105' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}">
+                                    ${g}
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <!-- Circuit Interactive Area -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center bg-slate-900/90 p-6 rounded-2xl border border-slate-800">
+                            <!-- Input A & B -->
+                            <div class="flex flex-col gap-4">
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-800 border border-slate-700">
+                                    <span class="font-bold text-amber-300 text-sm">INPUT A</span>
+                                    <button onclick="toggleSimInput('A')" class="px-4 py-1.5 rounded-lg font-mono font-extrabold text-lg ${A ? 'bg-amber-500 text-slate-900' : 'bg-slate-700 text-slate-400'}">
+                                        ${A}
+                                    </button>
+                                </div>
+
+                                ${gate !== 'NOT' ? `
+                                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-800 border border-slate-700">
+                                        <span class="font-bold text-amber-300 text-sm">INPUT B</span>
+                                        <button onclick="toggleSimInput('B')" class="px-4 py-1.5 rounded-lg font-mono font-extrabold text-lg ${B ? 'bg-amber-500 text-slate-900' : 'bg-slate-700 text-slate-400'}">
+                                            ${B}
+                                        </button>
+                                    </div>
+                                ` : `
+                                    <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-800 text-center text-xs text-slate-500 italic">
+                                        Gerbang NOT hanya butuh 1 Input
+                                    </div>
+                                `}
+                            </div>
+
+                            <!-- Gate Visual -->
+                            <div class="flex flex-col items-center justify-center text-center p-4">
+                                <div class="w-24 h-24 rounded-2xl bg-purple-950/60 border-2 border-purple-500 flex flex-col items-center justify-center glow-purple my-2">
+                                    <span class="text-3xl">🤖</span>
+                                    <span class="font-extrabold text-purple-300 text-sm mt-1">${gate}</span>
+                                </div>
+                                <span class="text-xs font-mono text-slate-400 mt-2">
+                                    ${gate === 'NOT' ? `NOT ${A}` : `${A} ${gate} ${B}`}
+                                </span>
+                            </div>
+
+                            <!-- Output Bulb -->
+                            <div class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-800/80 border border-slate-700">
+                                <svg class="w-20 h-20 mb-2 ${out ? 'bulb-on' : 'bulb-off'}" viewBox="0 0 24 24"><path d="M12 2A7 7 0 0 0 5 9c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74A7 7 0 0 0 12 2zm-3 18a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1z"/></svg>
+                                <span class="font-extrabold text-xl font-mono ${out ? 'text-amber-400' : 'text-slate-500'}">
+                                    OUTPUT: ${out}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setSimGate(g) {
+            simState.gate = g;
+            playSound('click');
+            renderSlide();
+        }
+
+        function toggleSimInput(inp) {
+            simState[inp] = simState[inp] === 1 ? 0 : 1;
+            playSound('toggle');
+            renderSlide();
+        }
+
+        // POS 5.5 SLIDE (SOAL GERBANG SPESIAL)
+        function renderPos5_5() {
+            return renderQuizSlide({
+                posNum: '5',
+                gateName: 'NAND',
+                gateColor: 'text-purple-400',
+                question: 'Nilai Saklar A = 1 dan Saklar B = 1 pada gerbang NAND akan menghasilkan output...',
+                options: [
+                    { key: 'A', text: '0', correct: true },
+                    { key: 'B', text: '1', correct: false },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak tentu', correct: false }
+                ],
+                explanation: 'NAND adalah kebalikan dari AND. Pada gerbang AND, 1 AND 1 = 1. Maka pada gerbang NAND, kebalikannya adalah 0.'
+            });
+        }
+
+        // POS 6.1 SLIDE (MISSION LAMPU RUANGAN)
+        function renderPos6_1() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 text-cyan-400">
+                        <span class="text-2xl">🏁</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 6: STUDI KASUS - "RANGKAIAN LAMPU RUANGAN"</h2>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 border-2 border-cyan-500/40">
+                        <h3 class="font-bold text-white text-lg mb-4 flex items-center gap-2">
+                            <span>🏛️</span> Skenario Lampu Kelas SMPN 1 Tinggimoncong
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                                <span class="text-xs font-bold text-amber-400 uppercase">Misi 1</span>
+                                <h4 class="font-bold text-slate-200 text-sm mt-1 mb-2">Sistem Keamanan Brankas Sekolah</h4>
+                                <p class="text-xs text-slate-400">Lampu sirine menyala HANYA jika Kepala Sekolah DAN Guru menekan saklar bersamaan.</p>
+                                <span class="mt-3 inline-block text-xs font-bold px-2 py-1 bg-blue-500/20 text-blue-300 rounded">Solusi: Gerbang AND</span>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                                <span class="text-xs font-bold text-amber-400 uppercase">Misi 2</span>
+                                <h4 class="font-bold text-slate-200 text-sm mt-1 mb-2">Lampu Utama Ruang Lab</h4>
+                                <p class="text-xs text-slate-400">Lampu lab bisa dinyalakan dari saklar Pintu Depan ATAU saklar Pintu Belakang.</p>
+                                <span class="mt-3 inline-block text-xs font-bold px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded">Solusi: Gerbang OR</span>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                                <span class="text-xs font-bold text-amber-400 uppercase">Misi 3</span>
+                                <h4 class="font-bold text-slate-200 text-sm mt-1 mb-2">Lampu Otomatis Malam Hari</h4>
+                                <p class="text-xs text-slate-400">Jika sensor mendeteksi CAHAYA MATAHARI (1), maka lampu taman MATI (0).</p>
+                                <span class="mt-3 inline-block text-xs font-bold px-2 py-1 bg-rose-500/20 text-rose-300 rounded">Solusi: Gerbang NOT</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-center text-xs sm:text-sm text-cyan-300 font-semibold">
+                            💡 Dalam dunia nyata, semua perangkat elektronik modern dibangun dari kombinasi gerbang-gerbang logika ini!
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // POS 6.2 SLIDE (BATTLE OF GATES - SCOREBOARD)
+        function renderPos6_2() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3 text-amber-400">
+                            <span class="text-2xl">🏆</span>
+                            <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 6: BATTLE OF GATES (KOMPETISI TIM)</h2>
+                        </div>
+                        <button onclick="resetBattleScores()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700">
+                            🔄 Reset Skor
+                        </button>
+                    </div>
+
+                    <!-- Team Scoreboard Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <!-- Team AND -->
+                        <div class="glass-card rounded-2xl p-6 border-2 border-blue-500 text-center glow-blue flex flex-col justify-between">
+                            <div>
+                                <span class="text-4xl">🔵</span>
+                                <h3 class="font-display text-2xl font-bold text-blue-400 mt-2">Tim AND</h3>
+                                <div class="text-5xl font-extrabold text-white font-mono my-4">${teamScores.AND}</div>
+                            </div>
+                            <div class="flex justify-center space-x-2">
+                                <button onclick="addPoint('AND', 1)" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow">+1 Poin</button>
+                                <button onclick="addPoint('AND', -1)" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 text-sm">-1</button>
+                            </div>
+                        </div>
+
+                        <!-- Team OR -->
+                        <div class="glass-card rounded-2xl p-6 border-2 border-emerald-500 text-center glow-green flex flex-col justify-between">
+                            <div>
+                                <span class="text-4xl">🟢</span>
+                                <h3 class="font-display text-2xl font-bold text-emerald-400 mt-2">Tim OR</h3>
+                                <div class="text-5xl font-extrabold text-white font-mono my-4">${teamScores.OR}</div>
+                            </div>
+                            <div class="flex justify-center space-x-2">
+                                <button onclick="addPoint('OR', 1)" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow">+1 Poin</button>
+                                <button onclick="addPoint('OR', -1)" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 text-sm">-1</button>
+                            </div>
+                        </div>
+
+                        <!-- Team NOT -->
+                        <div class="glass-card rounded-2xl p-6 border-2 border-rose-500 text-center glow-rose flex flex-col justify-between">
+                            <div>
+                                <span class="text-4xl">🔴</span>
+                                <h3 class="font-display text-2xl font-bold text-rose-400 mt-2">Tim NOT</h3>
+                                <div class="text-5xl font-extrabold text-white font-mono my-4">${teamScores.NOT}</div>
+                            </div>
+                            <div class="flex justify-center space-x-2">
+                                <button onclick="addPoint('NOT', 1)" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow">+1 Poin</button>
+                                <button onclick="addPoint('NOT', -1)" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 text-sm">-1</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Prompts for Teacher -->
+                    <div class="glass-card rounded-2xl p-6">
+                        <h4 class="font-bold text-amber-300 text-base mb-3 flex items-center gap-2">
+                            <span>❓</span> Pertanyaan Cepat Guru untuk Pertandingan:
+                        </h4>
+                        <ul class="space-y-2 text-xs sm:text-sm text-slate-300 list-disc list-inside">
+                            <li>"A = 0, B = 1 → Berapa Output gerbang OR?" (Jawaban: 1)</li>
+                            <li>"A = 1, B = 1 → Berapa Output gerbang AND?" (Jawaban: 1)</li>
+                            <li>"Input A = 0 → Berapa Output gerbang NOT?" (Jawaban: 1)</li>
+                            <li>"A = 1, B = 1 → Berapa Output gerbang NAND?" (Jawaban: 0)</li>
+                            <li>"A = 1, B = 0 → Berapa Output gerbang XOR?" (Jawaban: 1)</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addPoint(team, pt) {
+            teamScores[team] = Math.max(0, teamScores[team] + pt);
+            if (pt > 0) {
+                playSound('correct');
+                triggerConfetti();
+            } else {
+                playSound('click');
+            }
+            renderSlide();
+        }
+
+        function resetBattleScores() {
+            teamScores = { AND: 0, OR: 0, NOT: 0 };
+            playSound('click');
+            renderSlide();
+        }
+
+        // POS 6.3 SLIDE (BUILDER RANGKAIAN PAPAN)
+        function renderPos6_3() {
+            const { gate1, gate2, A, B } = circuitBuilderState;
+
+            // Intermediate output Q1 from gate1
+            let Q1 = 0;
+            if (gate1 === 'AND') Q1 = A && B ? 1 : 0;
+            else if (gate1 === 'OR') Q1 = A || B ? 1 : 0;
+            else if (gate1 === 'XOR') Q1 = (A ^ B) ? 1 : 0;
+
+            // Final Output Q2 from gate2 (combining Q1 with input B)
+            let Q2 = 0;
+            if (gate2 === 'AND') Q2 = Q1 && B ? 1 : 0;
+            else if (gate2 === 'OR') Q2 = Q1 || B ? 1 : 0;
+            else if (gate2 === 'NOT') Q2 = Q1 ? 0 : 1;
+
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3 text-cyan-400">
+                            <span class="text-2xl">🛠️</span>
+                            <h2 class="font-display text-2xl sm:text-3xl font-bold">POS 6: SUSUN RANGKAIAN DI PAPAN</h2>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 border-2 border-slate-700">
+                        <p class="text-slate-300 text-sm text-center mb-6">
+                            Pilih kombinasi gerbang untuk menyusun Rangkaian Logika Bertingkat di bawah ini!
+                        </p>
+
+                        <!-- Circuit Canvas Representation -->
+                        <div class="bg-slate-900/90 p-6 rounded-2xl border border-slate-800 space-y-6">
+                            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                                <!-- Inputs -->
+                                <div class="flex flex-col gap-3">
+                                    <button onclick="toggleBuilderInput('A')" class="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 font-bold text-amber-300 text-sm">
+                                        Input A: ${A}
+                                    </button>
+                                    <button onclick="toggleBuilderInput('B')" class="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 font-bold text-amber-300 text-sm">
+                                        Input B: ${B}
+                                    </button>
+                                </div>
+
+                                ➔
+
+                                <!-- Slot Gate 1 -->
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-bold text-slate-400 mb-1">Gerbang Pertama</span>
+                                    <select onchange="setBuilderGate('gate1', this.value)" class="bg-slate-800 text-purple-300 border border-purple-500/50 font-bold px-3 py-2 rounded-xl">
+                                        <option value="AND" ${gate1 === 'AND' ? 'selected' : ''}>AND</option>
+                                        <option value="OR" ${gate1 === 'OR' ? 'selected' : ''}>OR</option>
+                                        <option value="XOR" ${gate1 === 'XOR' ? 'selected' : ''}>XOR</option>
+                                    </select>
+                                    <span class="text-xs font-mono text-slate-400 mt-2">Q1 = ${Q1}</span>
+                                </div>
+
+                                ➔
+
+                                <!-- Slot Gate 2 -->
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-bold text-slate-400 mb-1">Gerbang Kedua</span>
+                                    <select onchange="setBuilderGate('gate2', this.value)" class="bg-slate-800 text-indigo-300 border border-indigo-500/50 font-bold px-3 py-2 rounded-xl">
+                                        <option value="OR" ${gate2 === 'OR' ? 'selected' : ''}>OR</option>
+                                        <option value="AND" ${gate2 === 'AND' ? 'selected' : ''}>AND</option>
+                                        <option value="NOT" ${gate2 === 'NOT' ? 'selected' : ''}>NOT</option>
+                                    </select>
+                                    <span class="text-xs font-mono text-slate-400 mt-2">Q2 = ${Q2}</span>
+                                </div>
+
+                                ➔
+
+                                <!-- Output Lamp -->
+                                <div class="flex flex-col items-center">
+                                    <svg class="w-16 h-16 ${Q2 ? 'bulb-on' : 'bulb-off'}" viewBox="0 0 24 24"><path d="M12 2A7 7 0 0 0 5 9c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74A7 7 0 0 0 12 2zm-3 18a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1z"/></svg>
+                                    <span class="font-extrabold text-sm font-mono mt-1 ${Q2 ? 'text-amber-400' : 'text-slate-500'}">
+                                        ${Q2 ? 'LAMPU ON (1)' : 'LAMPU OFF (0)'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleBuilderInput(inp) {
+            circuitBuilderState[inp] = circuitBuilderState[inp] === 1 ? 0 : 1;
+            playSound('toggle');
+            renderSlide();
+        }
+
+        function setBuilderGate(slot, val) {
+            circuitBuilderState[slot] = val;
+            playSound('click');
+            renderSlide();
+        }
+
+        // SUMMARY & REFLECTION SLIDE
+        function renderSummary() {
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="text-center mb-4">
+                        <span class="text-4xl">🎉</span>
+                        <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white mt-2">
+                            PETUALANGAN GERBANG LOGIKA SELESAI!
+                        </h2>
+                        <p class="text-slate-300 text-sm">SMPN 1 Tinggimoncong • Kelas VIII Informatika</p>
+                    </div>
+
+                    <!-- Summary 6 Points -->
+                    <div class="glass-card rounded-2xl p-6 border border-amber-400/40">
+                        <h3 class="font-bold text-amber-300 text-lg mb-4 flex items-center gap-2">
+                            <span>📌</span> Rangkuman 6 Poin Utama:
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-slate-200">
+                            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                                <strong>1. Dunia 0 & 1:</strong> Komputer bekerja dengan 0 (Off / Tidak ada arus) dan 1 (On / Ada arus).
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                                <strong>2. Gerbang AND:</strong> Output 1 HANYA JIKA kedua input bernilai 1.
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                                <strong>3. Gerbang OR:</strong> Output 1 jika salah satu atau kedua input 1.
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                                <strong>4. Gerbang NOT:</strong> Selalu membalikkan nilai sinyal input.
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                                <strong>5. Gerbang Kombinasi:</strong> NAND, NOR, dan XOR memproses kondisi khusus.
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                                <strong>6. Rangkaian Digital:</strong> Kombinasi gerbang logika adalah dasar seluruh chip komputer.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reflection Card -->
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="font-bold text-sky-300 text-lg mb-3 flex items-center gap-2">
+                            <span>🧠</span> Refleksi Bersama Siswa:
+                        </h3>
+                        <ul class="space-y-2 text-xs sm:text-sm text-slate-300 list-disc list-inside">
+                            <li>Gerbang logika mana yang paling mudah kamu pahami?</li>
+                            <li>Gerbang logika mana yang paling menantang?</li>
+                            <li>Di mana saja gerbang logika dapat ditemukan pada kehidupan sehari-hari?</li>
+                        </ul>
+                    </div>
+
+                    <!-- End Buttons -->
+                    <div class="flex justify-center gap-4 pt-2">
+                        <button onclick="goToSlide(0)" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold transition border border-slate-700">
+                            🔁 ULANGI PRESENTASI
+                        </button>
+                        <button onclick="goToDashboard()" class="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold transition shadow-lg">
+                            🏁 KEMBALI KE PETA
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // HELPER FOR QUIZ SLIDES
+        function renderQuizSlide({ posNum, gateName, gateColor, question, options, explanation }) {
+            const quizKey = `quiz_pos${posNum}`;
+            const selectedKey = quizState[quizKey];
+
+            return `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 ${gateColor}">
+                        <span class="text-2xl">❓</span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold">POS ${posNum}: CONTOH SOAL GERBANG ${gateName}</h2>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 border-2 border-slate-700">
+                        <h3 class="font-bold text-white text-lg sm:text-xl mb-6">
+                            "${question}"
+                        </h3>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            ${options.map(opt => {
+                                const isSelected = selectedKey === opt.key;
+                                return `
+                                    <button onclick="selectQuizAnswer('${quizKey}', '${opt.key}', ${opt.correct})" class="p-4 rounded-xl text-left font-bold transition flex items-center justify-between border ${isSelected ? (opt.correct ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-rose-600 border-rose-400 text-white') : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'}">
+                                        <span>${opt.key}. ${opt.text}</span>
+                                        ${isSelected ? (opt.correct ? '✅' : '❌') : ''}
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        ${selectedKey ? `
+                            <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-700 text-xs sm:text-sm text-slate-300">
+                                <strong class="text-amber-400">Penjelasan Guru:</strong> ${explanation}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectQuizAnswer(key, optKey, isCorrect) {
+            quizState[key] = optKey;
+            if (isCorrect) {
+                playSound('correct');
+                triggerConfetti();
+            } else {
+                playSound('wrong');
+            }
+            renderSlide();
+        }
+
+        window.onload = function() {
+            renderSlide();
+            updateNavigationUI();
+        };
+    </script>
+</body>
+</html>
+```
