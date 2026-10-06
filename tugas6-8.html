@@ -1,0 +1,1422 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Interaktif Informatika VIII - SMPN 1 Tinggimoncong</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            easy: '#10B981',
+                            easyDark: '#059669',
+                            normal: '#3B82F6',
+                            normalDark: '#2563EB',
+                            hard: '#EF4444',
+                            hardDark: '#DC2626',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        /* Certificate Print Styling */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #certificate-print-zone, #certificate-print-zone * {
+                visibility: visible;
+            }
+            #certificate-print-zone {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                background: white !important;
+                color: black !important;
+                box-shadow: none !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+        }
+
+        .badge-pulse {
+            animation: pulse-slow 3s infinite;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.03); opacity: 0.9; }
+        }
+
+        /* Floating elements animation */
+        .float-icon {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen relative overflow-x-hidden">
+
+    <!-- Top Navigation Bar -->
+    <header class="w-full glass-card sticky top-0 z-40 border-b border-slate-700/50 px-4 py-3">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid me-0 fa-laptop-code"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-sm sm:text-base tracking-wide bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
+                        INFORMATIKA SMPN 1 TINGGIMONCONG
+                    </h1>
+                    <p class="text-xs text-slate-400">Kelas VIII &bull; Syarifuddin, S. Pd., M. Si.</p>
+                </div>
+            </div>
+
+            <!-- Student Profile Summary Header (if registered) -->
+            <div id="nav-student-info" class="hidden flex items-center gap-3 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700">
+                <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div class="text-right text-xs">
+                    <span id="nav-student-name" class="font-semibold text-slate-200 block truncate max-w-[120px] sm:max-w-[180px]">Nama Siswa</span>
+                    <span id="nav-student-class" class="text-slate-400">Kelas VIII</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Content View Container -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 sm:p-6 md:p-8 relative z-10">
+
+        <!-- VIEW 1: IDENTITY REGISTRATION / WELCOME -->
+        <section id="view-identity" class="transition-all duration-300">
+            <div class="max-w-2xl mx-auto glass-card rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                <!-- Floating Decorative Icons -->
+                <div class="absolute -top-6 -right-6 text-7xl text-indigo-500/10 float-icon"><i class="fa-solid fa-microchip"></i></div>
+                <div class="absolute -bottom-6 -left-6 text-7xl text-blue-500/10 float-icon" style="animation-delay: 2s;"><i class="fa-solid fa-network-wired"></i></div>
+
+                <!-- Header Banner -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-4">
+                        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        TUGAS INTERAKTIF INFORMATIKA
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">
+                        Tantangan Sistem Komputer & Sistem Bilangan
+                    </h2>
+                    <p class="text-slate-300 text-sm">
+                        SMP Negeri 1 Tinggimoncong &bull; Kelas VIII
+                    </p>
+                    <p class="text-xs text-indigo-300 mt-1">
+                        Guru Pengampu: <span class="font-semibold text-white">Syarifuddin, S. Pd., M. Si.</span>
+                    </p>
+
+                    <!-- Animated Icons Bar -->
+                    <div class="flex justify-center gap-3 text-xl sm:text-2xl my-5 text-indigo-400 bg-slate-800/40 py-3 rounded-2xl border border-slate-700/50">
+                        <span title="Komputer">🖥️</span>
+                        <span title="Keyboard">⌨️</span>
+                        <span title="Mouse">🖱️</span>
+                        <span title="Proses">⚙️</span>
+                        <span title="CPU">🧠</span>
+                        <span title="Memori">💾</span>
+                        <span title="Biner">🔢</span>
+                        <span title="Oktal">8️⃣</span>
+                        <span title="Desimal">🔟</span>
+                        <span title="Heksadesimal">🔠</span>
+                    </div>
+                </div>
+
+                <!-- Registration Form -->
+                <form id="form-identity" onsubmit="handleIdentitySubmit(event)" class="space-y-4">
+                    <div>
+                        <label for="input-nama" class="block text-xs font-medium text-slate-300 mb-1">
+                            <i class="fa-solid fa-user me-1 text-indigo-400"></i> Nama Lengkap Siswa <span class="text-rose-400">*</span>
+                        </label>
+                        <input type="text" id="input-nama" required placeholder="Contoh: Andi Muhammad Rizky" 
+                            class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="input-kelas" class="block text-xs font-medium text-slate-300 mb-1">
+                                <i class="fa-solid fa-school me-1 text-indigo-400"></i> Kelas <span class="text-rose-400">*</span>
+                            </label>
+                            <input type="text" id="input-kelas" required placeholder="Contoh: VIII.A" 
+                                class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm">
+                        </div>
+                        <div>
+                            <label for="input-absen" class="block text-xs font-medium text-slate-300 mb-1">
+                                <i class="fa-solid fa-hashtag me-1 text-indigo-400"></i> Nomor Absen <span class="text-rose-400">*</span>
+                            </label>
+                            <input type="number" id="input-absen" required min="1" max="50" placeholder="Contoh: 12" 
+                                class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm">
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit" 
+                            class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 text-base">
+                            <span>🚀 MASUK KE TANTANGAN</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW 2: LEVEL SELECTION DASHBOARD -->
+        <section id="view-dashboard" class="hidden space-y-8">
+            
+            <!-- Overall Progress Summary -->
+            <div class="glass-card rounded-2xl p-5 sm:p-6 border border-slate-700/80">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-trophy text-amber-400"></i>
+                            Dashboard Progress Tantangan
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Siswa: <span id="dash-student-detail" class="text-indigo-300 font-semibold"></span></p>
+                    </div>
+                    
+                    <button onclick="openMiniConverter()" class="inline-flex items-center gap-2 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-600 text-indigo-300 px-3 py-2 rounded-xl transition">
+                        <i class="fa-solid fa-calculator text-amber-400"></i>
+                        <span>Kalkulator Konversi Mini</span>
+                    </button>
+                </div>
+
+                <!-- Progress Status Pill Bar -->
+                <div id="dashboard-progress-items" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <!-- Dynamic rendering -->
+                </div>
+            </div>
+
+            <!-- Title Header -->
+            <div class="text-center space-y-1">
+                <h3 class="text-2xl font-extrabold text-white">🎮 PILIH TINGKAT TANTANGAN</h3>
+                <p class="text-slate-400 text-sm">Pilih level di bawah ini. Ingat, setiap level hanya dapat dikerjakan <span class="text-amber-400 font-semibold">SATU KALI</span>.</p>
+            </div>
+
+            <!-- Level Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- CARD 1: MUDAH -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border-t-4 border-t-emerald-500 hover:border-slate-500 transition-all duration-300 group shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-bl-full pointer-events-none"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+                                🟢 LEVEL MUDAH
+                            </span>
+                            <span id="badge-status-easy" class="text-xs px-2.5 py-1 rounded-md font-semibold bg-slate-800 text-slate-400">
+                                BELUM
+                            </span>
+                        </div>
+
+                        <h4 class="text-lg font-bold text-white mb-1 group-hover:text-emerald-400 transition-colors">
+                            "Pemula Sistem Komputer"
+                        </h4>
+                        <p class="text-xs text-slate-300 mb-4">Cocok untuk menguji pemahaman dasar perangkat keras, OS &amp; siklus kerja komputer.</p>
+
+                        <div class="bg-slate-900/60 rounded-xl p-3 mb-6 text-xs space-y-1.5 border border-slate-800">
+                            <div class="font-semibold text-slate-300 mb-1 flex items-center gap-1">
+                                <i class="fa-solid fa-list-check text-emerald-400"></i> Materi Level (10 Soal):
+                            </div>
+                            <ul class="text-slate-400 space-y-1 pl-4 list-disc">
+                                <li>Fungsi sistem komputer</li>
+                                <li>Perangkat keras (Input, Process, Output, Storage)</li>
+                                <li>Fungsi sistem operasi</li>
+                                <li>Siklus kerja komputer</li>
+                                <li>Konsep dasar bilangan biner</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="btn-container-easy">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- CARD 2: NORMAL -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border-t-4 border-t-blue-500 hover:border-slate-500 transition-all duration-300 group shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-bl-full pointer-events-none"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-1.5">
+                                🔵 LEVEL NORMAL
+                            </span>
+                            <span id="badge-status-normal" class="text-xs px-2.5 py-1 rounded-md font-semibold bg-slate-800 text-slate-400">
+                                BELUM
+                            </span>
+                        </div>
+
+                        <h4 class="text-lg font-bold text-white mb-1 group-hover:text-blue-400 transition-colors">
+                            "Jago Sistem Bilangan"
+                        </h4>
+                        <p class="text-xs text-slate-300 mb-4">Tingkat kesulitan sedang mencakup CPU, ALU, Register &amp; konversi Biner/Oktal/Desimal.</p>
+
+                        <div class="bg-slate-900/60 rounded-xl p-3 mb-6 text-xs space-y-1.5 border border-slate-800">
+                            <div class="font-semibold text-slate-300 mb-1 flex items-center gap-1">
+                                <i class="fa-solid fa-list-check text-blue-400"></i> Materi Level (10 Soal):
+                            </div>
+                            <ul class="text-slate-400 space-y-1 pl-4 list-disc">
+                                <li>CPU, ALU, dan Register</li>
+                                <li>Konversi Biner ↔ Desimal</li>
+                                <li>Konversi Oktal ↔ Biner</li>
+                                <li>Konversi Desimal ↔ Biner</li>
+                                <li>Ekstensi &amp; konsep bilangan</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="btn-container-normal">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- CARD 3: SULIT -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border-t-4 border-t-rose-500 hover:border-slate-500 transition-all duration-300 group shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 rounded-bl-full pointer-events-none"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center gap-1.5">
+                                🔴 LEVEL SULIT
+                            </span>
+                            <span id="badge-status-hard" class="text-xs px-2.5 py-1 rounded-md font-semibold bg-slate-800 text-slate-400">
+                                BELUM
+                            </span>
+                        </div>
+
+                        <h4 class="text-lg font-bold text-white mb-1 group-hover:text-rose-400 transition-colors">
+                            "Master Konversi Bilangan"
+                        </h4>
+                        <p class="text-xs text-slate-300 mb-4">Tingkat kesulitan tinggi: Heksadesimal, studi kasus nyata &amp; penalaran konversi.</p>
+
+                        <div class="bg-slate-900/60 rounded-xl p-3 mb-6 text-xs space-y-1.5 border border-slate-800">
+                            <div class="font-semibold text-slate-300 mb-1 flex items-center gap-1">
+                                <i class="fa-solid fa-list-check text-rose-400"></i> Materi Level (10 Soal):
+                            </div>
+                            <ul class="text-slate-400 space-y-1 pl-4 list-disc">
+                                <li>Konversi Biner ↔ Heksadesimal</li>
+                                <li>Konversi Heksadesimal ↔ Desimal</li>
+                                <li>Konversi Desimal ↔ Heksadesimal</li>
+                                <li>Studi kasus sistem komputer (HTML Color, Storage)</li>
+                                <li>Penalaran sistem bilangan lanjutan</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="btn-container-hard">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MODAL: LEVEL START CONFIRMATION -->
+        <div id="modal-confirm" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+            <div class="glass-card max-w-md w-full rounded-3xl p-6 border border-slate-700 shadow-2xl space-y-5 animate-scale-in">
+                <div class="text-center">
+                    <div class="w-14 h-14 bg-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 border border-amber-500/30">
+                        ⚠️️
+                    </div>
+                    <h3 class="text-xl font-bold text-white">PERHATIAN TANTANGAN</h3>
+                    <p id="confirm-level-title" class="text-indigo-300 font-semibold text-sm mt-1"></p>
+                </div>
+
+                <div class="bg-slate-900/80 rounded-2xl p-4 text-xs space-y-2 border border-slate-800 text-slate-300">
+                    <p class="flex items-start gap-2">
+                        <span class="text-amber-400 font-bold">1.</span>
+                        <span>Setiap level hanya dapat dikerjakan <strong class="text-white">SATU KALI</strong>.</span>
+                    </p>
+                    <p class="flex items-start gap-2">
+                        <span class="text-amber-400 font-bold">2.</span>
+                        <span>Pastikan kamu sudah siap &amp; memiliki koneksi yang stabil.</span>
+                    </p>
+                    <p class="flex items-start gap-2">
+                        <span class="text-amber-400 font-bold">3.</span>
+                        <span>Setelah selesai, soal tidak dapat diulang lagi.</span>
+                    </p>
+                    <p class="flex items-start gap-2">
+                        <span class="text-amber-400 font-bold">4.</span>
+                        <span>Hasil &amp; Nilai akan langsung tercetak pada Sertifikat resmi.</span>
+                    </p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="closeConfirmModal()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-3 rounded-xl text-xs transition">
+                        KEMBALI
+                    </button>
+                    <button onclick="startLevelConfirmed()" class="w-1/2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-emerald-600/30 transition">
+                        🚀 SAYA SIAP — MULAI
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: QUIZ INTERFACE -->
+        <section id="view-quiz" class="hidden space-y-6">
+            
+            <!-- Quiz Header Bar -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <span id="quiz-level-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        🟢 LEVEL MUDAH
+                    </span>
+                    <div>
+                        <h2 id="quiz-level-name" class="font-bold text-white text-base">Sistem Komputer Dasar</h2>
+                        <p class="text-xs text-slate-400">SMPN 1 Tinggimoncong &bull; Kelas VIII</p>
+                    </div>
+                </div>
+
+                <!-- Helper Tools Button & Question Counter -->
+                <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+                    <button onclick="openMiniConverter()" class="text-xs bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-calculator text-amber-400"></i>
+                        <span>Kalkulator Konversi</span>
+                    </button>
+
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">Nomor Soal</span>
+                        <span id="quiz-question-number" class="text-lg font-extrabold text-white">1 / 10</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden p-0.5 border border-slate-700">
+                <div id="quiz-progress-fill" class="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 rounded-full transition-all duration-300 w-[10%]"></div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl relative">
+                <!-- Question Text -->
+                <div class="space-y-2">
+                    <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Pertanyaan</span>
+                    <h3 id="quiz-question-text" class="text-lg sm:text-xl font-bold text-white leading-relaxed">
+                        Perangkat yang bertugas mengolah data di komputer adalah...
+                    </h3>
+                </div>
+
+                <!-- Answer Choices -->
+                <div id="quiz-options-container" class="grid grid-cols-1 gap-3 pt-2">
+                    <!-- Options injected dynamically -->
+                </div>
+
+                <!-- Explanation Feedback Box (Shown after selecting an option) -->
+                <div id="quiz-feedback-box" class="hidden rounded-2xl p-4 border text-xs space-y-2 transition-all">
+                    <div id="quiz-feedback-title" class="font-bold text-sm flex items-center gap-2"></div>
+                    <p id="quiz-feedback-text" class="text-slate-300 leading-relaxed"></p>
+                </div>
+
+                <!-- Next / Finish Button -->
+                <div class="flex justify-end pt-4">
+                    <button id="btn-next-question" onclick="nextQuestion()" disabled 
+                        class="opacity-50 cursor-not-allowed bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
+                        <span>SOAL SELANJUTNYA</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: QUIZ RESULT -->
+        <section id="view-result" class="hidden max-w-2xl mx-auto space-y-6">
+            <div class="glass-card rounded-3xl p-8 text-center space-y-6 shadow-2xl border border-slate-700">
+                
+                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 to-emerald-400 flex items-center justify-center text-4xl mx-auto shadow-xl shadow-indigo-500/20">
+                    🎉
+                </div>
+
+                <div>
+                    <h2 class="text-3xl font-extrabold text-white">LEVEL SELESAI!</h2>
+                    <p class="text-slate-300 text-sm mt-1">Selamat, kamu telah menyelesaikan tantangan ini.</p>
+                </div>
+
+                <!-- Score Summary Cards Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                    <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+                        <span class="text-xs text-slate-400 block mb-1">Jawaban Benar</span>
+                        <span id="result-correct-count" class="text-xl font-black text-emerald-400">8/10</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+                        <span class="text-xs text-slate-400 block mb-1">Total Nilai</span>
+                        <span id="result-score" class="text-xl font-black text-amber-400">80/100</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 col-span-2 sm:col-span-2">
+                        <span class="text-xs text-slate-400 block mb-1">Predikat Pasca Lulus</span>
+                        <span id="result-predicate" class="text-base font-bold text-indigo-300">🥇 Baik</span>
+                    </div>
+                </div>
+
+                <!-- Identity Confirmation Summary -->
+                <div class="bg-slate-900/40 rounded-xl p-4 text-xs text-slate-300 text-left border border-slate-800/80 space-y-1">
+                    <p><span class="text-slate-400">Siswa:</span> <strong id="result-student-name" class="text-white"></strong></p>
+                    <p><span class="text-slate-400">Kelas / No. Absen:</span> <strong id="result-student-class" class="text-white"></strong></p>
+                    <p><span class="text-slate-400">Tingkat Level:</span> <strong id="result-level-title" class="text-indigo-300"></strong></p>
+                    <p><span class="text-slate-400">Tanggal Pengerjaan:</span> <strong id="result-date" class="text-slate-200"></strong></p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button onclick="goToDashboard()" class="w-full sm:w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-house"></i>
+                        <span>KEMBALI KE DASHBOARD</span>
+                    </button>
+                    <button onclick="viewCertificateFromCurrent()" class="w-full sm:w-1/2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 px-4 rounded-xl text-xs shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-certificate"></i>
+                        <span>🎓 LIHAT SERTIFIKAT</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 5: CERTIFICATE VIEW -->
+        <section id="view-certificate" class="hidden space-y-6">
+            
+            <!-- Top Controls (Not Printed) -->
+            <div class="no-print flex flex-wrap justify-between items-center gap-4 bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
+                <button onclick="goToDashboard()" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2.5 rounded-xl font-semibold transition flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Kembali ke Dashboard</span>
+                </button>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="window.print()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Cetak / Simpan PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PRINTABLE CERTIFICATE CONTAINER -->
+            <div id="certificate-print-zone" class="mx-auto bg-white text-slate-900 rounded-3xl p-6 sm:p-12 shadow-2xl relative overflow-hidden border-8 border-slate-100 max-w-4xl">
+                
+                <!-- Inner Decorative Border -->
+                <div id="cert-theme-border" class="border-4 border-emerald-600 rounded-2xl p-6 sm:p-10 relative bg-gradient-to-b from-white via-slate-50/50 to-white">
+                    
+                    <!-- Watermark / Background Emblem -->
+                    <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
+                        <i class="fa-solid fa-award text-[280px] text-slate-900"></i>
+                    </div>
+
+                    <!-- Certificate Header -->
+                    <div class="text-center space-y-2 relative z-10">
+                        <div class="flex justify-center items-center gap-3 mb-2">
+                            <div class="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xl shadow-md">
+                                <i class="fa-solid fa-school"></i>
+                            </div>
+                        </div>
+                        <h4 class="text-xs sm:text-sm font-bold tracking-widest text-slate-600 uppercase">
+                            SMP NEGERI 1 TINGGIMONCONG
+                        </h4>
+                        <h2 class="text-xl sm:text-3xl font-serif font-bold text-slate-900 uppercase tracking-wide">
+                            SERTIFIKAT TANTANGAN INFORMATIKA
+                        </h2>
+                        <div class="inline-block px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider text-white" id="cert-level-pill">
+                            LEVEL MUDAH
+                        </div>
+                    </div>
+
+                    <!-- Recipient Details -->
+                    <div class="text-center my-6 sm:my-8 space-y-3 relative z-10">
+                        <p class="text-xs sm:text-sm text-slate-600 italic">Sertifikat penghargaan ini diberikan kepada:</p>
+                        
+                        <h3 id="cert-student-name" class="text-2xl sm:text-4xl font-serif font-bold text-slate-900 underline decoration-2 decoration-slate-300 underline-offset-8">
+                            NAMA SISWA
+                        </h3>
+                        
+                        <p class="text-xs sm:text-sm text-slate-700 font-medium">
+                            Kelas: <span id="cert-student-class" class="font-bold text-slate-900">VIII</span> &bull; No. Absen: <span id="cert-student-absen" class="font-bold text-slate-900">01</span>
+                        </p>
+
+                        <div class="pt-2">
+                            <p class="text-xs sm:text-sm text-slate-600">Telah berhasil menyelesaikan:</p>
+                            <p id="cert-level-description" class="text-sm sm:text-base font-bold text-slate-800 italic mt-0.5">
+                                Tantangan Informatika Level Mudah — "Sistem Komputer Dasar"
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Score Badges Grid -->
+                    <div class="flex justify-center items-center gap-6 my-6 relative z-10">
+                        <div class="bg-slate-100/80 px-6 py-3 rounded-2xl text-center border border-slate-200">
+                            <span class="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">Nilai Akhir</span>
+                            <span id="cert-score" class="text-2xl font-black text-slate-900">90 / 100</span>
+                        </div>
+                        <div class="bg-slate-100/80 px-6 py-3 rounded-2xl text-center border border-slate-200">
+                            <span class="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">Predikat</span>
+                            <span id="cert-predicate" class="text-base font-extrabold text-slate-800">🏆 Sangat Baik</span>
+                        </div>
+                    </div>
+
+                    <!-- Footer Signatures -->
+                    <div class="grid grid-cols-2 gap-4 pt-8 mt-6 border-t border-slate-200 text-xs text-slate-700 relative z-10">
+                        <div class="text-left space-y-1">
+                            <p class="text-slate-500">Tanggal Terbit:</p>
+                            <p id="cert-date" class="font-semibold text-slate-900"></p>
+                            <p class="text-[10px] text-slate-400 mt-4">Verifikasi Digital: SMPN 1 Tinggimoncong &bull; Valid</p>
+                        </div>
+
+                        <div class="text-right space-y-1">
+                            <p class="text-slate-500">Guru Mata Pelajaran Informatika,</p>
+                            <div class="h-12 flex items-center justify-end">
+                                <span class="font-serif italic text-indigo-900 text-base font-bold opacity-80">Syarifuddin, S.Pd., M.Si.</span>
+                            </div>
+                            <p class="font-bold text-slate-900">Syarifuddin, S. Pd., M. Si.</p>
+                            <p class="text-[10px] text-slate-500">NIP. Guru Informatika SMPN 1 Tinggimoncong</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MINI NUMBER SYSTEM CONVERTER TOOL MODAL -->
+    <div id="modal-converter" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-lg w-full rounded-3xl p-6 border border-slate-700 shadow-2xl space-y-5">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-calculator text-amber-400 text-xl"></i>
+                    <h3 class="font-bold text-white text-base">Kalkulator Konversi Mini</h3>
+                </div>
+                <button onclick="closeMiniConverter()" class="text-slate-400 hover:text-white text-lg px-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-300">
+                Gunakan alat bantu ini untuk mempelajari atau memverifikasi perhitungan konversi sistem bilangan.
+            </p>
+
+            <div class="space-y-3">
+                <!-- Desimal Input -->
+                <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-1">
+                    <label class="block text-xs font-bold text-amber-400">🔟 DESIMAL (Base 10)</label>
+                    <input type="number" id="calc-dec" oninput="convertFromDec(this.value)" placeholder="Masukkan angka desimal..." 
+                        class="w-full bg-slate-900 border border-amber-500/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-400">
+                </div>
+
+                <!-- Biner Input -->
+                <div class="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/30 space-y-1">
+                    <label class="block text-xs font-bold text-blue-400">🔢 BINER (Base 2)</label>
+                    <input type="text" id="calc-bin" oninput="convertFromBin(this.value)" placeholder="0 dan 1 saja..." 
+                        class="w-full bg-slate-900 border border-blue-500/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-blue-400">
+                </div>
+
+                <!-- Oktal Input -->
+                <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+                    <label class="block text-xs font-bold text-emerald-400">8️⃣ OKTAL (Base 8)</label>
+                    <input type="text" id="calc-oct" oninput="convertFromOct(this.value)" placeholder="Angka 0 - 7..." 
+                        class="w-full bg-slate-900 border border-emerald-500/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-400">
+                </div>
+
+                <!-- Heksadesimal Input -->
+                <div class="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 space-y-1">
+                    <label class="block text-xs font-bold text-rose-400">🔠 HEKSADESIMAL (Base 16)</label>
+                    <input type="text" id="calc-hex" oninput="convertFromHex(this.value)" placeholder="Angka 0-9 & A-F..." 
+                        class="w-full bg-slate-900 border border-rose-500/30 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-rose-400">
+                </div>
+            </div>
+
+            <div class="pt-2 text-center">
+                <button onclick="closeMiniConverter()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                    TUTUP KALKULATOR
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // APP STATE & CONSTANTS
+        const LOCAL_STORAGE_KEY = 'informatika_smpn1tinggimoncong_v1';
+
+        // QUESTIONS DATA BANK (Exact 10 questions per level as specified)
+        const QUIZ_DATA = {
+            easy: {
+                id: 'easy',
+                title: 'LEVEL MUDAH',
+                subtitle: 'Sistem Komputer Dasar',
+                color: 'emerald',
+                questions: [
+                    {
+                        q: "Perangkat yang bertugas mengolah data di komputer adalah...",
+                        options: ["A. Monitor", "B. CPU", "C. Keyboard", "D. Speaker"],
+                        answer: 1, // B
+                        explanation: "CPU (Central Processing Unit) adalah otak komputer yang bertugas mengolah dan memproses data."
+                    },
+                    {
+                        q: "Bagian komputer yang digunakan untuk memasukkan data disebut...",
+                        options: ["A. Output", "B. Input", "C. Proses", "D. Penyimpanan"],
+                        answer: 1, // B
+                        explanation: "Perangkat Input (seperti keyboard & mouse) berfungsi memasukkan data ke dalam sistem komputer."
+                    },
+                    {
+                        q: "Monitor dan speaker termasuk perangkat...",
+                        options: ["A. Input", "B. Proses", "C. Output", "D. Penyimpanan"],
+                        answer: 2, // C
+                        explanation: "Monitor (menampilkan gambar) dan speaker (mengeluarkan suara) merupakan perangkat Output (keluaran)."
+                    },
+                    {
+                        q: "Perangkat yang menyimpan data secara permanen adalah...",
+                        options: ["A. Keyboard", "B. Monitor", "C. Hard Disk", "D. Mouse"],
+                        answer: 2, // C
+                        explanation: "Hard Disk / SSD adalah media penyimpanan sekunder yang menyimpan data secara permanen meskipun komputer dimatikan."
+                    },
+                    {
+                        q: "Urutan siklus kerja komputer yang benar adalah...",
+                        options: [
+                            "A. Proses → Input → Output → Simpan",
+                            "B. Input → Proses → Output → Simpan",
+                            "C. Output → Input → Proses → Simpan",
+                            "D. Simpan → Proses → Output → Input"
+                        ],
+                        answer: 1, // B
+                        explanation: "Siklus kerja komputer dimulai dari masukan data (Input), pengolahan (Proses), hasil keluaran (Output), dan penyimpan hasil (Simpan)."
+                    },
+                    {
+                        q: "Fungsi utama sistem operasi adalah...",
+                        options: [
+                            "A. Menampilkan gambar",
+                            "B. Mengatur dan mengendalikan seluruh perangkat komputer",
+                            "C. Mencetak dokumen",
+                            "D. Menyimpan foto"
+                        ],
+                        answer: 1, // B
+                        explanation: "Sistem Operasi (OS) bertindak sebagai pengelola utama hardware dan software pada komputer."
+                    },
+                    {
+                        q: "Contoh sistem operasi pada komputer adalah...",
+                        options: [
+                            "A. Windows, Linux, macOS",
+                            "B. Microsoft Word, Excel",
+                            "C. Google Chrome, Firefox",
+                            "D. Keyboard, Mouse"
+                        ],
+                        answer: 0, // A
+                        explanation: "Windows, Linux, dan macOS adalah contoh Sistem Operasi komputer."
+                    },
+                    {
+                        q: "Data di komputer disimpan dalam bentuk...",
+                        options: ["A. Huruf", "B. Gambar", "C. Bilangan biner (0 dan 1)", "D. Suara"],
+                        answer: 2, // C
+                        explanation: "Komputer adalah mesin elektronik yang secara fundamental hanya mengenali sinyal biner (0 dan 1)."
+                    },
+                    {
+                        q: "Mengapa komputer menggunakan bilangan biner?",
+                        options: [
+                            "A. Karena lebih mudah ditulis",
+                            "B. Karena komputer bekerja dengan arus listrik (ON/OFF = 1/0)",
+                            "C. Karena lebih cepat",
+                            "D. Karena lebih murah"
+                        ],
+                        answer: 1, // B
+                        explanation: "Sirkuit elektronik komputer bekerja berdasarkan keadaan saklar listrik: ON (ada tegangan = 1) dan OFF (tidak ada tegangan = 0)."
+                    },
+                    {
+                        q: "Bagian CPU yang bertugas melakukan operasi hitung adalah...",
+                        options: ["A. Control Unit", "B. Register", "C. ALU", "D. Hard Disk"],
+                        answer: 2, // C
+                        explanation: "ALU (Arithmetic Logic Unit) adalah komponen CPU khusus untuk kalkulasi matematika dan logika."
+                    }
+                ]
+            },
+            normal: {
+                id: 'normal',
+                title: 'LEVEL NORMAL',
+                subtitle: 'Sistem Bilangan & Konversi Dasar',
+                color: 'blue',
+                questions: [
+                    {
+                        q: "Bagian CPU yang menyimpan data sementara saat diproses adalah...",
+                        options: ["A. Control Unit", "B. Register", "C. ALU", "D. Hard Disk"],
+                        answer: 1, // B
+                        explanation: "Register adalah memori berkecepatan sangat tinggi di dalam CPU yang menyimpan data sementara saat instruksi dieksekusi."
+                    },
+                    {
+                        q: "Tugas Control Unit pada CPU adalah...",
+                        options: [
+                            "A. Menghitung angka",
+                            "B. Mengatur dan mengendalikan urutan instruksi",
+                            "C. Menyimpan data permanen",
+                            "D. Menampilkan gambar"
+                        ],
+                        answer: 1, // B
+                        explanation: "Control Unit (CU) mengarahkan lalu lintas data dan mengatur jalannya urutan eksekusi instruksi komputer."
+                    },
+                    {
+                        q: "Bilangan biner 1011 jika dikonversi ke desimal adalah...",
+                        options: ["A. 9", "B. 10", "C. 11", "D. 12"],
+                        answer: 2, // C
+                        explanation: "1011₂ = (1×2³) + (0×2²) + (1×2¹) + (1×2⁰) = 8 + 0 + 2 + 1 = 11₁₀."
+                    },
+                    {
+                        q: "Bilangan biner 1101 jika dikonversi ke desimal adalah...",
+                        options: ["A. 11", "B. 12", "C. 13", "D. 14"],
+                        answer: 2, // C
+                        explanation: "1101₂ = (1×8) + (1×4) + (0×2) + (1×1) = 8 + 4 + 0 + 1 = 13₁₀."
+                    },
+                    {
+                        q: "Bilangan desimal 20 jika dikonversi ke biner adalah...",
+                        options: ["A. 10100", "B. 10010", "C. 11000", "D. 10110"],
+                        answer: 0, // A
+                        explanation: "20 ÷ 2 = 10 (Sisa 0), 10 ÷ 2 = 5 (Sisa 0), 5 ÷ 2 = 2 (Sisa 1), 2 ÷ 2 = 1 (Sisa 0), 1 ÷ 2 = 0 (Sisa 1) → Dibaca dari bawah: 10100₂."
+                    },
+                    {
+                        q: "Bilangan desimal 25 jika dikonversi ke biner adalah...",
+                        options: ["A. 10011", "B. 11001", "C. 10101", "D. 11100"],
+                        answer: 1, // B
+                        explanation: "25₁₀ = 16 + 8 + 1 = (1×2⁴) + (1×2³) + (0×2²) + (0×2¹) + (1×2⁰) = 11001₂."
+                    },
+                    {
+                        q: "Bilangan biner 101 110 jika dikonversi ke oktal adalah...",
+                        options: ["A. 45", "B. 56", "C. 66", "D. 76"],
+                        answer: 1, // B
+                        explanation: "Bagi per 3 digit dari kanan: [101] [110] → 101₂ = 5, 110₂ = 6. Hasil = 56₈."
+                    },
+                    {
+                        q: "Bilangan oktal 25₈ jika dikonversi ke biner adalah...",
+                        options: ["A. 10101", "B. 010 101", "C. 11001", "D. 11110"],
+                        answer: 1, // B
+                        explanation: "Ubah tiap digit oktal ke 3 digit biner: 2₈ = 010, 5₈ = 101 → Hasil = 010 101₂ (atau 10101₂)."
+                    },
+                    {
+                        q: "Urutan kerja CPU yang benar adalah...",
+                        options: [
+                            "A. Decode → Fetch → Execute → Store",
+                            "B. Fetch → Decode → Execute → Store",
+                            "C. Execute → Fetch → Decode → Store",
+                            "D. Store → Execute → Decode → Fetch"
+                        ],
+                        answer: 1, // B
+                        explanation: "Siklus instruksi CPU: Fetch (Ambil instruksi) → Decode (Terjemahkan) → Execute (Jalankan) → Store (Simpan hasil)."
+                    },
+                    {
+                        q: "ALU (Arithmetic Logic Unit) bertugas untuk...",
+                        options: [
+                            "A. Menyimpan data permanen",
+                            "B. Menghitung aritmetika & membandingkan logika",
+                            "C. Mengatur urutan instruksi",
+                            "D. Menampilkan gambar di monitor"
+                        ],
+                        answer: 1, // B
+                        explanation: "Fungsi utama ALU adalah kalkulasi matematis (+,-,*,/) dan perbandingan operasi logika (AND, OR, NOT, <, >)."
+                    }
+                ]
+            },
+            hard: {
+                id: 'hard',
+                title: 'LEVEL SULIT',
+                subtitle: 'Master Konversi Sistem Bilangan',
+                color: 'rose',
+                questions: [
+                    {
+                        q: "Bilangan biner 1011 1111 jika dikonversi ke heksadesimal adalah...",
+                        options: ["A. AB", "B. BF", "C. CF", "D. DF"],
+                        answer: 1, // B
+                        explanation: "Kelompokkan 4 digit biner: [1011] [1111] → 1011₂ = 11 (B Hex), 1111₂ = 15 (F Hex). Hasil = BF₁₆."
+                    },
+                    {
+                        q: "Bilangan biner 1111 0000 jika dikonversi ke heksadesimal adalah...",
+                        options: ["A. F0", "B. 0F", "C. EE", "D. FF"],
+                        answer: 0, // A
+                        explanation: "Kelompokkan 4 digit biner: [1111] [0000] → 1111₂ = F Hex, 0000₂ = 0 Hex. Hasil = F0₁₆."
+                    },
+                    {
+                        q: "Bilangan heksadesimal 1A jika dikonversi ke biner adalah...",
+                        options: ["A. 0001 1010", "B. 1110 0001", "C. 1010 0001", "D. 0010 1010"],
+                        answer: 0, // A
+                        explanation: "Ubah tiap digit hex ke 4 digit biner: 1₁₆ = 0001, A₁₆ (10) = 1010 → Hasil = 0001 1010₂."
+                    },
+                    {
+                        q: "Bilangan heksadesimal FF jika dikonversi ke desimal adalah...",
+                        options: ["A. 100", "B. 200", "C. 255", "D. 256"],
+                        answer: 2, // C
+                        explanation: "FF₁₆ = (F×16¹) + (F×16⁰) = (15×16) + (15×1) = 240 + 15 = 255₁₀."
+                    },
+                    {
+                        q: "Bilangan heksadesimal 2A jika dikonversi ke desimal adalah...",
+                        options: ["A. 32", "B. 42", "C. 52", "D. 62"],
+                        answer: 1, // B
+                        explanation: "2A₁₆ = (2×16¹) + (A×16⁰) = (2×16) + (10×1) = 32 + 10 = 42₁₀."
+                    },
+                    {
+                        q: "Bilangan desimal 200 jika dikonversi ke heksadesimal adalah...",
+                        options: ["A. C8", "B. B8", "C. D8", "D. A8"],
+                        answer: 0, // A
+                        explanation: "200 ÷ 16 = 12 (Sisa 8). Angka 12 dalam heksadesimal adalah C. Jadi hasil = C8₁₆."
+                    },
+                    {
+                        q: "Bilangan desimal 255 jika dikonversi ke heksadesimal adalah...",
+                        options: ["A. FE", "B. FF", "C. F0", "D. EF"],
+                        answer: 1, // B
+                        explanation: "255 ÷ 16 = 15 (Sisa 15). 15 dalam hex = F. Maka sisanya F dan hasilnya FF₁₆."
+                    },
+                    {
+                        q: "Bilangan biner 11010111100 jika dikonversi ke oktal adalah...",
+                        options: ["A. 3274", "B. 3274", "C. 3474", "D. 3374"],
+                        answer: 1, // B
+                        explanation: "Bagi per 3 digit dari kanan: [011] [010] [111] [100] → 011₂=3, 010₂=2, 111₂=7, 100₂=4. Hasil = 3274₈."
+                    },
+                    {
+                        q: "Rina menemukan warna HTML #FF0000 (merah). Jika nilai FF pada kode tersebut diubah ke desimal, hasilnya adalah...",
+                        options: ["A. 100", "B. 200", "C. 255", "D. 256"],
+                        answer: 2, // C
+                        explanation: "Warna RGB dalam HTML menggunakan basis Heksadesimal 8-bit per saluran (00 sampai FF). Nilai maksimum FF₁₆ sama dengan 255₁₀ dalam desimal."
+                    },
+                    {
+                        q: "Budi ingin menyimpan file berukuran 8 GB. Jika 8 GB ≈ 8.000.000.000 byte, dan komputer menyimpannya dalam bentuk biner, maka komputer akan mengolah angka tersebut menggunakan sistem bilangan...",
+                        options: ["A. Desimal", "B. Biner", "C. Oktal", "D. Heksadesimal"],
+                        answer: 1, // B
+                        explanation: "Meskipun manusia membaca kapasitas dalam angka desimal, di tingkat paling dasar fisik memori komputer mengolah semua data dalam bentuk Biner (0 dan 1)."
+                    }
+                ]
+            }
+        };
+
+
+        // APP STATE MANAGED IN LOCALSTORAGE
+        let appData = {
+            student: {
+                nama: '',
+                kelas: '',
+                absen: ''
+            },
+            levels: {
+                easy: { completed: false, score: 0, correct: 0, date: '' },
+                normal: { completed: false, score: 0, correct: 0, date: '' },
+                hard: { completed: false, score: 0, correct: 0, date: '' }
+            }
+        };
+
+        // Active Quiz Execution Runtime State
+        let currentQuizState = {
+            levelKey: '',
+            questionIndex: 0,
+            selectedOption: null,
+            userAnswers: [],
+            score: 0
+        };
+
+        // INITIALIZATION
+        window.onload = function() {
+            loadStorage();
+            if (appData.student && appData.student.nama) {
+                updateStudentNav();
+                goToDashboard();
+            } else {
+                showView('view-identity');
+            }
+        };
+
+        function loadStorage() {
+            try {
+                const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (stored) {
+                    appData = JSON.parse(stored);
+                }
+            } catch (e) {
+                console.error('Failed to load localStorage:', e);
+            }
+        }
+
+        function saveStorage() {
+            try {
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appData));
+            } catch (e) {
+                console.error('Failed to save localStorage:', e);
+            }
+        }
+
+
+        function showView(viewId) {
+            const views = ['view-identity', 'view-dashboard', 'view-quiz', 'view-result', 'view-certificate'];
+            views.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            const target = document.getElementById(viewId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateStudentNav() {
+            const nav = document.getElementById('nav-student-info');
+            if (appData.student && appData.student.nama) {
+                document.getElementById('nav-student-name').innerText = appData.student.nama;
+                document.getElementById('nav-student-class').innerText = `${appData.student.kelas} (${appData.student.absen})`;
+                nav.classList.remove('hidden');
+            } else {
+                nav.classList.add('hidden');
+            }
+        }
+
+        function handleIdentitySubmit(e) {
+            e.preventDefault();
+            const nama = document.getElementById('input-nama').value.trim();
+            const kelas = document.getElementById('input-kelas').value.trim();
+            const absen = document.getElementById('input-absen').value.trim();
+
+            if (!nama || !kelas || !absen) {
+                alert('Silakan lengkapi seluruh data identitas.');
+                return;
+            }
+
+            appData.student = { nama, kelas, absen };
+            saveStorage();
+            updateStudentNav();
+            goToDashboard();
+        }
+
+
+        function goToDashboard() {
+            renderDashboard();
+            showView('view-dashboard');
+        }
+
+        function getPredicate(score) {
+            if (score >= 90) return '🏆 Sangat Baik';
+            if (score >= 80) return '🥇 Baik';
+            if (score >= 70) return '🥈 Cukup';
+            return '🌱 Perlu Belajar Lagi';
+        }
+
+        function renderDashboard() {
+            document.getElementById('dash-student-detail').innerText = `${appData.student.nama} (${appData.student.kelas} - Absen ${appData.student.absen})`;
+
+            // Render level card buttons and statuses
+            const keys = ['easy', 'normal', 'hard'];
+            
+            keys.forEach(key => {
+                const lvlData = appData.levels[key];
+                const badgeEl = document.getElementById(`badge-status-${key}`);
+                const containerEl = document.getElementById(`btn-container-${key}`);
+
+                if (lvlData.completed) {
+                    // COMPLETED STATE
+                    badgeEl.className = "text-xs px-2.5 py-1 rounded-md font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                    badgeEl.innerText = "🔒 SELESAI";
+
+                    containerEl.innerHTML = `
+                        <div class="bg-slate-900/80 rounded-xl p-3 mb-3 border border-slate-800 text-xs flex justify-between items-center">
+                            <div>
+                                <span class="text-slate-400 block">Nilai yang Diperoleh:</span>
+                                <span class="text-base font-extrabold text-amber-400">${lvlData.score} / 100</span>
+                            </div>
+                            <span class="text-xs font-semibold text-indigo-300 bg-indigo-900/40 px-2 py-1 rounded-lg border border-indigo-500/30">${getPredicate(lvlData.score)}</span>
+                        </div>
+                        <button onclick="viewCertificate('${key}')" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
+                            <i class="fa-solid fa-certificate text-sm"></i>
+                            <span>🏆 LIHAT SERTIFIKAT</span>
+                        </button>
+                    `;
+                } else {
+                    // UNFINISHED STATE
+                    badgeEl.className = "text-xs px-2.5 py-1 rounded-md font-semibold bg-slate-800 text-slate-400";
+                    badgeEl.innerText = "🟢 BELUM";
+
+                    let btnGradient = "from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-emerald-600/30";
+                    if (key === 'normal') btnGradient = "from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-blue-600/30";
+                    if (key === 'hard') btnGradient = "from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 shadow-rose-600/30";
+
+                    containerEl.innerHTML = `
+                        <button onclick="promptStartLevel('${key}')" class="w-full bg-gradient-to-r ${btnGradient} text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-xs tracking-wider">
+                            <i class="fa-solid fa-play"></i>
+                            <span>▶️ MULAI LEVEL ${key.toUpperCase()}</span>
+                        </button>
+                    `;
+                }
+            });
+
+            // Render Overall Progress Items
+            const progressContainer = document.getElementById('dashboard-progress-items');
+            let allFinished = keys.every(k => appData.levels[k].completed);
+
+            progressContainer.innerHTML = keys.map(k => {
+                const lvl = appData.levels[k];
+                const info = QUIZ_DATA[k];
+                return `
+                    <div class="bg-slate-900/60 rounded-xl p-3 border border-slate-800/80 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-slate-200 block">${info.title}</span>
+                            <span class="text-[11px] text-slate-400">${lvl.completed ? 'Nilai: ' + lvl.score : 'Belum Dikerjakan'}</span>
+                        </div>
+                        <div>
+                            ${lvl.completed 
+                                ? `<span class="text-xs text-emerald-400 font-bold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Selesai</span>` 
+                                : `<span class="text-xs text-slate-500 font-medium">🔒 Lock</span>`}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (allFinished) {
+                progressContainer.innerHTML += `
+                    <div class="sm:col-span-3 bg-gradient-to-r from-emerald-900/40 via-indigo-900/40 to-purple-900/40 border border-emerald-500/40 p-4 rounded-2xl text-center space-y-1">
+                        <p class="text-sm font-extrabold text-emerald-300">🎉 SELAMAT! SEMUA TANTANGAN INFORMATIKA SELESAI!</p>
+                        <p class="text-xs text-slate-300">Kamu telah menuntaskan seluruh 30 soal tantangan Sistem Komputer & Sistem Bilangan.</p>
+                    </div>
+                `;
+            }
+        }
+
+
+        let selectedLevelToStart = '';
+
+        function promptStartLevel(levelKey) {
+            if (appData.levels[levelKey].completed) {
+                viewCertificate(levelKey);
+                return;
+            }
+
+            selectedLevelToStart = levelKey;
+            const info = QUIZ_DATA[levelKey];
+            document.getElementById('confirm-level-title').innerText = `${info.title} — "${info.subtitle}"`;
+            document.getElementById('modal-confirm').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('modal-confirm').classList.add('hidden');
+        }
+
+        function startLevelConfirmed() {
+            closeConfirmModal();
+            const levelKey = selectedLevelToStart;
+            
+            currentQuizState = {
+                levelKey: levelKey,
+                questionIndex: 0,
+                selectedOption: null,
+                userAnswers: [],
+                score: 0
+            };
+
+            showView('view-quiz');
+            renderCurrentQuestion();
+        }
+
+        function renderCurrentQuestion() {
+            const data = QUIZ_DATA[currentQuizState.levelKey];
+            const q = data.questions[currentQuizState.questionIndex];
+
+            // Badge & Header Updates
+            const levelBadge = document.getElementById('quiz-level-badge');
+            levelBadge.innerText = data.title;
+            
+            if (data.color === 'emerald') levelBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+            if (data.color === 'blue') levelBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30";
+            if (data.color === 'rose') levelBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+
+            document.getElementById('quiz-level-name').innerText = data.subtitle;
+            document.getElementById('quiz-question-number').innerText = `${currentQuizState.questionIndex + 1} / 10`;
+
+            // Progress bar update
+            const fillPct = ((currentQuizState.questionIndex + 1) / 10) * 100;
+            document.getElementById('quiz-progress-fill').style.width = `${fillPct}%`;
+
+            // Question Text
+            document.getElementById('quiz-question-text').innerText = q.q;
+
+            // Options Container
+            const optsContainer = document.getElementById('quiz-options-container');
+            optsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 text-xs sm:text-sm text-slate-200 transition-all flex items-center justify-between group";
+                btn.onclick = () => selectOption(idx);
+                btn.id = `opt-btn-${idx}`;
+                btn.innerHTML = `
+                    <span class="font-medium group-hover:text-white">${opt}</span>
+                    <span class="w-5 h-5 rounded-full border border-slate-600 flex items-center justify-center text-[10px] text-transparent group-hover:border-indigo-400">✓</span>
+                `;
+                optsContainer.appendChild(btn);
+            });
+
+            // Reset Feedback & Next Button State
+            document.getElementById('quiz-feedback-box').classList.add('hidden');
+            const nextBtn = document.getElementById('btn-next-question');
+            nextBtn.disabled = true;
+            nextBtn.className = "opacity-50 cursor-not-allowed bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition flex items-center gap-2 text-sm";
+            
+            if (currentQuizState.questionIndex === 9) {
+                nextBtn.querySelector('span').innerText = "SELESAIKAN TANTANGAN";
+            } else {
+                nextBtn.querySelector('span').innerText = "SOAL SELANJUTNYA";
+            }
+
+            currentQuizState.selectedOption = null;
+        }
+
+        function selectOption(index) {
+            if (currentQuizState.selectedOption !== null) return; // Prevent re-selection
+            
+            currentQuizState.selectedOption = index;
+            const data = QUIZ_DATA[currentQuizState.levelKey];
+            const q = data.questions[currentQuizState.questionIndex];
+            const isCorrect = (index === q.answer);
+
+            // Highlight chosen & correct buttons
+            q.options.forEach((_, idx) => {
+                const btn = document.getElementById(`opt-btn-${idx}`);
+                btn.disabled = true;
+                btn.classList.add('cursor-default');
+
+                if (idx === q.answer) {
+                    btn.className = "w-full text-left bg-emerald-500/20 border-2 border-emerald-500 rounded-2xl p-4 text-xs sm:text-sm text-emerald-200 font-bold flex items-center justify-between";
+                    btn.querySelector('span:last-child').className = "w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center text-[10px] font-black";
+                    btn.querySelector('span:last-child').innerText = "✓";
+                } else if (idx === index && !isCorrect) {
+                    btn.className = "w-full text-left bg-rose-500/20 border-2 border-rose-500 rounded-2xl p-4 text-xs sm:text-sm text-rose-200 font-bold flex items-center justify-between";
+                    btn.querySelector('span:last-child').className = "w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-black";
+                    btn.querySelector('span:last-child').innerText = "✕";
+                } else {
+                    btn.className = "w-full text-left bg-slate-900/40 border border-slate-800 rounded-2xl p-4 text-xs sm:text-sm text-slate-500 opacity-50";
+                }
+            });
+
+            // Show Feedback Box
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            const feedbackTitle = document.getElementById('quiz-feedback-title');
+            const feedbackText = document.getElementById('quiz-feedback-text');
+
+            feedbackBox.classList.remove('hidden');
+            if (isCorrect) {
+                feedbackBox.className = "rounded-2xl p-4 border bg-emerald-950/40 border-emerald-500/40 text-xs space-y-1";
+                feedbackTitle.className = "font-bold text-sm text-emerald-400 flex items-center gap-2";
+                feedbackTitle.innerHTML = `<i class="fa-solid fa-circle-check"></i> Jawaban Kamu Benar! (+10 Poin)`;
+            } else {
+                feedbackBox.className = "rounded-2xl p-4 border bg-rose-950/40 border-rose-500/40 text-xs space-y-1";
+                feedbackTitle.className = "font-bold text-sm text-rose-400 flex items-center gap-2";
+                feedbackTitle.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Jawaban Kurang Tepat`;
+            }
+            feedbackText.innerText = q.explanation;
+
+            // Save choice
+            currentQuizState.userAnswers.push({
+                questionIndex: currentQuizState.questionIndex,
+                selected: index,
+                correct: isCorrect
+            });
+
+            // Enable Next Button
+            const nextBtn = document.getElementById('btn-next-question');
+            nextBtn.disabled = false;
+            nextBtn.className = "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition flex items-center gap-2 text-sm cursor-pointer";
+        }
+
+        function nextQuestion() {
+            if (currentQuizState.selectedOption === null) return;
+
+            if (currentQuizState.questionIndex < 9) {
+                currentQuizState.questionIndex++;
+                renderCurrentQuestion();
+            } else {
+                finishQuizLevel();
+            }
+        }
+
+        function finishQuizLevel() {
+            const key = currentQuizState.levelKey;
+            const correctCount = currentQuizState.userAnswers.filter(a => a.correct).length;
+            const score = correctCount * 10;
+            const todayStr = new Date().toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            // Save to state & LocalStorage
+            appData.levels[key] = {
+                completed: true,
+                score: score,
+                correct: correctCount,
+                date: todayStr
+            };
+
+            saveStorage();
+
+            // Populate Result View
+            document.getElementById('result-correct-count').innerText = `${correctCount} / 10`;
+            document.getElementById('result-score').innerText = `${score} / 100`;
+            document.getElementById('result-predicate').innerText = getPredicate(score);
+            document.getElementById('result-student-name').innerText = appData.student.nama;
+            document.getElementById('result-student-class').innerText = `${appData.student.kelas} (Absen ${appData.student.absen})`;
+            document.getElementById('result-level-title').innerText = `${QUIZ_DATA[key].title} - ${QUIZ_DATA[key].subtitle}`;
+            document.getElementById('result-date').innerText = todayStr;
+
+            showView('view-result');
+        }
+
+
+        function viewCertificateFromCurrent() {
+            viewCertificate(currentQuizState.levelKey);
+        }
+
+        function viewCertificate(levelKey) {
+            const lvlData = appData.levels[levelKey];
+            const info = QUIZ_DATA[levelKey];
+
+            if (!lvlData || !lvlData.completed) {
+                alert('Sertifikat belum tersedia untuk level ini.');
+                return;
+            }
+
+            // Populate Certificate HTML elements
+            document.getElementById('cert-student-name').innerText = appData.student.nama.toUpperCase();
+            document.getElementById('cert-student-class').innerText = appData.student.kelas;
+            document.getElementById('cert-student-absen').innerText = appData.student.absen;
+
+            const pillEl = document.getElementById('cert-level-pill');
+            const borderEl = document.getElementById('cert-theme-border');
+
+            pillEl.innerText = info.title;
+            document.getElementById('cert-level-description').innerText = `Tantangan Informatika ${info.title} — "${info.subtitle}"`;
+            document.getElementById('cert-score').innerText = `${lvlData.score} / 100`;
+            document.getElementById('cert-predicate').innerText = getPredicate(lvlData.score);
+            document.getElementById('cert-date').innerText = lvlData.date || new Date().toLocaleDateString('id-ID');
+
+            // Apply Level Color Themes for Certificate
+            if (levelKey === 'easy') {
+                pillEl.className = "inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-600 text-white";
+                borderEl.className = "border-4 border-emerald-600 rounded-2xl p-6 sm:p-10 relative bg-gradient-to-b from-white via-emerald-50/20 to-white";
+            } else if (levelKey === 'normal') {
+                pillEl.className = "inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-blue-600 text-white";
+                borderEl.className = "border-4 border-blue-600 rounded-2xl p-6 sm:p-10 relative bg-gradient-to-b from-white via-blue-50/20 to-white";
+            } else if (levelKey === 'hard') {
+                pillEl.className = "inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-rose-600 text-white";
+                borderEl.className = "border-4 border-rose-600 rounded-2xl p-6 sm:p-10 relative bg-gradient-to-b from-white via-rose-50/20 to-white";
+            }
+
+            showView('view-certificate');
+        }
+
+
+        function openMiniConverter() {
+            document.getElementById('modal-converter').classList.remove('hidden');
+        }
+
+        function closeMiniConverter() {
+            document.getElementById('modal-converter').classList.add('hidden');
+        }
+
+        function convertFromDec(val) {
+            const dec = parseInt(val, 10);
+            if (isNaN(dec)) {
+                clearCalcFields(['calc-bin', 'calc-oct', 'calc-hex']);
+                return;
+            }
+            document.getElementById('calc-bin').value = dec.toString(2);
+            document.getElementById('calc-oct').value = dec.toString(8);
+            document.getElementById('calc-hex').value = dec.toString(16).toUpperCase();
+        }
+
+        function convertFromBin(val) {
+            const clean = val.replace(/[^01]/g, '');
+            document.getElementById('calc-bin').value = clean;
+            if (!clean) {
+                clearCalcFields(['calc-dec', 'calc-oct', 'calc-hex']);
+                return;
+            }
+            const dec = parseInt(clean, 2);
+            document.getElementById('calc-dec').value = dec;
+            document.getElementById('calc-oct').value = dec.toString(8);
+            document.getElementById('calc-hex').value = dec.toString(16).toUpperCase();
+        }
+
+        function convertFromOct(val) {
+            const clean = val.replace(/[^0-7]/g, '');
+            document.getElementById('calc-oct').value = clean;
+            if (!clean) {
+                clearCalcFields(['calc-dec', 'calc-bin', 'calc-hex']);
+                return;
+            }
+            const dec = parseInt(clean, 8);
+            document.getElementById('calc-dec').value = dec;
+            document.getElementById('calc-bin').value = dec.toString(2);
+            document.getElementById('calc-hex').value = dec.toString(16).toUpperCase();
+        }
+
+        function convertFromHex(val) {
+            const clean = val.replace(/[^0-9a-fA-F]/g, '').toUpperCase();
+            document.getElementById('calc-hex').value = clean;
+            if (!clean) {
+                clearCalcFields(['calc-dec', 'calc-bin', 'calc-oct']);
+                return;
+            }
+            const dec = parseInt(clean, 16);
+            document.getElementById('calc-dec').value = dec;
+            document.getElementById('calc-bin').value = dec.toString(2);
+            document.getElementById('calc-oct').value = dec.toString(8);
+        }
+
+        function clearCalcFields(ids) {
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+        }
+    </script>
+</body>
+</html>
+```
