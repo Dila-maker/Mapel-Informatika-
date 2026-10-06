@@ -3,238 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Edukasi: Kamera Benar-Salah - Sistem Komputer</title>
+    <title>Game Edukasi: Bergerak ke Benar atau Salah</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #fce4ec 0%, #e3f2fd 100%);
-            margin: 0;
-            padding: 20px;
+            background: #1a1a2e;
+            color: white;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            color: #333;
+            height: 100vh;
+            overflow: hidden; /* Mencegah scroll */
         }
 
+        /* Header Soal */
         .header {
-            text-align: center;
-            margin-bottom: 20px;
-            background: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border: 3px solid #ff4081;
-        }
-
-        .header h1 {
-            margin: 0;
-            color: #1a237e;
-            font-size: 2em;
-        }
-
-        .header p {
-            margin: 5px 0 0;
-            color: #ff4081;
-            font-weight: bold;
-        }
-
-        .game-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            max-width: 1000px;
-            width: 100%;
-        }
-
-        .camera-section {
-            flex: 1;
-            min-width: 300px;
-            background: white;
+            background: #16213e;
             padding: 15px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border: 3px solid #1a237e;
+            text-align: center;
+            border-bottom: 4px solid #ff4081;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        .header h2 {
+            color: #e94560;
+            margin-bottom: 5px;
+            font-size: 1.2em;
+        }
+
+        #questionText {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* Area Layar Terbagi Dua */
+        .game-area {
+            display: flex;
+            flex: 1;
+            position: relative;
+            transition: transform 0.1s; /* Untuk animasi getar */
+        }
+
+        /* Sisi Hijau (Kiri) */
+        .side-green {
+            flex: 1;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
+            border-right: 4px dashed #fff;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .camera-section h2 {
-            color: #1a237e;
-            margin-top: 0;
+        .side-green:hover {
+            background: linear-gradient(135deg, #0e8a7e, #2dd46b);
         }
 
-        #videoElement {
-            width: 100%;
-            max-width: 400px;
-            height: auto;
-            border-radius: 15px;
-            border: 3px solid #ff4081;
-            background: #000;
-            transform: scaleX(-1); /* Efek cermin */
-        }
-
-        .status-cam {
-            margin-top: 10px;
-            font-weight: bold;
-            color: #4caf50;
-        }
-
-        .quiz-section {
+        /* Sisi Merah (Kanan) */
+        .side-red {
             flex: 1;
-            min-width: 300px;
-            background: white;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border: 3px solid #1a237e;
+            background: linear-gradient(135deg, #cb2d3e, #ef473a);
             display: flex;
             flex-direction: column;
             justify-content: center;
-        }
-
-        .question-box {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-            border-left: 8px solid #ff4081;
-        }
-
-        .question-box h3 {
-            margin: 0;
-            color: #1a237e;
-            font-size: 1.2em;
-        }
-
-        .options {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .btn-option {
-            padding: 15px 30px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 12px;
+            align-items: center;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .side-red:hover {
+            background: linear-gradient(135deg, #b02635, #d93d30);
+        }
+
+        .side-green h1, .side-red h1 {
+            font-size: 4em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .side-green p, .side-red p {
+            font-size: 1.5em;
             font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Tombol Guru (Kontrol) */
+        .control-panel {
+            background: #0f3460;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            border-top: 4px solid #e94560;
+            z-index: 10;
+        }
+
+        .btn-control {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            flex: 1;
-            max-width: 200px;
+            text-transform: uppercase;
         }
 
-        .btn-benar {
-            background-color: #4caf50;
+        .btn-show {
+            background: #fca311;
+            color: #000;
+            box-shadow: 0 5px 0 #b87a0d;
+        }
+
+        .btn-next {
+            background: #00b4d8;
             color: white;
-            box-shadow: 0 4px 0 #2e7d32;
+            box-shadow: 0 5px 0 #0077b6;
         }
 
-        .btn-salah {
-            background-color: #f44336;
-            color: white;
-            box-shadow: 0 4px 0 #c62828;
-        }
-
-        .btn-option:active {
-            transform: translateY(4px);
+        .btn-control:active {
+            transform: translateY(5px);
             box-shadow: none;
         }
 
-        .btn-option:disabled {
-            opacity: 0.6;
+        .btn-control:disabled {
+            opacity: 0.5;
             cursor: not-allowed;
-            transform: translateY(4px);
+            transform: translateY(5px);
             box-shadow: none;
         }
 
-        .feedback {
-            margin-top: 20px;
-            text-align: center;
+        /* Overlay Animasi */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 8em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 20;
+            transition: opacity 0.3s;
+        }
+
+        .overlay.show {
+            opacity: 1;
+        }
+
+        /* Animasi Getar untuk Salah */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* Animasi Confetti (Menggunakan Canvas) */
+        #confettiCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 15;
+            display: none;
+        }
+
+        /* Skor */
+        .score-display {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 20px;
+            border-radius: 20px;
             font-weight: bold;
             font-size: 1.2em;
-            min-height: 30px;
-        }
-
-        .score-board {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 1.1em;
-            color: #1a237e;
-            font-weight: bold;
-        }
-
-        .instruction {
-            margin-top: 15px;
-            font-size: 0.9em;
-            color: #666;
-            text-align: center;
-            background: #fff3e0;
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .game-container {
-                flex-direction: column;
-            }
-            .header h1 {
-                font-size: 1.5em;
-            }
+            z-index: 30;
         }
     </style>
 </head>
 <body>
 
+    <!-- Header Pertanyaan -->
     <div class="header">
-        <h1>📸 Game Edukasi: Kamera Benar-Salah</h1>
-        <p>Tantang Pengetahuan Sistem Komputer!</p>
+        <h2 id="questionNumber">Soal 1 dari 5</h2>
+        <div id="questionText">Memuat pertanyaan...</div>
     </div>
 
-    <div class="game-container">
-        <!-- Bagian Kamera -->
-        <div class="camera-section">
-            <h2>📷 Kamera Anda</h2>
-            <video id="videoElement" autoplay playsinline></video>
-            <div class="status-cam" id="statusCam">Menghubungkan kamera...</div>
-            <div class="instruction">
-                <strong>Aturan Main:</strong><br>
-                Tunjukkan <b>Jempol (👍)</b> untuk jawaban <b>BENAR</b>.<br>
-                Tunjukkan <b>Tidak (👎)</b> untuk jawaban <b>SALAH</b>.<br>
-                <i>(AI akan mendeteksi gerakan tangan Anda secara real-time)</i>
-            </div>
+    <!-- Area Permainan -->
+    <div class="game-area" id="gameArea">
+        <!-- Sisi Hijau -->
+        <div class="side-green" onclick="pilihSisi('benar')">
+            <h1>👍</h1>
+            <p>BENAR</p>
+        </div>
+        <!-- Sisi Merah -->
+        <div class="side-red" onclick="pilihSisi('salah')">
+            <h1>👎</h1>
+            <p>SALAH</p>
         </div>
 
-        <!-- Bagian Kuis -->
-        <div class="quiz-section">
-            <div class="question-box">
-                <h3 id="questionText">Memuat pertanyaan...</h3>
-            </div>
-            
-            <div class="options">
-                <button class="btn-option btn-benar" id="btnBenar" onclick="jawab('benar')">👍 BENAR</button>
-                <button class="btn-option btn-salah" id="btnSalah" onclick="jawab('salah')">👎 SALAH</button>
-            </div>
-
-            <div class="feedback" id="feedback"></div>
-            
-            <div class="score-board">
-                Skor: <span id="score">0</span> | Soal: <span id="currentQ">1</span>/<span id="totalQ">5</span>
-            </div>
-        </div>
+        <!-- Overlay Animasi -->
+        <div class="overlay" id="overlayAnim"></div>
+        <canvas id="confettiCanvas"></canvas>
     </div>
 
-    <!-- Library MediaPipe untuk deteksi tangan -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <!-- Panel Kontrol Guru -->
+    <div class="control-panel">
+        <div class="score-display">Skor: <span id="score">0</span></div>
+        <button class="btn-control btn-show" id="btnShow" onclick="tunjukkanJawaban()">TUNJUKKAN JAWABAN</button>
+        <button class="btn-control btn-next" id="btnNext" onclick="soalBerikutnya()" disabled>SOAL BERIKUTNYA ➡️</button>
+    </div>
 
     <script>
-        // Data Soal
+        // Data Soal (Materi Sistem Komputer)
         const questions = [
             { q: "Hardware adalah perangkat fisik komputer yang dapat dilihat dan disentuh.", a: "benar" },
             { q: "Software adalah komponen komputer yang berbentuk fisik dan berwujud.", a: "salah" },
@@ -245,144 +247,177 @@
 
         let currentIndex = 0;
         let score = 0;
-        let isAnswered = false;
+        let pilihanSiswa = null; // Menyimpan pilihan sisi (benar/salah)
+        let sudahDijawab = false;
 
         // Elemen DOM
+        const questionNumber = document.getElementById('questionNumber');
         const questionText = document.getElementById('questionText');
-        const feedback = document.getElementById('feedback');
         const scoreEl = document.getElementById('score');
-        const currentQEl = document.getElementById('currentQ');
-        const totalQEl = document.getElementById('totalQ');
-        const btnBenar = document.getElementById('btnBenar');
-        const btnSalah = document.getElementById('btnSalah');
-        const videoElement = document.getElementById('videoElement');
-        const statusCam = document.getElementById('statusCam');
-
-        totalQEl.innerText = questions.length;
+        const btnShow = document.getElementById('btnShow');
+        const btnNext = document.getElementById('btnNext');
+        const overlayAnim = document.getElementById('overlayAnim');
+        const gameArea = document.getElementById('gameArea');
+        const canvas = document.getElementById('confettiCanvas');
 
         // Fungsi Load Soal
         function loadQuestion() {
             if (currentIndex >= questions.length) {
                 questionText.innerText = "🎉 Permainan Selesai!";
-                feedback.innerHTML = `Skor Akhir Anda: <b>${score}</b> dari ${questions.length}`;
-                btnBenar.disabled = true;
-                btnSalah.disabled = true;
+                questionNumber.innerText = "Terima Kasih";
+                btnShow.disabled = true;
+                btnNext.disabled = true;
+                overlayAnim.innerText = "🏆";
+                overlayAnim.classList.add('show');
                 return;
             }
-            isAnswered = false;
+            sudahDijawab = false;
+            pilihanSiswa = null;
+            questionNumber.innerText = `Soal ${currentIndex + 1} dari ${questions.length}`;
             questionText.innerText = questions[currentIndex].q;
-            feedback.innerText = "";
-            currentQEl.innerText = currentIndex + 1;
-            btnBenar.disabled = false;
-            btnSalah.disabled = false;
+            
+            // Reset tombol
+            btnShow.disabled = false;
+            btnNext.disabled = true;
+            overlayAnim.classList.remove('show');
+            overlayAnim.innerText = "";
+            canvas.style.display = 'none';
         }
 
-        // Fungsi Jawab
-        function jawab(pilihan) {
-            if (isAnswered) return;
-            isAnswered = true;
-            btnBenar.disabled = true;
-            btnSalah.disabled = true;
+        // Fungsi saat Guru mengklik Sisi (atau siswa menyentuh layar)
+        function pilihSisi(pilihan) {
+            if (sudahDijawab) return; // Jika sudah dikunci, tidak bisa ganti
+            pilihanSiswa = pilihan;
+            
+            // Efek visual saat memilih
+            if (pilihan === 'benar') {
+                document.querySelector('.side-green').style.border = "8px solid yellow";
+                document.querySelector('.side-red').style.border = "none";
+            } else {
+                document.querySelector('.side-red').style.border = "8px solid yellow";
+                document.querySelector('.side-green').style.border = "none";
+            }
+        }
 
-            const correctAnswer = questions[currentIndex].a;
-            if (pilihan === correctAnswer) {
+        // Fungsi Guru menekan "Tunjukkan Jawaban"
+        function tunjukkanJawaban() {
+            if (sudahDijawab) return;
+            if (!pilihanSiswa) {
+                alert("Siswa belum memilih sisi! Silakan pilih area Hijau atau Merah terlebih dahulu.");
+                return;
+            }
+
+            sudahDijawab = true;
+            btnShow.disabled = true;
+            btnNext.disabled = false;
+
+            const jawabanBenar = questions[currentIndex].a;
+            
+            // Hapus border pilihan
+            document.querySelector('.side-green').style.border = "none";
+            document.querySelector('.side-red').style.border = "none";
+
+            // Cek Jawaban
+            if (pilihanSiswa === jawabanBenar) {
+                // JAWABAN BENAR
                 score += 20;
-                feedback.innerHTML = "✅ <span style='color: #4caf50;'>Tepat! Jawaban Anda Benar.</span>";
                 scoreEl.innerText = score;
+                
+                // Animasi Benar
+                overlayAnim.innerText = "✅ BENAR!";
+                overlayAnim.style.color = "#4caf50";
+                overlayAnim.classList.add('show');
+                
+                // Jalankan Confetti
+                canvas.style.display = 'block';
+                startConfetti();
+                
+                // Sembunyikan overlay setelah 2 detik
+                setTimeout(() => {
+                    overlayAnim.classList.remove('show');
+                    canvas.style.display = 'none';
+                }, 2500);
+
             } else {
-                feedback.innerHTML = `❌ <span style='color: #f44336;'>Salah! Jawaban yang benar adalah <b>${correctAnswer.toUpperCase()}</b>.</span>`;
-            }
-
-            setTimeout(() => {
-                currentIndex++;
-                loadQuestion();
-            }, 2000);
-        }
-
-        // Inisialisasi Kamera dan MediaPipe Hands
-        const hands = new Hands({
-            locateFile: (file) => {
-                return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-            }
-        });
-
-        hands.setOptions({
-            maxNumHands: 1,
-            modelComplexity: 1,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5
-        });
-
-        hands.onResults(onResults);
-
-        // Fungsi Deteksi Gestur
-        function onResults(results) {
-            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-                const landmarks = results.multiHandLandmarks[0];
+                // JAWABAN SALAH
+                overlayAnim.innerText = "❌ SALAH!";
+                overlayAnim.style.color = "#f44336";
+                overlayAnim.classList.add('show');
                 
-                // Logika sederhana: Cek posisi ujung jari (Tip) vs sendi (PIP)
-                // Landmark 8 = Ujung Telunjuk, 6 = Sendi Telunjuk
-                // Landmark 4 = Ujung Jempol, 3 = Sendi Jempol
-                
-                const indexTip = landmarks[8];
-                const indexPip = landmarks[6];
-                const thumbTip = landmarks[4];
-                const thumbMcp = landmarks[2];
+                // Animasi Getar pada layar
+                gameArea.classList.add('shake');
+                setTimeout(() => {
+                    gameArea.classList.remove('shake');
+                }, 500);
 
-                // Deteksi Jempol ke Atas (Thumbs Up)
-                // Jempol lurus ke atas (y lebih kecil dari sendi) dan telunjuk menekuk
-                const isThumbUp = thumbTip.y < thumbMcp.y && indexTip.y > indexPip.y;
-                
-                // Deteksi Jempol ke Bawah (Thumbs Down)
-                // Jempol lurus ke bawah (y lebih besar dari sendi)
-                const isThumbDown = thumbTip.y > thumbMcp.y && indexTip.y > indexPip.y;
-
-                if (isThumbUp && !isAnswered) {
-                    statusCam.innerText = "🟢 Gestur: JEMPOL (BENAR)";
-                    statusCam.style.color = "#4caf50";
-                    jawab('benar');
-                } else if (isThumbDown && !isAnswered) {
-                    statusCam.innerText = "🔴 Gestur: TIDAK (SALAH)";
-                    statusCam.style.color = "#f44336";
-                    jawab('salah');
-                } else {
-                    statusCam.innerText = "🟡 Menunggu Gestur...";
-                    statusCam.style.color = "#ff9800";
-                }
-            } else {
-                statusCam.innerText = "🔴 Tidak ada tangan terdeteksi";
-                statusCam.style.color = "#f44336";
+                // Sembunyikan overlay setelah 2 detik
+                setTimeout(() => {
+                    overlayAnim.classList.remove('show');
+                }, 2000);
             }
         }
 
-        // Setup Kamera
-        async function setupCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                videoElement.srcObject = stream;
-                
-                const camera = new Camera(videoElement, {
-                    onFrame: async () => {
-                        await hands.send({image: videoElement});
-                    },
-                    width: 640,
-                    height: 480
+        // Fungsi Lanjut ke Soal Berikutnya
+        function soalBerikutnya() {
+            currentIndex++;
+            loadQuestion();
+        }
+
+        // --- Logika Confetti Sederhana ---
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId;
+
+        function startConfetti() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            
+            for (let i = 0; i < 150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 8 + 4,
+                    speedY: Math.random() * 3 + 2,
+                    speedX: Math.random() * 2 - 1,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
                 });
-                camera.start();
-                statusCam.innerText = "🟢 Kamera Aktif";
-            } catch (error) {
-                console.error("Error accessing camera: ", error);
-                statusCam.innerText = "❌ Gagal mengakses kamera. Pastikan izin diberikan.";
-                statusCam.style.color = "#f44336";
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let active = false;
+            
+            particles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                
+                // Gambar persegi panjang sebagai confetti
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.size, p.size * 0.6);
+                
+                if (p.y < canvas.height) active = true;
+            });
+
+            if (active) {
+                animationId = requestAnimationFrame(animateConfetti);
+            } else {
+                cancelAnimationFrame(animationId);
             }
         }
 
         // Mulai Game
         window.onload = () => {
             loadQuestion();
-            setupCamera();
         };
 
+        // Sesuaikan ukuran canvas jika layar berubah
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>
