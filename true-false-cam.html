@@ -119,6 +119,14 @@
             background-image: radial-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px);
             background-size: 24px 24px;
         }
+
+        /* Compact HUD Glassmorphism */
+        .hud-glass {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen text-slate-800 polka-bg">
@@ -305,69 +313,77 @@
         <!-- ================= PAGE 2: INTERACTIVE GAME PAGE ================= -->
         <section id="pageGame" class="w-full hidden flex-col items-center max-w-5xl mx-auto relative">
             
-            <!-- Top HUD Bar (Question & Countdown Timer) -->
-            <div class="w-full bubble-card p-4 md:p-6 mb-4 shadow-xl relative z-30 border-4 border-white">
-                
-                <!-- Progress & Score Header -->
-                <div class="flex items-center justify-between mb-3">
-                    <span class="px-3.5 py-1.5 rounded-full bg-blue-100 text-blue-800 font-fredoka font-bold text-xs md:text-sm border border-blue-200" id="hudProgressText">
-                        Soal 1 / 5
-                    </span>
-
-                    <!-- Center Countdown Timer Badge -->
-                    <div class="relative flex items-center justify-center">
-                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-amber-400 text-amber-950 border-4 border-white flex flex-col items-center justify-center font-fredoka font-bold shadow-lg transform transition" id="timerBadge">
-                            <span class="text-xl md:text-2xl leading-none" id="hudTimerSec">10</span>
-                            <span class="text-[9px] text-amber-900 font-bold uppercase tracking-wider">Detik</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        <span class="px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-fredoka font-bold text-xs md:text-sm border border-emerald-200">
-                            ⭐ Skor: <span id="hudScore">0</span>
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Displayed Question Box -->
-                <div class="bg-white p-4 md:p-5 rounded-2xl border-4 border-amber-300 shadow-inner text-center relative">
-                    <span class="absolute -top-3 left-4 px-3 py-0.5 rounded-full bg-amber-400 text-amber-950 text-[10px] font-bold uppercase tracking-wider font-fredoka" id="hudSubjectBadge">
-                        Kuis Interaktif
-                    </span>
-                    <h3 class="font-fredoka font-bold text-lg md:text-2xl text-slate-800 leading-snug mt-1" id="hudQuestionText">
-                        💡 Memuat Pertanyaan...
-                    </h3>
-                </div>
-            </div>
-
-            <!-- SPLIT SCREEN CAMERA FEED CONTAINER -->
-            <div class="w-full relative min-h-[400px] md:min-h-[460px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 flex">
+            <!-- COMBINED CAMERA FEED & HUD CONTAINER -->
+            <div class="w-full relative min-h-[80vh] md:min-h-[520px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 flex flex-col justify-between">
                 
                 <!-- WebRTC Background Video Feed -->
-                <video id="webcamVideo" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover video-mirror opacity-80 z-0"></video>
+                <video id="webcamVideo" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover video-mirror opacity-85 z-0"></video>
+
+                <!-- TOP FLOATING HUD BAR (Questions & Countdown Timer) -->
+                <div class="relative z-30 p-2 md:p-4 w-full">
+                    <div class="hud-glass p-3 md:p-4 rounded-2xl max-w-3xl mx-auto flex flex-col gap-2 shadow-lg">
+                        
+                        <!-- HUD Header Info & Timer -->
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-fredoka font-bold text-xs border border-blue-200" id="hudProgressText">
+                                Soal 1 / 5
+                            </span>
+
+                            <!-- Center Countdown Timer Badge -->
+                            <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-amber-950 font-fredoka font-bold text-xs md:text-sm shadow-sm border-2 border-white" id="timerBadge">
+                                <span>⏰</span>
+                                <span class="text-base md:text-lg font-extrabold leading-none" id="hudTimerSec">10</span>
+                                <span class="text-[10px] uppercase font-bold">Detik</span>
+                            </div>
+
+                            <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-fredoka font-bold text-xs border border-emerald-200">
+                                ⭐ <span id="hudScore">0</span>
+                            </span>
+                        </div>
+
+                        <!-- Displayed Question Box -->
+                        <div class="bg-white/90 p-2.5 md:p-3 rounded-xl border-2 border-amber-300 text-center relative shadow-inner">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700 block font-fredoka mb-0.5" id="hudSubjectBadge">
+                                Kuis Interaktif
+                            </span>
+                            <h3 class="font-fredoka font-bold text-sm md:text-xl text-slate-800 leading-tight" id="hudQuestionText">
+                                💡 Memuat Pertanyaan...
+                            </h3>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Feedback Banner Overlay (BENAR / SALAH / WAKTU HABIS) -->
                 <div id="feedbackBanner" class="absolute inset-0 z-40 flex items-center justify-center pointer-events-none hidden animate-pop">
-                    <div id="feedbackBannerCard" class="px-8 py-6 rounded-3xl bg-white/95 backdrop-blur-md border-8 border-emerald-400 shadow-2xl text-center">
-                        <span class="text-6xl block mb-2" id="feedbackEmoji">✅</span>
-                        <h2 class="font-fredoka font-bold text-3xl md:text-5xl" id="feedbackText">BENAR!</h2>
+                    <div id="feedbackBannerCard" class="px-6 py-4 rounded-2xl bg-white/95 backdrop-blur-md border-4 border-emerald-400 shadow-2xl text-center">
+                        <span class="text-4xl block mb-1" id="feedbackEmoji">✅</span>
+                        <h2 class="font-fredoka font-bold text-2xl md:text-4xl" id="feedbackText">BENAR!</h2>
                     </div>
                 </div>
 
-                <!-- LEFT OVERLAY: BENAR (HIJAU SAMAR) -->
-                <div id="cardOptionBENAR" onclick="selectAnswer('BENAR')" class="relative z-20 w-1/2 h-full min-h-[400px] md:min-h-[460px] bg-emerald-500/20 border-r border-white/30 hover:bg-emerald-500/35 transition-all duration-300 cursor-pointer p-6 flex flex-col justify-center items-center text-center group rounded-l-3xl">
-                    <span class="text-7xl md:text-9xl drop-shadow-lg block animate-float-cute">✅</span>
-                    <h3 class="font-fredoka font-extrabold text-4xl md:text-6xl text-emerald-100 drop-shadow-[0_4px_8px_rgba(0,0,0,0.7)] uppercase tracking-wider mt-3">
-                        BENAR
-                    </h3>
-                </div>
+                <!-- SPLIT SCREEN ANSWER OPTIONS OVERLAY (COMPACT & CENTERED) -->
+                <div class="relative z-20 flex-grow w-full flex items-center justify-between pointer-events-auto">
+                    
+                    <!-- LEFT OVERLAY: BENAR -->
+                    <div id="cardOptionBENAR" onclick="selectAnswer('BENAR')" class="w-1/2 h-full bg-emerald-500/20 border-r-2 border-white/30 hover:bg-emerald-500/35 transition-all duration-300 cursor-pointer p-3 flex flex-col justify-center items-center text-center group">
+                        <div class="bg-emerald-500/80 backdrop-blur-sm px-4 py-3 rounded-2xl border-2 border-white/60 shadow-md flex items-center gap-2 transform group-hover:scale-110 transition">
+                            <span class="text-2xl md:text-3xl">✅</span>
+                            <h3 class="font-fredoka font-extrabold text-lg md:text-2xl text-white uppercase tracking-wider drop-shadow">
+                                BENAR
+                            </h3>
+                        </div>
+                    </div>
 
-                <!-- RIGHT OVERLAY: SALAH (MERAH SAMAR) -->
-                <div id="cardOptionSALAH" onclick="selectAnswer('SALAH')" class="relative z-20 w-1/2 h-full min-h-[400px] md:min-h-[460px] bg-rose-500/20 border-l border-white/30 hover:bg-rose-500/35 transition-all duration-300 cursor-pointer p-6 flex flex-col justify-center items-center text-center group rounded-r-3xl">
-                    <span class="text-7xl md:text-9xl drop-shadow-lg block animate-float-cute" style="animation-delay: 0.5s;">❌</span>
-                    <h3 class="font-fredoka font-extrabold text-4xl md:text-6xl text-rose-100 drop-shadow-[0_4px_8px_rgba(0,0,0,0.7)] uppercase tracking-wider mt-3">
-                        SALAH
-                    </h3>
+                    <!-- RIGHT OVERLAY: SALAH -->
+                    <div id="cardOptionSALAH" onclick="selectAnswer('SALAH')" class="w-1/2 h-full bg-rose-500/20 border-l-2 border-white/30 hover:bg-rose-500/35 transition-all duration-300 cursor-pointer p-3 flex flex-col justify-center items-center text-center group">
+                        <div class="bg-rose-500/80 backdrop-blur-sm px-4 py-3 rounded-2xl border-2 border-white/60 shadow-md flex items-center gap-2 transform group-hover:scale-110 transition">
+                            <span class="text-2xl md:text-3xl">❌</span>
+                            <h3 class="font-fredoka font-extrabold text-lg md:text-2xl text-white uppercase tracking-wider drop-shadow">
+                                SALAH
+                            </h3>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -786,8 +802,8 @@
             const cardBENAR = document.getElementById('cardOptionBENAR');
             const cardSALAH = document.getElementById('cardOptionSALAH');
 
-            cardBENAR.className = 'relative z-20 w-1/2 h-full min-h-[400px] md:min-h-[460px] bg-emerald-500/20 border-r border-white/30 hover:bg-emerald-500/35 transition-all duration-300 cursor-pointer p-6 flex flex-col justify-center items-center text-center group rounded-l-3xl';
-            cardSALAH.className = 'relative z-20 w-1/2 h-full min-h-[400px] md:min-h-[460px] bg-rose-500/20 border-l border-white/30 hover:bg-rose-500/35 transition-all duration-300 cursor-pointer p-6 flex flex-col justify-center items-center text-center group rounded-r-3xl';
+            cardBENAR.className = 'w-1/2 h-full bg-emerald-500/20 border-r-2 border-white/30 hover:bg-emerald-500/35 transition-all duration-300 cursor-pointer p-3 flex flex-col justify-center items-center text-center group';
+            cardSALAH.className = 'w-1/2 h-full bg-rose-500/20 border-l-2 border-white/30 hover:bg-rose-500/35 transition-all duration-300 cursor-pointer p-3 flex flex-col justify-center items-center text-center group';
         }
 
         function startQuizTimer() {
@@ -812,6 +828,68 @@
             if (timerInterval) {
                 clearInterval(timerInterval);
                 timerInterval = null;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const timerBadge = document.getElementById('timerBadge');
+            const timerText = document.getElementById('hudTimerSec');
+
+            timerText.textContent = secondsLeft;
+
+            if (secondsLeft <= 3) {
+                timerBadge.className = 'flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500 text-white font-fredoka font-bold text-xs md:text-sm shadow-md border-2 border-white animate-bounce';
+            } else {
+                timerBadge.className = 'flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-amber-950 font-fredoka font-bold text-xs md:text-sm shadow-sm border-2 border-white';
+            }
+        }
+
+        function selectAnswer(userChoice) {
+            if (isQuestionAnswered) return;
+            isQuestionAnswered = true;
+            stopQuizTimer();
+
+            const currentQ = activeQuestions[currentQuestionIndex];
+            const isCorrect = userChoice === currentQ.correct;
+
+            if (isCorrect) {
+                score += 10;
+                document.getElementById('hudScore').textContent = score;
+                sound.playCorrect();
+                showFeedbackBanner('correct', 'BENAR!', '✅');
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                sound.playWrong();
+                showFeedbackBanner('wrong', `SALAH! (Jawaban: ${currentQ.correct})`, '❌');
+            }
+
+            revealCorrectAnswer(currentQ.correct);
+
+            userAnswersHistory.push({
+                question: currentQ.q,
+                userChoice: userChoice,
+                correctChoice: currentQ.correct,
+                isCorrect: isCorrect
+            });
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }, 2200);
+        }
+
+        function revealCorrectAnswer(correctChoice) {
+            const cardBENAR = document.getElementById('cardOptionBENAR');
+            const cardSALAH = document.getElementById('cardOptionSALAH');
+
+            if (correctChoice === 'BENAR') {
+                cardBENAR.className = 'w-1/2 h-full bg-emerald-500/60 border-4 border-emerald-300 ring-4 ring-emerald-400 p-3 flex flex-col justify-center items-center text-center animate-pulse transform scale-105 transition-all duration-300';
+            } else {
+                cardSALAH.className = 'w-1/2 h-full bg-rose-500/60 border-4 border-rose-300 ring-4 ring-rose-400 p-3 flex flex-col justify-center items-center text-center animate-pulse transform scale-105 transition-all duration-300';
             }
         }
 
