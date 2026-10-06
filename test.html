@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Edukasi Interaktif: Kamera Benar-Salah</title>
+    <style>
+        /* --- RESET & GLOBAL --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #1a1a2e;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- HALAMAN GURU (SETUP) --- */
+        #setup-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f3460, #16213e);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .setup-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 800px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .setup-card h1 {
+            text-align: center;
+            color: #00e5ff;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-shadow: 0 0 10px rgba(0,229,255,0.5);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #e0e0e0;
+        }
+
+        /* Timer Buttons */
+        .timer-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .timer-btn {
+            padding: 10px 20px;
+            border: 2px solid #00e5ff;
+            background: transparent;
+            color: #00e5ff;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .timer-btn.active, .timer-btn:hover {
+            background: #00e5ff;
+            color: #1a1a2e;
+            box-shadow: 0 0 15px rgba(0,229,255,0.6);
+        }
+
+        /* Soal List */
+        .soal-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+        }
+
+        .soal-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00e5ff;
+            position: relative;
+        }
+
+        .soal-item textarea, .soal-item input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #222;
+            color: #fff;
+            font-size: 0.9em;
+        }
+
+        .soal-item input[type="text"] {
+            font-weight: bold;
+            color: #00e5ff;
+        }
+
+        .soal-item .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .soal-item .row input {
+            flex: 1;
+        }
+
+        .btn-hapus {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-add {
+            background: #00b4d8;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #0077b6;
+        }
+
+        .btn-start {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 0 #2e7d32;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .btn-start:active {
+            transform: translateY(5px);
+            box-shadow: none;
+        }
+
+        /* --- HALAMAN GAME --- */
+        #game-page {
+            display: none; /* Sembunyikan awalnya */
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Video Kamera (Fullscreen) */
+        #camera-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            transform: scaleX(-1); /* Efek cermin */
+        }
+
+        /* Overlay Terbagi Dua (Samar) */
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            pointer-events: none; /* Agar tidak menghalangi klik jika ada */
+        }
+
+        .overlay-left {
+            flex: 1;
+            background: rgba(76, 175, 80, 0.3); /* Hijau Samar */
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 50px;
+            border-right: 2px dashed rgba(255,255,255,0.3);
+            transition: background 0.3s;
+        }
+
+        .overlay-right {
+            flex: 1;
+            background: rgba(244, 67, 54, 0.3); /* Merah Samar */
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 50px;
+            transition: background 0.3s;
+        }
+
+        .overlay-label {
+            background: rgba(0,0,0,0.7);
+            padding: 15px 40px;
+            border-radius: 15px;
+            font-size: 2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border: 3px solid #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .overlay-left .overlay-label { color: #4caf50; border-color: #4caf50; }
+        .overlay-right .overlay-label { color: #f44336; border-color: #f44336; }
+
+        /* UI Atas (Soal & Timer) */
+        .top-ui {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            width: 90%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            border-radius: 15px;
+            border: 2px solid #00e5ff;
+            box-shadow: 0 0 20px rgba(0,229,255,0.4);
+            text-align: center;
+            width: 100%;
+        }
+
+        .question-box h2 {
+            font-size: 1.5em;
+            color: #fff;
+            line-height: 1.4;
+        }
+
+        .timer-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 30px;
+            border-radius: 50px;
+            border: 3px solid #fca311;
+            font-size: 2em;
+            font-weight: bold;
+            color: #fca311;
+            box-shadow: 0 0 20px rgba(252, 163, 17, 0.5);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        /* --- ANIMASI & EFEK --- */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-15px); }
+            50% { transform: translateX(15px); }
+            75% { transform: translateX(-15px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+            display: none;
+        }
+
+        /* Overlay Hasil */
+        .result-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 20;
+            font-size: 6em;
+            font-weight: bold;
+            text-shadow: 0 0 30px rgba(0,0,0,0.8);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .result-overlay.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .result-overlay.benar { color: #4caf50; }
+        .result-overlay.salah { color: #f44336; }
+
+        /* Skor Akhir */
+        #end-screen {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 30;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #end-screen h1 { font-size: 3em; color: #00e5ff; margin-bottom: 20px; }
+        #end-screen p { font-size: 1.5em; margin-bottom: 30px; }
+        #end-screen button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .question-box h2 { font-size: 1.1em; }
+            .timer-box { font-size: 1.5em; padding: 5px 20px; }
+            .overlay-label { font-size: 1.2em; padding: 10px 20px; }
+            .result-overlay { font-size: 4em; }
+            .setup-card { padding: 20px; }
+            .soal-item .row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= HALAMAN 1: PENGATURAN GURU ================= -->
+    <div id="setup-page">
+        <div class="setup-card">
+            <h1>⚙️ Pengaturan Game</h1>
+            
+            <!-- Timer -->
+            <div class="form-group">
+                <label>⏱️ Timer per Soal (Detik):</label>
+                <div class="timer-options" id="timerOptions">
+                    <button class="timer-btn" data-time="5">5</button>
+                    <button class="timer-btn active" data-time="10">10</button>
+                    <button class="timer-btn" data-time="15">15</button>
+                    <button class="timer-btn" data-time="20">20</button>
+                    <button class="timer-btn" data-time="30">30</button>
+                    <button class="timer-btn" data-time="60">60</button>
+                </div>
+            </div>
+
+            <!-- Daftar Soal -->
+            <div class="form-group">
+                <label>📝 Daftar Soal (Bisa Tambah/Edit Tanpa Batas):</label>
+                <div class="soal-list" id="soalList">
+                    <!-- Soal akan di-generate oleh JS -->
+                </div>
+                <button class="btn-add" onclick="tambahSoal()">➕ Tambah Soal Baru</button>
+            </div>
+
+            <!-- Tombol Mulai -->
+            <button class="btn-start" onclick="mulaiGame()">🚀 MULAI KUIS</button>
+        </div>
+    </div>
+
+    <!-- ================= HALAMAN 2: GAME ================= -->
+    <div id="game-page">
+        <!-- Kamera Video -->
+        <video id="camera-video" autoplay playsinline muted></video>
+        
+        <!-- Overlay Samar Terbagi Dua -->
+        <div class="overlay-container">
+            <div class="overlay-left" id="overlayLeft">
+                <div class="overlay-label">BENAR</div>
+            </div>
+            <div class="overlay-right" id="overlayRight">
+                <div class="overlay-label">SALAH</div>
+            </div>
+        </div>
+
+        <!-- UI Atas (Soal & Timer) -->
+        <div class="top-ui">
+            <div class="question-box">
+                <h2 id="gameQuestion">Memuat soal...</h2>
+            </div>
+            <div class="timer-box" id="gameTimer">10</div>
+        </div>
+
+        <!-- Canvas Confetti -->
+        <canvas id="confetti-canvas"></canvas>
+
+        <!-- Overlay Hasil Animasi -->
+        <div class="result-overlay" id="resultOverlay"></div>
+
+        <!-- Layar Akhir -->
+        <div id="end-screen">
+            <h1>🎉 Permainan Selesai!</h1>
+            <p>Skor Akhir: <span id="finalScore">0</span> / <span id="maxScore">0</span></p>
+            <button onclick="kembaliKeSetup()">🔄 Main Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        // ================= DATA & STATE =================
+        let daftarSoal = [
+            { id: 1, q: "Hardware adalah perangkat fisik komputer yang dapat dilihat dan disentuh.", a: "benar" },
+            { id: 2, q: "Software adalah komponen komputer yang berbentuk fisik dan berwujud.", a: "salah" },
+            { id: 3, q: "Brainware adalah manusia yang menggunakan dan mengoperasikan komputer.", a: "benar" }
+        ];
+        
+        let timerPerSoal = 10; // Default 10 detik
+        let currentSoalIndex = 0;
+        let skor = 0;
+        let timerInterval = null;
+        let waktuTersisa = 0;
+        let sudahDijawab = false;
+        let videoStream = null;
+
+        // DOM Elements
+        const setupPage = document.getElementById('setup-page');
+        const gamePage = document.getElementById('game-page');
+        const soalListContainer = document.getElementById('soalList');
+        const timerOptions = document.querySelectorAll('.timer-btn');
+        const gameQuestion = document.getElementById('gameQuestion');
+        const gameTimer = document.getElementById('gameTimer');
+        const resultOverlay = document.getElementById('resultOverlay');
+        const overlayLeft = document.getElementById('overlayLeft');
+        const overlayRight = document.getElementById('overlayRight');
+        const endScreen = document.getElementById('end-screen');
+        const finalScore = document.getElementById('finalScore');
+        const maxScore = document.getElementById('maxScore');
+        const videoElement = document.getElementById('camera-video');
+
+        // ================= LOGIKA HALAMAN GURU =================
+        
+        // Render daftar soal ke form
+        function renderSoalList() {
+            soalListContainer.innerHTML = '';
+            daftarSoal.forEach((soal, index) => {
+                const div = document.createElement('div');
+                div.className = 'soal-item';
+                div.innerHTML = `
+                    <button class="btn-hapus" onclick="hapusSoal(${soal.id})">X</button>
+                    <input type="text" value="Soal ${index + 1}" readonly style="background: transparent; border: none; color: #00e5ff; font-weight: bold; margin-bottom: 5px;">
+                    <textarea rows="2" onchange="updateSoal(${soal.id}, 'q', this.value)">${soal.q}</textarea>
+                    <div class="row">
+                        <input type="text" placeholder="Kunci Jawaban (benar/salah)" value="${soal.a}" onchange="updateSoal(${soal.id}, 'a', this.value)">
+                    </div>
+                `;
+                soalListContainer.appendChild(div);
+            });
+        }
+
+        // Tambah soal baru
+        function tambahSoal() {
+            const newId = daftarSoal.length > 0 ? Math.max(...daftarSoal.map(s => s.id)) + 1 : 1;
+            daftarSoal.push({ id: newId, q: "Tulis pertanyaan di sini...", a: "benar" });
+            renderSoalList();
+            // Scroll ke bawah
+            soalListContainer.scrollTop = soalListContainer.scrollHeight;
+        }
+
+        // Hapus soal
+        function hapusSoal(id) {
+            if (daftarSoal.length <= 1) {
+                alert("Minimal harus ada 1 soal!");
+                return;
+            }
+            daftarSoal = daftarSoal.filter(s => s.id !== id);
+            renderSoalList();
+        }
+
+        // Update soal dari form
+        function updateSoal(id, field, value) {
+            const soal = daftarSoal.find(s => s.id === id);
+            if (soal) {
+                soal[field] = value;
+            }
+        }
+
+        // Pilih Timer
+        timerOptions.forEach(btn => {
+            btn.addEventListener('click', () => {
+                timerOptions.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                timerPerSoal = parseInt(btn.dataset.time);
+            });
+        });
+
+        // ================= LOGIKA GAME =================
+
+        // Mulai Game
+        async function mulaiGame() {
+            if (daftarSoal.length === 0) {
+                alert("Silakan tambahkan soal terlebih dahulu!");
+                return;
+            }
+
+            // Sembunyikan Setup, Tampilkan Game
+            setupPage.style.display = 'none';
+            gamePage.style.display = 'block';
+            endScreen.style.display = 'none';
+            
+            // Reset State
+            currentSoalIndex = 0;
+            skor = 0;
+            
+            // Nyalakan Kamera
+            await nyalakanKamera();
+            
+            // Mulai Soal Pertama
+            tampilkanSoal();
+        }
+
+        // Nyalakan Kamera
+        async function nyalakanKamera() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } } 
+                });
+                videoElement.srcObject = videoStream;
+            } catch (error) {
+                console.error("Error accessing camera: ", error);
+                alert("Gagal mengakses kamera. Pastikan izin diberikan dan tidak ada aplikasi lain yang menggunakan kamera.");
+            }
+        }
+
+        // Tampilkan Soal & Mulai Timer
+        function tampilkanSoal() {
+            if (currentSoalIndex >= daftarSoal.length) {
+                selesaiGame();
+                return;
+            }
+
+            sudahDijawab = false;
+            const soal = daftarSoal[currentSoalIndex];
+            gameQuestion.innerText = soal.q;
+            
+            // Reset visual
+            overlayLeft.style.background = "rgba(76, 175, 80, 0.3)";
+            overlayRight.style.background = "rgba(244, 67, 54, 0.3)";
+            resultOverlay.classList.remove('show');
+            resultOverlay.innerText = "";
+            document.getElementById('confetti-canvas').style.display = 'none';
+            gamePage.classList.remove('shake');
+
+            // Timer
+            waktuTersisa = timerPerSoal;
+            gameTimer.innerText = waktuTersisa;
+            gameTimer.style.color = "#fca311";
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                waktuTersisa--;
+                gameTimer.innerText = waktuTersisa;
+                
+                // Efek warna saat waktu hampir habis
+                if (waktuTersisa <= 3) {
+                    gameTimer.style.color = "#f44336";
+                }
+
+                if (waktuTersisa <= 0) {
+                    clearInterval(timerInterval);
+                    // Waktu habis, otomatis tampilkan jawaban (anggap salah atau tunjukkan kunci)
+                    evaluasiJawaban(null); // null artinya waktu habis
+                }
+            }, 1000);
+        }
+
+        // Fungsi Evaluasi Jawaban (Dipicu oleh Timer Habis atau Deteksi Gerakan)
+        // Parameter 'pilihanSiswa' bisa 'benar', 'salah', atau null (waktu habis)
+        function evaluasiJawaban(pilihanSiswa) {
+            if (sudahDijawab) return;
+            sudahDijawab = true;
+            clearInterval(timerInterval);
+
+            const jawabanBenar = daftarSoal[currentSoalIndex].a;
+            let isCorrect = (pilihanSiswa === jawabanBenar);
+
+            // Tampilkan Animasi
+            if (isCorrect) {
+                skor += 10;
+                resultOverlay.innerText = "✅ BENAR!";
+                resultOverlay.className = "result-overlay show benar";
+                
+                // Efek Confetti
+                document.getElementById('confetti-canvas').style.display = 'block';
+                startConfetti();
+                
+                // Efek Visual Sisi Hijau
+                overlayLeft.style.background = "rgba(76, 175, 80, 0.8)";
+                overlayRight.style.background = "rgba(244, 67, 54, 0.1)";
+
+            } else {
+                resultOverlay.innerText = pilihanSiswa === null ? "⏰ WAKTU HABIS!" : "❌ SALAH!";
+                resultOverlay.className = "result-overlay show salah";
+                
+                // Efek Getar
+                gamePage.classList.add('shake');
+                
+                // Efek Visual Sisi Merah
+                overlayLeft.style.background = "rgba(76, 175, 80, 0.1)";
+                overlayRight.style.background = "rgba(244, 67, 54, 0.8)";
+            }
+
+            // Sembunyikan overlay setelah 2.5 detik, lanjut soal berikutnya
+            setTimeout(() => {
+                resultOverlay.classList.remove('show');
+                document.getElementById('confetti-canvas').style.display = 'none';
+                gamePage.classList.remove('shake');
+                
+                currentSoalIndex++;
+                tampilkanSoal();
+            }, 2500);
+        }
+
+        // Selesai Game
+        function selesaiGame() {
+            clearInterval(timerInterval);
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+            gamePage.style.display = 'none';
+            endScreen.style.display = 'flex';
+            finalScore.innerText = skor;
+            maxScore.innerText = daftarSoal.length * 10;
+        }
+
+        // Kembali ke Setup
+        function kembaliKeSetup() {
+            endScreen.style.display = 'none';
+            setupPage.style.display = 'flex';
+            renderSoalList();
+        }
+
+        // ================= LOGIKA CONFETTI =================
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId;
+
+        function startConfetti() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            
+            for (let i = 0; i < 150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 8 + 4,
+                    speedY: Math.random() * 3 + 2,
+                    speedX: Math.random() * 2 - 1,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                });
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let active = false;
+            
+            particles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.size, p.size * 0.6);
+                
+                if (p.y < canvas.height) active = true;
+            });
+
+            if (active) {
+                animationId = requestAnimationFrame(animateConfetti);
+            } else {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        // Inisialisasi Awal
+        window.onload = () => {
+            renderSoalList();
+        };
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+    </script>
+</body>
+</html>
