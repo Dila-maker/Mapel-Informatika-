@@ -1,0 +1,1472 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Praktikum Gerbang Logika 3D - Ardutech Logic Trainer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            background-color: #0f172a;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        /* Glowing Glass Panel UI */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Pulse Animation for Cable Target */
+        @keyframes pinPulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        .pin-glow-active {
+            animation: pinPulse 1.2s infinite ease-in-out;
+        }
+    </style>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- OrbitControls CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body class="w-screen h-screen text-slate-100 relative">
+
+    <!-- 3D Canvas container -->
+    <div id="canvas-container" class="w-full h-full absolute inset-0 z-0 cursor-grab active:cursor-grabbing"></div>
+
+    <!-- Top Header Bar Overlay -->
+    <header class="absolute top-0 left-0 right-0 z-10 px-4 py-3 flex items-center justify-between glass-panel shadow-2xl border-b border-slate-700/50">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                <i class="fa-solid font-bold text-xl text-slate-950 fa-microchip"></i>
+            </div>
+            <div>
+                <h1 class="text-base sm:text-lg font-bold tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
+                    ARDUTECH <span class="text-emerald-400">LOGIC TRAINER 3D</span>
+                </h1>
+                <p class="text-xs text-slate-400 hidden sm:block">Modul Praktikum Gerbang Logika & Rangkaian Digital Interaktif</p>
+            </div>
+        </div>
+
+        <!-- System Controls & Indicators -->
+        <div class="flex items-center space-x-2 sm:space-x-4">
+            <!-- Power Indicator Badge -->
+            <div id="power-badge" class="flex items-center px-3 py-1.5 rounded-lg bg-red-950/80 border border-red-500/40 text-red-400 text-xs font-semibold space-x-2 transition-all duration-300">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse inline-block" id="power-dot"></span>
+                <span id="power-text">POWER OFF</span>
+            </div>
+
+            <!-- Active Wires Count -->
+            <div class="hidden md:flex items-center px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-300 text-xs space-x-1.5 font-mono">
+                <i class="fa-solid fa-plug text-teal-400"></i>
+                <span>Kabel: <strong id="wire-count" class="text-teal-400">0</strong></span>
+            </div>
+
+            <!-- View Camera Buttons -->
+            <div class="flex bg-slate-800/90 rounded-lg p-1 border border-slate-700 space-x-1">
+                <button id="btn-view-3d" onclick="setCameraView('3d')" class="px-2.5 py-1 text-xs font-medium rounded-md bg-emerald-500 text-slate-950 shadow hover:bg-emerald-400 transition" title="Tampilan 3D">
+                    <i class="fa-solid fa-cube mr-1"></i>3D
+                </button>
+                <button id="btn-view-top" onclick="setCameraView('top')" class="px-2.5 py-1 text-xs font-medium rounded-md text-slate-300 hover:bg-slate-700 transition" title="Tampilan Atas (2D Top)">
+                    <i class="fa-solid fa-table-cells mr-1"></i>Atas
+                </button>
+            </div>
+
+            <!-- Clear Wires Button -->
+            <button onclick="clearAllWires()" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/30 transition flex items-center space-x-1">
+                <i class="fa-solid fa-trash-can"></i>
+                <span class="hidden sm:inline">Riset Kabel</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Left Sidebar Control Panel -->
+    <aside class="absolute left-4 top-20 bottom-4 z-10 w-80 max-w-[calc(100vw-2rem)] flex flex-col space-y-3 pointer-events-none">
+        
+        <!-- Wiring Mode / Tool Selector -->
+        <div class="glass-panel p-4 rounded-2xl shadow-xl pointer-events-auto border border-slate-700/60 flex flex-col space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center">
+                    <i class="fa-solid fa-toolbox text-teal-400 mr-2"></i> Alat Penyambung Kabel
+                </h2>
+                <span id="wiring-status-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">SIAP</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                <button id="btn-mode-wire" onclick="setInteractionMode('wire')" class="flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-teal-500 text-slate-950 font-semibold text-xs shadow-lg shadow-teal-500/20 hover:bg-teal-400 transition">
+                    <i class="fa-solid fa-wire"></i>
+                    <span>Pasang Kabel</span>
+                </button>
+                <button id="btn-mode-select" onclick="setInteractionMode('select')" class="flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-slate-800 text-slate-300 font-medium text-xs hover:bg-slate-700 border border-slate-700 transition">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                    <span>Sakelar / Gate</span>
+                </button>
+            </div>
+
+            <!-- Wire Color Picker -->
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+                <span class="text-xs text-slate-400">Warna Kabel Baru:</span>
+                <div class="flex space-x-1.5" id="color-picker-container">
+                    <button onclick="setSelectedWireColor('#10b981')" class="w-6 h-6 rounded-full bg-emerald-500 ring-2 ring-white hover:scale-110 transition shadow-md" title="Hijau Signal"></button>
+                    <button onclick="setSelectedWireColor('#3b82f6')" class="w-6 h-6 rounded-full bg-blue-500 hover:scale-110 transition shadow-md" title="Biru Logika"></button>
+                    <button onclick="setSelectedWireColor('#f59e0b')" class="w-6 h-6 rounded-full bg-amber-500 hover:scale-110 transition shadow-md" title="Kuning VCC"></button>
+                    <button onclick="setSelectedWireColor('#ef4444')" class="w-6 h-6 rounded-full bg-red-500 hover:scale-110 transition shadow-md" title="Merah"></button>
+                    <button onclick="setSelectedWireColor('#64748b')" class="w-6 h-6 rounded-full bg-slate-500 hover:scale-110 transition shadow-md" title="Hitam Ground"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kuis & Modul Praktikum Selector -->
+        <div class="glass-panel p-4 rounded-2xl shadow-xl pointer-events-auto border border-slate-700/60 flex-1 flex flex-col overflow-hidden">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center">
+                    <i class="fa-solid fa-vial text-emerald-400 mr-2"></i> Mode & Tantangan
+                </h2>
+                <div class="flex bg-slate-800 rounded-lg p-0.5 border border-slate-700 text-[11px]">
+                    <button id="tab-free" onclick="setLabTab('free')" class="px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-semibold">Bebas</button>
+                    <button id="tab-quiz" onclick="setLabTab('quiz')" class="px-2 py-1 rounded-md text-slate-400 hover:text-slate-200">Kuis</button>
+                </div>
+            </div>
+
+            <!-- Free Lab Content -->
+            <div id="content-free" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs text-slate-300">
+                <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/50 space-y-2">
+                    <h3 class="font-semibold text-emerald-400 text-sm flex items-center">
+                        <i class="fa-solid fa-circle-info mr-1.5"></i> Panduan Praktikum
+                    </h3>
+                    <ol class="list-decimal list-inside space-y-1 text-slate-300 leading-relaxed text-[11px]">
+                        <li>Tekan sakelar <strong>POWER ON/OFF</strong> di pojok kiri atas modul 3D.</li>
+                        <li>Klik mode <strong>Pasang Kabel</strong>. Klik pin asal (contoh: Input 1), lalu klik pin tujuan (contoh: Pin Gate AND Input A).</li>
+                        <li>Hubungkan output Gate ke salah satu <strong>LED Output (LED 1 - LED 7)</strong>.</li>
+                        <li>Klik sakelar input untuk mengubah status biner <strong>(0 ↔ 1)</strong>.</li>
+                        <li>Kabel akan otomatis menyala <strong>Hijau</strong> saat bertegangan logika 1!</li>
+                    </ol>
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-700/40 space-y-1">
+                    <div class="text-xs font-bold text-slate-300">Slot Chip IC Tersedia:</div>
+                    <div class="grid grid-cols-2 gap-1 text-[10px] font-mono text-slate-400">
+                        <span class="px-1.5 py-0.5 rounded bg-slate-900/60">7408 (AND)</span>
+                        <span class="px-1.5 py-0.5 rounded bg-slate-900/60">7432 (OR)</span>
+                        <span class="px-1.5 py-0.5 rounded bg-slate-900/60">7404 (NOT)</span>
+                        <span class="px-1.5 py-0.5 rounded bg-slate-900/60">7400 (NAND)</span>
+                        <span class="px-1.5 py-0.5 rounded bg-slate-900/60">7402 (NOR)</span>
+                        <span class="px-1.5 py-0.5 rounded bg-slate-900/60">7486 (XOR)</span>
+                        <span class="px-1.5 py-0.5 rounded bg-slate-900/60">7472 (XNOR)</span>
+                        <span class="px-1.5 py-0.5 rounded bg-slate-900/60">7474 (D-FF)</span>
+                        <span class="px-1.5 py-0.5 rounded bg-slate-900/60">7476 (JK-FF)</span>
+                        <span class="px-1.5 py-0.5 rounded bg-slate-900/60">7447 (BCD-7Seg)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Content -->
+            <div id="content-quiz" class="hidden flex-1 overflow-y-auto space-y-3 pr-1">
+                <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span id="quiz-step-title" class="text-xs font-bold text-teal-400">Tantangan 1 / 4</span>
+                        <span id="quiz-status-pill" class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">BELUM LENGKAP</span>
+                    </div>
+                    <p id="quiz-desc" class="text-xs text-slate-200 leading-relaxed font-medium">
+                        Rangkai gerbang <strong>AND</strong>: Hubungkan <strong>Input 1</strong> dan <strong>Input 2</strong> ke input Gerbang AND, lalu hubungkan output AND ke <strong>LED 1</strong>. Nyalakan LED 1 dengan mengatur kedua sakelar ke 1!
+                    </p>
+                    <button id="btn-check-quiz" onclick="checkCurrentQuizTask()" class="w-full py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Verifikasi Rangkaian</span>
+                    </button>
+                </div>
+
+                <!-- Quiz Progress List -->
+                <div class="space-y-1.5 text-xs">
+                    <button onclick="loadQuizTask(0)" id="quiz-btn-0" class="w-full text-left p-2.5 rounded-lg bg-slate-800/90 border border-teal-500/50 flex items-center justify-between text-slate-200 hover:bg-slate-700/80 transition">
+                        <span>1. Penguji Gerbang AND</span>
+                        <i class="fa-solid fa-chevron-right text-slate-500 text-[10px]"></i>
+                    </button>
+                    <button onclick="loadQuizTask(1)" id="quiz-btn-1" class="w-full text-left p-2.5 rounded-lg bg-slate-900/50 border border-slate-800 flex items-center justify-between text-slate-400 hover:bg-slate-800/60 transition">
+                        <span>2. Rangkaian Kombinasi (OR & NOT)</span>
+                        <i class="fa-solid fa-chevron-right text-slate-600 text-[10px]"></i>
+                    </button>
+                    <button onclick="loadQuizTask(2)" id="quiz-btn-2" class="w-full text-left p-2.5 rounded-lg bg-slate-900/50 border border-slate-800 flex items-center justify-between text-slate-400 hover:bg-slate-800/60 transition">
+                        <span>3. Penguji D Flip-Flop</span>
+                        <i class="fa-solid fa-chevron-right text-slate-600 text-[10px]"></i>
+                    </button>
+                    <button onclick="loadQuizTask(3)" id="quiz-btn-3" class="w-full text-left p-2.5 rounded-lg bg-slate-900/50 border border-slate-800 flex items-center justify-between text-slate-400 hover:bg-slate-800/60 transition">
+                        <span>4. BCD Decoder Angka "5"</span>
+                        <i class="fa-solid fa-chevron-right text-slate-600 text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Right Live Inspector & Dynamic Truth Table Overlay -->
+    <aside id="inspector-panel" class="absolute right-4 top-20 bottom-4 z-10 w-80 max-w-[calc(100vw-2rem)] glass-panel p-4 rounded-2xl shadow-2xl border border-slate-700/60 flex flex-col space-y-3 transition-all duration-300">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div class="flex items-center space-x-2">
+                <i id="inspector-icon" class="fa-solid fa-microchip text-emerald-400 text-sm"></i>
+                <h2 id="inspector-title" class="text-xs font-bold uppercase tracking-wider text-slate-200">Inspektor komponen IC</h2>
+            </div>
+            <span id="inspector-ic-code" class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-teal-300 border border-slate-700">7408 IC</span>
+        </div>
+
+        <!-- Selected Component Info -->
+        <div class="text-xs text-slate-300 space-y-1">
+            <p id="inspector-desc" class="text-slate-400 leading-relaxed text-[11px]">
+                Arahkan kursor atau klik chip IC di papan modul untuk melihat diagram pin dan tabel kebenaran interaktif secara langsung.
+            </p>
+        </div>
+
+        <!-- Mini Live Truth Table -->
+        <div class="flex-1 flex flex-col min-h-0 bg-slate-900/80 rounded-xl border border-slate-800 p-3 overflow-hidden">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Tabel Kebenaran (Live)</span>
+                <span class="text-[10px] text-teal-400 font-mono" id="live-state-tag">Status Input Aktif</span>
+            </div>
+
+            <!-- Scrollable Table -->
+            <div class="flex-1 overflow-y-auto pr-1">
+                <table class="w-full text-center text-xs font-mono border-collapse" id="truth-table">
+                    <thead>
+                        <tr class="bg-slate-800 text-slate-300 border-b border-slate-700 text-[11px]">
+                            <th class="py-1 px-2 border-r border-slate-700">In A</th>
+                            <th class="py-1 px-2 border-r border-slate-700">In B</th>
+                            <th class="py-1 px-2 text-teal-400">OUT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="truth-table-body" class="text-slate-300 divide-y divide-slate-800/60">
+                        <tr class="hover:bg-slate-800/40">
+                            <td class="py-1.5 border-r border-slate-800">0</td>
+                            <td class="py-1.5 border-r border-slate-800">0</td>
+                            <td class="py-1.5 font-bold text-rose-400">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40">
+                            <td class="py-1.5 border-r border-slate-800">0</td>
+                            <td class="py-1.5 border-r border-slate-800">1</td>
+                            <td class="py-1.5 font-bold text-rose-400">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40">
+                            <td class="py-1.5 border-r border-slate-800">1</td>
+                            <td class="py-1.5 border-r border-slate-800">0</td>
+                            <td class="py-1.5 font-bold text-rose-400">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+                            <td class="py-1.5 border-r border-slate-800">1</td>
+                            <td class="py-1.5 border-r border-slate-800">1</td>
+                            <td class="py-1.5 font-bold text-emerald-400">1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Signal State Probe Panel -->
+        <div class="p-3 rounded-xl bg-slate-800/70 border border-slate-700 text-xs space-y-1.5">
+            <div class="flex items-center justify-between text-slate-400 text-[11px]">
+                <span>Status Logika Pin Pinout:</span>
+                <span id="pin-inspect-count" class="font-mono text-teal-400">Active Signals</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 font-mono text-[11px]" id="live-pin-readouts">
+                <div class="p-1.5 rounded bg-slate-900 border border-slate-800 flex justify-between">
+                    <span class="text-slate-400">Input A:</span>
+                    <strong class="text-rose-400" id="readout-in-a">0</strong>
+                </div>
+                <div class="p-1.5 rounded bg-slate-900 border border-slate-800 flex justify-between">
+                    <span class="text-slate-400">Input B:</span>
+                    <strong class="text-rose-400" id="readout-in-b">0</strong>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Modal Dialog / Toast Notification overlay -->
+    <div id="modal-dialog" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel p-6 rounded-2xl max-w-sm w-full shadow-2xl border border-slate-700 text-center space-y-4 transform scale-95 transition-transform duration-300" id="modal-content-box">
+            <div id="modal-icon-bg" class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto text-emerald-400 text-2xl shadow-lg">
+                <i id="modal-icon" class="fa-solid fa-trophy"></i>
+            </div>
+            <div class="space-y-1">
+                <h3 id="modal-title" class="text-base font-bold text-white">Tantangan Berhasil!</h3>
+                <p id="modal-message" class="text-xs text-slate-300 leading-relaxed">Selamat, Anda berhasil mengonfigurasi gerbang logika dengan benar.</p>
+            </div>
+            <button onclick="closeModal()" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition">
+                Lanjutkan Praktikum
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global Circuit Logic State
+        const circuitState = {
+            power: false,
+            switches: [0, 0, 0, 0, 0, 0, 0], // SW1 - SW7
+            pulse: 0,
+            wires: [], // Array of { id, fromPinId, toPinId, color, mesh }
+            pinValues: {}, // Map of pinId -> 0 or 1
+            flipFlops: {
+                d: { q: 0, qNot: 1, prevClk: 0 },
+                jk: { q: 0, qNot: 1, prevClk: 0 }
+            },
+            bcdDisplayValue: 0
+        };
+
+        // Wiring Interaction State
+        const wireInteraction = {
+            mode: 'wire', // 'wire' or 'select'
+            selectedColor: '#10b981',
+            startPin: null,
+            tempCableMesh: null
+        };
+
+        // Kuis Task System
+        let currentQuizIndex = 0;
+        const quizTasks = [
+            {
+                title: "1. Penguji Gerbang AND",
+                desc: "Rangkai gerbang AND: Hubungkan Input 1 dan Input 2 ke pin Input Gerbang AND (7408), lalu hubungkan Output AND ke LED 1. Nyalakan LED 1 dengan mengatur sakelar Input 1=1 dan Input 2=1!",
+                check: () => {
+                    if (!circuitState.power) return { pass: false, msg: "Nyalakan sakelar POWER utama terlebih dahulu!" };
+                    const hasWireIn1 = hasConnection('SW1_OUT', 'AND_IN_A') || hasConnection('SW1_OUT', 'AND_IN_B');
+                    const hasWireIn2 = hasConnection('SW2_OUT', 'AND_IN_A') || hasConnection('SW2_OUT', 'AND_IN_B');
+                    const hasWireOut = hasConnection('AND_OUT', 'LED1_IN');
+                    if (!hasWireIn1 || !hasWireIn2 || !hasWireOut) {
+                        return { pass: false, msg: "Pastikan SW1 & SW2 terhubung ke Input AND, dan Output AND terhubung ke LED 1!" };
+                    }
+                    if (circuitState.pinValues['LED1_IN'] === 1) {
+                        return { pass: true, msg: "Luar Biasa! Gerbang AND terbukti hanya bernilai 1 jika semua input bernilai 1." };
+                    } else {
+                        return { pass: false, msg: "Ubah sakelar SW1 dan SW2 ke posisi HIGH (1) untuk menyalakan LED 1!" };
+                    }
+                }
+            },
+            {
+                title: "2. Rangkaian Kombinasi (OR & NOT)",
+                desc: "Hubungkan Input 1 dan Input 2 ke Gerbang OR (7432). Hubungkan output OR ke input Gerbang NOT (7404), lalu output NOT ke LED 2. Hasilnya adalah fungsi NOR!",
+                check: () => {
+                    if (!circuitState.power) return { pass: false, msg: "Nyalakan sakelar POWER utama!" };
+                    const in1ToOr = hasConnection('SW1_OUT', 'OR_IN_A') || hasConnection('SW1_OUT', 'OR_IN_B');
+                    const in2ToOr = hasConnection('SW2_OUT', 'OR_IN_A') || hasConnection('SW2_OUT', 'OR_IN_B');
+                    const orToNot = hasConnection('OR_OUT', 'NOT_IN');
+                    const notToLed = hasConnection('NOT_OUT', 'LED2_IN');
+                    if (!in1ToOr || !in2ToOr || !orToNot || !notToNot || !notToLed) {
+                        return { pass: false, msg: "Susun jalur: SW1 & SW2 -> OR -> NOT -> LED2!" };
+                    }
+                    if (circuitState.switches[0] === 0 && circuitState.switches[1] === 0 && circuitState.pinValues['LED2_IN'] === 1) {
+                        return { pass: true, msg: "Hebat! LED 2 menyala saat SW1=0 dan SW2=0 (Inversi dari OR)." };
+                    }
+                    return { pass: false, msg: "Set SW1=0 dan SW2=0 untuk memverifikasi logika NOR buatanmu!" };
+                }
+            },
+            {
+                title: "3. Penguji D Flip-Flop",
+                desc: "Hubungkan Input 1 ke pin D (D-FF), tombol PULSE ke pin CLK (D-FF), dan pin Q ke LED 3. Ubah SW1 ke 1 lalu tekan tombol PULSE untuk menyimpan bit!",
+                check: () => {
+                    if (!circuitState.power) return { pass: false, msg: "Nyalakan sakelar POWER!" };
+                    const dWire = hasConnection('SW1_OUT', 'DFF_D');
+                    const clkWire = hasConnection('PULSE_OUT', 'DFF_CLK');
+                    const qWire = hasConnection('DFF_Q', 'LED3_IN');
+                    if (!dWire || !clkWire || !qWire) {
+                        return { pass: false, msg: "Hubungkan SW1->DFF_D, PULSE->DFF_CLK, dan DFF_Q->LED3!" };
+                    }
+                    if (circuitState.pinValues['LED3_IN'] === 1) {
+                        return { pass: true, msg: "Selamat! D Flip-Flop berhasil menyimpan status logika 1 dari pulsa clock!" };
+                    }
+                    return { pass: false, msg: "Set SW1=1 lalu klik tombol Pulse Trigger untuk memicu clock!" };
+                }
+            },
+            {
+                title: "4. BCD Decoder Angka '5'",
+                desc: "Hubungkan SW1 (Bit A = 1), SW2 (Bit B = 0), SW3 (Bit C = 1), dan SW4 (Bit D = 0) ke BCD Decoder. Periksa tampilan 7-Segment untuk menampilkan angka 5!",
+                check: () => {
+                    if (!circuitState.power) return { pass: false, msg: "Nyalakan Power modul terlebih dahulu!" };
+                    const wireA = hasConnection('SW1_OUT', 'BCD_A');
+                    const wireB = hasConnection('SW2_OUT', 'BCD_B');
+                    const wireC = hasConnection('SW3_OUT', 'BCD_C');
+                    const wireD = hasConnection('SW4_OUT', 'BCD_D');
+                    if (!wireA || !wireB || !wireC || !wireD) {
+                        return { pass: false, msg: "Hubungkan SW1, SW2, SW3, SW4 ke input BCD (A, B, C, D)!" };
+                    }
+                    if (circuitState.switches[0] === 1 && circuitState.switches[1] === 0 && circuitState.switches[2] === 1 && circuitState.switches[3] === 0) {
+                        if (circuitState.bcdDisplayValue === 5) {
+                            return { pass: true, msg: "Luar Biasa! Angka 5 (Biner 0101) berhasil ditampilkan pada 7-Segment LED!" };
+                        }
+                    }
+                    return { pass: false, msg: "Atur sakelar input biner: SW1=1, SW2=0, SW3=1, SW4=0 (0101 biner = 5 desimal)." };
+                }
+            }
+        ];
+
+        let scene, camera, renderer, controls;
+        let raycaster, mouse;
+        const pinsRegistry = {}; // id -> { id, pos, mesh, type, gateId }
+        const pinMeshes = [];
+        const interactiveMeshes = [];
+
+        // Dynamic 7-Segment display LED meshes
+        const segmentMeshes = {};
+
+        function init3D() {
+            const container = document.getElementById('canvas-container');
+            
+            // Scene Setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0f172a);
+            scene.fog = new THREE.FogExp2(0x0f172a, 0.015);
+
+            // Camera Setup
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 22, 18);
+
+            // Renderer Setup
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            container.appendChild(renderer.domElement);
+
+            // OrbitControls Setup
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2 - 0.02; // Don't go below ground
+            controls.minDistance = 8;
+            controls.maxDistance = 38;
+            controls.target.set(0, 0, 0);
+
+            // Raycasting setup
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            // Lighting Setup
+            setupLighting();
+
+            // Build Trainer PCB Board
+            buildTrainerBoard();
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize);
+            renderer.domElement.addEventListener('pointerdown', onPointerDown);
+            renderer.domElement.addEventListener('pointermove', onPointerMove);
+
+            // Start Render Loop
+            animate();
+        }
+
+        function setupLighting() {
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            const mainDirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+            mainDirLight.position.set(12, 25, 15);
+            mainDirLight.castShadow = true;
+            mainDirLight.shadow.mapSize.width = 2048;
+            mainDirLight.shadow.mapSize.height = 2048;
+            mainDirLight.shadow.camera.near = 0.5;
+            mainDirLight.shadow.camera.far = 50;
+            mainDirLight.shadow.camera.left = -18;
+            mainDirLight.shadow.camera.right = 18;
+            mainDirLight.shadow.camera.top = 18;
+            mainDirLight.shadow.camera.bottom = -18;
+            scene.add(mainDirLight);
+
+            // Subtle blue point light for tech aesthetic
+            const fillLight = new THREE.PointLight(0x38bdf8, 0.5, 30);
+            fillLight.position.set(-10, 8, -10);
+            scene.add(fillLight);
+        }
+
+        function createPCBTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 2048;
+            canvas.height = 1536;
+            const ctx = canvas.getContext('2d');
+
+            // White PCB Base
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // PCB Circuit Traces (Gradients / Decorative Copper tracks)
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 4;
+
+            // Grid lines on PCB background
+            for (let x = 0; x < canvas.width; x += 64) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += 64) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Outer Border Frame
+            ctx.strokeStyle = '#0284c7';
+            ctx.lineWidth = 12;
+            ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
+
+            // Silkscreen Title Header
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'bold 36px Inter, sans-serif';
+            ctx.fillText('ARDUTECH DIGITAL LOGIC TRAINER BOARD - MODEL AT-LOGIC-3D', 60, 80);
+
+            ctx.font = 'bold 20px Inter, sans-serif';
+            ctx.fillStyle = '#475569';
+            ctx.fillText('LABORATORIUM TEKNIK ELEKTRO & KOMPUTER', 60, 110);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.anisotropy = 16;
+            return texture;
+        }
+
+        function buildTrainerBoard() {
+            // Main PCB Plate
+            const boardWidth = 28;
+            const boardDepth = 20;
+            const boardThickness = 0.6;
+
+            const boardGeo = new THREE.BoxGeometry(boardWidth, boardThickness, boardDepth);
+            const pcbTex = createPCBTexture();
+            const boardMat = new THREE.MeshStandardMaterial({
+                map: pcbTex,
+                roughness: 0.3,
+                metalness: 0.1,
+                color: 0xffffff
+            });
+
+            const pcbBoard = new THREE.Mesh(boardGeo, boardMat);
+            pcbBoard.position.set(0, 0, 0);
+            pcbBoard.receiveShadow = true;
+            pcbBoard.castShadow = true;
+            scene.add(pcbBoard);
+
+            // Rubber Feet under PCB
+            const footGeo = new THREE.CylinderGeometry(0.6, 0.6, 0.4, 16);
+            const footMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.9 });
+            const corners = [
+                [-13, -0.4, -9], [13, -0.4, -9],
+                [-13, -0.4, 9], [13, -0.4, 9]
+            ];
+            corners.forEach(pos => {
+                const foot = new THREE.Mesh(footGeo, footMat);
+                foot.position.set(...pos);
+                scene.add(foot);
+            });
+
+            // 1. Build VCC & GND Power Bus Rails
+            buildPowerRails();
+
+            // 2. Build Power & Clock Input Section (Top-Left)
+            buildPowerAndClockSection();
+
+            // 3. Build 7 Input Toggle Switches (Bottom-Left)
+            buildInputSwitchesSection();
+
+            // 4. Build 7 Gate IC Blocks (Center Grid)
+            buildGateICBlocks();
+
+            // 5. Build Flip-Flop Modules (Center-Right)
+            buildFlipFlopModules();
+
+            // 6. Build BCD Decoder & 7-Segment Display (Top-Right)
+            buildBCDModule();
+
+            // 7. Build 7 LED Output Indicators (Bottom-Right)
+            buildLEDOutputsSection();
+        }
+
+        function buildPowerRails() {
+            const ySurface = 0.35;
+            
+            // VCC Rail (+) Top Red Line
+            createSubPanel(-12, ySurface, -8.5, 8, 1.2, "VCC (+5V)", 0xef4444);
+            for (let i = 0; i < 4; i++) {
+                createPinSocket(`VCC_${i+1}`, -14.5 + i * 1.8, ySurface + 0.15, -8.5, 'VCC', 0xef4444);
+            }
+
+            // GND Rail (-) Top Black Line
+            createSubPanel(-3, ySurface, -8.5, 8, 1.2, "GND (0V)", 0x334155);
+            for (let i = 0; i < 4; i++) {
+                createPinSocket(`GND_${i+1}`, -5.5 + i * 1.8, ySurface + 0.15, -8.5, 'GND', 0x1e293b);
+            }
+        }
+
+        function buildPowerAndClockSection() {
+            const ySurface = 0.35;
+            createSubPanel(-10.5, ySurface, -5.5, 5, 4, "POWER & PULSE", 0x1e293b);
+
+            // Power Toggle Switch Box
+            const swBaseGeo = new THREE.BoxGeometry(1.2, 0.4, 1.2);
+            const swBaseMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.5 });
+            const pwrSwBase = new THREE.Mesh(swBaseGeo, swBaseMat);
+            pwrSwBase.position.set(-11.8, ySurface + 0.2, -5.2);
+            scene.add(pwrSwBase);
+
+            // Power Lever
+            const leverGeo = new THREE.CylinderGeometry(0.12, 0.18, 0.8, 12);
+            const leverMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.8, roughness: 0.2 });
+            const pwrLever = new THREE.Mesh(leverGeo, leverMat);
+            pwrLever.position.set(-11.8, ySurface + 0.6, -5.2);
+            pwrLever.rotation.z = Math.PI / 6; // Tilted Off
+            pwrLever.name = 'toggle_power';
+            scene.add(pwrLever);
+            interactiveMeshes.push(pwrLever);
+
+            createLabel3D("PWR", -11.8, ySurface + 0.05, -4.2, 0.3, 0x0f172a);
+
+            // Pulse Momentary Push Button
+            const btnBaseGeo = new THREE.CylinderGeometry(0.6, 0.7, 0.3, 24);
+            const btnBaseMat = new THREE.MeshStandardMaterial({ color: 0x0284c7 });
+            const btnMesh = new THREE.Mesh(btnBaseGeo, btnBaseMat);
+            btnMesh.position.set(-9.2, ySurface + 0.2, -5.2);
+            btnMesh.name = 'button_pulse';
+            scene.add(btnMesh);
+            interactiveMeshes.push(btnMesh);
+
+            createLabel3D("PULSE", -9.2, ySurface + 0.05, -4.2, 0.3, 0x0f172a);
+            createPinSocket('PULSE_OUT', -9.2, ySurface + 0.15, -6.2, 'SIGNAL', 0x38bdf8);
+        }
+
+        function buildInputSwitchesSection() {
+            const ySurface = 0.35;
+            createSubPanel(-10.5, ySurface, 2.5, 5, 11, "INPUT SWITCHES (SW1-SW7)", 0x0f172a);
+
+            for (let i = 0; i < 7; i++) {
+                const zPos = -2.0 + i * 1.4;
+                
+                // Switch Lever
+                const leverGeo = new THREE.CylinderGeometry(0.1, 0.15, 0.7, 12);
+                const leverMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.6 });
+                const switchMesh = new THREE.Mesh(leverGeo, leverMat);
+                switchMesh.position.set(-11.8, ySurface + 0.4, zPos);
+                switchMesh.rotation.z = Math.PI / 6; // Off position
+                switchMesh.name = `toggle_sw_${i}`;
+                scene.add(switchMesh);
+                interactiveMeshes.push(switchMesh);
+
+                // Pin Socket for Switch Output
+                createPinSocket(`SW${i+1}_OUT`, -9.2, ySurface + 0.15, zPos, 'INPUT', 0x10b981);
+
+                // Label SW
+                createLabel3D(`SW${i+1}`, -10.5, ySurface + 0.05, zPos, 0.28, 0x334155);
+            }
+        }
+
+        function buildGateICBlocks() {
+            const ySurface = 0.35;
+            const gates = [
+                { id: 'AND', code: '7408', title: 'AND', x: -4, z: -4 },
+                { id: 'OR', code: '7432', title: 'OR', x: -4, z: -0.5 },
+                { id: 'NOT', code: '7404', title: 'NOT', x: -4, z: 3 },
+                { id: 'NAND', code: '7400', title: 'NAND', x: 2, z: -4 },
+                { id: 'NOR', code: '7402', title: 'NOR', x: 2, z: -0.5 },
+                { id: 'XOR', code: '7486', title: 'XOR', x: 2, z: 3 },
+                { id: 'XNOR', code: '7472', title: 'XNOR', x: 2, z: 6.5 }
+            ];
+
+            gates.forEach(g => {
+                // DIP IC Chip Mesh
+                const icGeo = new THREE.BoxGeometry(2.2, 0.5, 2.2);
+                const icMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.2 });
+                const icMesh = new THREE.Mesh(icGeo, icMat);
+                icMesh.position.set(g.x, ySurface + 0.25, g.z);
+                icMesh.name = `ic_${g.id}`;
+                icMesh.userData = { gateId: g.id, code: g.code, title: g.title };
+                scene.add(icMesh);
+                interactiveMeshes.push(icMesh);
+
+                // IC Label text on top of chip
+                createLabel3D(`${g.title}\n(${g.code})`, g.x, ySurface + 0.52, g.z, 0.28, 0xf8fafc);
+
+                // Pins layout
+                if (g.id === 'NOT') {
+                    // 1 Input, 1 Output
+                    createPinSocket(`${g.id}_IN`, g.x - 1.8, ySurface + 0.15, g.z, 'IC_IN', 0xf59e0b);
+                    createPinSocket(`${g.id}_OUT`, g.x + 1.8, ySurface + 0.15, g.z, 'IC_OUT', 0x10b981);
+                } else {
+                    // 2 Inputs (A, B), 1 Output
+                    createPinSocket(`${g.id}_IN_A`, g.x - 1.8, ySurface + 0.15, g.z - 0.5, 'IC_IN', 0xf59e0b);
+                    createPinSocket(`${g.id}_IN_B`, g.x - 1.8, ySurface + 0.15, g.z + 0.5, 'IC_IN', 0xf59e0b);
+                    createPinSocket(`${g.id}_OUT`, g.x + 1.8, ySurface + 0.15, g.z, 'IC_OUT', 0x10b981);
+                }
+            });
+        }
+
+        function buildFlipFlopModules() {
+            const ySurface = 0.35;
+
+            // D Flip Flop
+            createSubPanel(8, ySurface, -4, 4.5, 3.5, "D FLIP-FLOP (7474)", 0x1e293b);
+            createPinSocket('DFF_D', 6.3, ySurface + 0.15, -4.5, 'IC_IN', 0xf59e0b);
+            createPinSocket('DFF_CLK', 6.3, ySurface + 0.15, -3.5, 'IC_IN', 0x38bdf8);
+            createPinSocket('DFF_Q', 9.7, ySurface + 0.15, -4.5, 'IC_OUT', 0x10b981);
+            createPinSocket('DFF_QNOT', 9.7, ySurface + 0.15, -3.5, 'IC_OUT', 0x10b981);
+
+            createLabel3D("D", 6.8, ySurface + 0.05, -4.5, 0.25, 0x64748b);
+            createLabel3D("CLK", 6.9, ySurface + 0.05, -3.5, 0.25, 0x64748b);
+            createLabel3D("Q", 9.2, ySurface + 0.05, -4.5, 0.25, 0x64748b);
+            createLabel3D("Q̅", 9.2, ySurface + 0.05, -3.5, 0.25, 0x64748b);
+
+            // JK Flip Flop
+            createSubPanel(8, ySurface, 0.5, 4.5, 4.5, "JK FLIP-FLOP (7476)", 0x1e293b);
+            createPinSocket('JKFF_J', 6.3, ySurface + 0.15, -0.8, 'IC_IN', 0xf59e0b);
+            createPinSocket('JKFF_CLK', 6.3, ySurface + 0.15, 0.5, 'IC_IN', 0x38bdf8);
+            createPinSocket('JKFF_K', 6.3, ySurface + 0.15, 1.8, 'IC_IN', 0xf59e0b);
+            createPinSocket('JKFF_Q', 9.7, ySurface + 0.15, -0.3, 'IC_OUT', 0x10b981);
+            createPinSocket('JKFF_QNOT', 9.7, ySurface + 0.15, 1.3, 'IC_OUT', 0x10b981);
+
+            createLabel3D("J", 6.8, ySurface + 0.05, -0.8, 0.25, 0x64748b);
+            createLabel3D("CLK", 6.9, ySurface + 0.05, 0.5, 0.25, 0x64748b);
+            createLabel3D("K", 6.8, ySurface + 0.05, 1.8, 0.25, 0x64748b);
+            createLabel3D("Q", 9.2, ySurface + 0.05, -0.3, 0.25, 0x64748b);
+            createLabel3D("Q̅", 9.2, ySurface + 0.05, 1.3, 0.25, 0x64748b);
+        }
+
+        function buildBCDModule() {
+            const ySurface = 0.35;
+            createSubPanel(8, ySurface, -8.5, 4.5, 3.2, "BCD TO 7-SEGMENT (7447)", 0x0f172a);
+
+            // 4 BCD Input Pins (A, B, C, D)
+            const bcdPins = ['BCD_A', 'BCD_B', 'BCD_C', 'BCD_D'];
+            const labels = ['A(1)', 'B(2)', 'C(4)', 'D(8)'];
+            for (let i = 0; i < 4; i++) {
+                const xPos = 6.2 + i * 1.2;
+                createPinSocket(bcdPins[i], xPos, ySurface + 0.15, -7.6, 'IC_IN', 0xf59e0b);
+                createLabel3D(labels[i], xPos, ySurface + 0.05, -9.3, 0.22, 0x64748b);
+            }
+
+            // 7-Segment Display Mesh Block
+            const dispBlockGeo = new THREE.BoxGeometry(2.2, 0.8, 2.8);
+            const dispBlockMat = new THREE.MeshStandardMaterial({ color: 0x020617, roughness: 0.2 });
+            const dispMesh = new THREE.Mesh(dispBlockGeo, dispBlockMat);
+            dispMesh.position.set(8, ySurface + 0.4, -5.8);
+            scene.add(dispMesh);
+
+            // Build 7 LED Segments (a, b, c, d, e, f, g)
+            const segMatOff = new THREE.MeshBasicMaterial({ color: 0x331010 });
+            
+            // Segment geometries (horizontal & vertical bars)
+            const hSegGeo = new THREE.BoxGeometry(0.8, 0.05, 0.12);
+            const vSegGeo = new THREE.BoxGeometry(0.12, 0.05, 0.7);
+
+            const segPositions = {
+                a: { geo: hSegGeo, pos: [8, ySurface + 0.82, -6.8] },
+                b: { geo: vSegGeo, pos: [8.5, ySurface + 0.82, -6.35] },
+                c: { geo: vSegGeo, pos: [8.5, ySurface + 0.82, -5.25] },
+                d: { geo: hSegGeo, pos: [8, ySurface + 0.82, -4.8] },
+                e: { geo: vSegGeo, pos: [7.5, ySurface + 0.82, -5.25] },
+                f: { geo: vSegGeo, pos: [7.5, ySurface + 0.82, -6.35] },
+                g: { geo: hSegGeo, pos: [8, ySurface + 0.82, -5.8] }
+            };
+
+            for (let s in segPositions) {
+                const seg = new THREE.Mesh(segPositions[s].geo, segMatOff.clone());
+                seg.position.set(...segPositions[s].pos);
+                scene.add(seg);
+                segmentMeshes[s] = seg;
+            }
+        }
+
+        function buildLEDOutputsSection() {
+            const ySurface = 0.35;
+            createSubPanel(8, ySurface, 6, 4.5, 6, "OUTPUT LEDS (LED1-LED7)", 0x0f172a);
+
+            for (let i = 0; i < 7; i++) {
+                const zPos = 3.8 + i * 0.75;
+
+                // LED Plastic Dome Mesh
+                const ledDomeGeo = new THREE.SphereGeometry(0.28, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+                const ledMat = new THREE.MeshStandardMaterial({
+                    color: 0x450a0a,
+                    emissive: 0x000000,
+                    roughness: 0.2
+                });
+                const ledMesh = new THREE.Mesh(ledDomeGeo, ledMat);
+                ledMesh.position.set(9.2, ySurface + 0.25, zPos);
+                ledMesh.name = `led_mesh_${i+1}`;
+                scene.add(ledMesh);
+
+                // LED Pin Input
+                createPinSocket(`LED${i+1}_IN`, 6.8, ySurface + 0.15, zPos, 'LED_IN', 0xef4444);
+
+                // Label
+                createLabel3D(`LED${i+1}`, 8.0, ySurface + 0.05, zPos, 0.22, 0x64748b);
+            }
+        }
+
+        function createSubPanel(x, y, z, width, depth, title, borderColor) {
+            const panelGeo = new THREE.BoxGeometry(width, 0.08, depth);
+            const panelMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.5 });
+            const panel = new THREE.Mesh(panelGeo, panelMat);
+            panel.position.set(x, y, z);
+            panel.receiveShadow = true;
+            scene.add(panel);
+
+            // Silkscreen Border Frame Line
+            const borderGeo = new THREE.BoxGeometry(width + 0.1, 0.09, depth + 0.1);
+            const borderMat = new THREE.MeshBasicMaterial({ color: borderColor });
+            const border = new THREE.Mesh(borderGeo, borderMat);
+            border.position.set(x, y - 0.01, z);
+            scene.add(border);
+
+            // Title Label text
+            createLabel3D(title, x, y + 0.06, z - depth / 2 + 0.3, 0.25, 0x0f172a);
+        }
+
+        function createPinSocket(id, x, y, z, type, ringColor = 0x3b82f6) {
+            // Metallic Outer Ring
+            const outerGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.25, 20);
+            const outerMat = new THREE.MeshStandardMaterial({ color: ringColor, metalness: 0.4, roughness: 0.3 });
+            const outerMesh = new THREE.Mesh(outerGeo, outerMat);
+            outerMesh.position.set(x, y, z);
+            scene.add(outerMesh);
+
+            // Inner Hole (Black Metal Contact)
+            const innerGeo = new THREE.CylinderGeometry(0.16, 0.16, 0.28, 16);
+            const innerMat = new THREE.MeshStandardMaterial({ color: 0x020617, metalness: 0.9, roughness: 0.1 });
+            const innerMesh = new THREE.Mesh(innerGeo, innerMat);
+            innerMesh.position.set(x, y + 0.02, z);
+            scene.add(innerMesh);
+
+            // Register Pin Object
+            const pinData = {
+                id,
+                pos: new THREE.Vector3(x, y + 0.15, z),
+                mesh: outerMesh,
+                type,
+                color: ringColor
+            };
+
+            outerMesh.userData = { isPin: true, pinId: id };
+            pinsRegistry[id] = pinData;
+            pinMeshes.push(outerMesh);
+            circuitState.pinValues[id] = 0;
+        }
+
+        function createLabel3D(text, x, y, z, fontSize = 0.3, textColor = 0x0f172a) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#' + textColor.toString(16).padStart(6, '0');
+            ctx.font = 'bold 32px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            const lines = text.split('\n');
+            if (lines.length > 1) {
+                ctx.fillText(lines[0], 128, 44);
+                ctx.fillText(lines[1], 128, 84);
+            } else {
+                ctx.fillText(text, 128, 64);
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMat = new THREE.SpriteMaterial({ map: texture });
+            const sprite = new THREE.Sprite(spriteMat);
+            sprite.position.set(x, y + 0.02, z);
+            sprite.scale.set(fontSize * 2.5, fontSize * 1.25, 1);
+            sprite.rotation.x = -Math.PI / 2;
+            scene.add(sprite);
+        }
+
+        function createCableMesh(p1, p2, colorHex) {
+            // Sagging curve calculation (Physics Catenary/Bezier Rope approximation)
+            const distance = p1.distanceTo(p2);
+            const midPoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+            
+            // Sag depth increases with cable distance
+            const sagDepth = Math.min(Math.max(distance * 0.25, 0.8), 3.5);
+            midPoint.y -= sagDepth;
+
+            const curve = new THREE.CatmullRomCurve3([p1, midPoint, p2]);
+            const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.08, 8, false);
+            const tubeMat = new THREE.MeshStandardMaterial({
+                color: colorHex,
+                roughness: 0.3,
+                metalness: 0.2,
+                emissive: 0x000000
+            });
+
+            const cableMesh = new THREE.Mesh(tubeGeo, tubeMat);
+            cableMesh.castShadow = true;
+
+            // Plugs at both ends
+            const plugGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.5, 12);
+            const plugMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8 });
+
+            const plug1 = new THREE.Mesh(plugGeo, plugMat);
+            plug1.position.copy(p1);
+            cableMesh.add(plug1);
+
+            const plug2 = new THREE.Mesh(plugGeo, plugMat);
+            plug2.position.copy(p2);
+            cableMesh.add(plug2);
+
+            return cableMesh;
+        }
+
+        function evaluateCircuitLogic() {
+            // Reset logic states if power is off
+            if (!circuitState.power) {
+                for (let pinId in circuitState.pinValues) {
+                    circuitState.pinValues[pinId] = 0;
+                }
+                updateAllVisualStates();
+                return;
+            }
+
+            // Set Fixed Source Pins
+            // VCC
+            for (let i = 1; i <= 4; i++) circuitState.pinValues[`VCC_${i}`] = 1;
+            // GND
+            for (let i = 1; i <= 4; i++) circuitState.pinValues[`GND_${i}`] = 0;
+            // Switches
+            for (let i = 0; i < 7; i++) {
+                circuitState.pinValues[`SW${i+1}_OUT`] = circuitState.switches[i];
+            }
+            // Pulse Switch
+            circuitState.pinValues['PULSE_OUT'] = circuitState.pulse;
+
+            // Graph Solver (Up to 8 iterations for multi-gate propagation)
+            for (let iter = 0; iter < 8; iter++) {
+                // 1. Propagate signals across Wires
+                circuitState.wires.forEach(w => {
+                    const valFrom = circuitState.pinValues[w.fromPinId] || 0;
+                    const valTo = circuitState.pinValues[w.toPinId] || 0;
+                    
+                    // Wire works bidirectionally
+                    const wireSignal = Math.max(valFrom, valTo);
+                    circuitState.pinValues[w.fromPinId] = wireSignal;
+                    circuitState.pinValues[w.toPinId] = wireSignal;
+                });
+
+                // 2. Evaluate IC Logic Gates
+                // AND
+                circuitState.pinValues['AND_OUT'] = (circuitState.pinValues['AND_IN_A'] && circuitState.pinValues['AND_IN_B']) ? 1 : 0;
+                // OR
+                circuitState.pinValues['OR_OUT'] = (circuitState.pinValues['OR_IN_A'] || circuitState.pinValues['OR_IN_B']) ? 1 : 0;
+                // NOT
+                circuitState.pinValues['NOT_OUT'] = (circuitState.pinValues['NOT_IN'] === 1) ? 0 : 1;
+                // NAND
+                circuitState.pinValues['NAND_OUT'] = !(circuitState.pinValues['NAND_IN_A'] && circuitState.pinValues['NAND_IN_B']) ? 1 : 0;
+                // NOR
+                circuitState.pinValues['NOR_OUT'] = !(circuitState.pinValues['NOR_IN_A'] || circuitState.pinValues['NOR_IN_B']) ? 1 : 0;
+                // XOR
+                circuitState.pinValues['XOR_OUT'] = (circuitState.pinValues['XOR_IN_A'] !== circuitState.pinValues['XOR_IN_B']) ? 1 : 0;
+                // XNOR
+                circuitState.pinValues['XNOR_OUT'] = (circuitState.pinValues['XNOR_IN_A'] === circuitState.pinValues['XNOR_IN_B']) ? 1 : 0;
+
+                // 3. Evaluate D Flip-Flop
+                const dClk = circuitState.pinValues['DFF_CLK'] || 0;
+                if (dClk === 1 && circuitState.flipFlops.d.prevClk === 0) {
+                    // Rising Edge Clock Trigger
+                    const dVal = circuitState.pinValues['DFF_D'] || 0;
+                    circuitState.flipFlops.d.q = dVal;
+                    circuitState.flipFlops.d.qNot = dVal === 1 ? 0 : 1;
+                }
+                circuitState.flipFlops.d.prevClk = dClk;
+                circuitState.pinValues['DFF_Q'] = circuitState.flipFlops.d.q;
+                circuitState.pinValues['DFF_QNOT'] = circuitState.flipFlops.d.qNot;
+
+                // 4. Evaluate JK Flip-Flop
+                const jkClk = circuitState.pinValues['JKFF_CLK'] || 0;
+                if (jkClk === 1 && circuitState.flipFlops.jk.prevClk === 0) {
+                    const j = circuitState.pinValues['JKFF_J'] || 0;
+                    const k = circuitState.pinValues['JKFF_K'] || 0;
+                    let q = circuitState.flipFlops.jk.q;
+
+                    if (j === 0 && k === 1) q = 0;
+                    else if (j === 1 && k === 0) q = 1;
+                    else if (j === 1 && k === 1) q = q === 1 ? 0 : 1; // Toggle
+                    
+                    circuitState.flipFlops.jk.q = q;
+                    circuitState.flipFlops.jk.qNot = q === 1 ? 0 : 1;
+                }
+                circuitState.flipFlops.jk.prevClk = jkClk;
+                circuitState.pinValues['JKFF_Q'] = circuitState.flipFlops.jk.q;
+                circuitState.pinValues['JKFF_QNOT'] = circuitState.flipFlops.jk.qNot;
+
+                // 5. Evaluate BCD Decoder
+                const bitA = circuitState.pinValues['BCD_A'] || 0;
+                const bitB = circuitState.pinValues['BCD_B'] || 0;
+                const bitC = circuitState.pinValues['BCD_C'] || 0;
+                const bitD = circuitState.pinValues['BCD_D'] || 0;
+                circuitState.bcdDisplayValue = bitA * 1 + bitB * 2 + bitC * 4 + bitD * 8;
+            }
+
+            // Update all 3D Material visuals based on new calculated values
+            updateAllVisualStates();
+        }
+
+        function updateAllVisualStates() {
+            // Update Cable Wires Color / Glowing
+            circuitState.wires.forEach(w => {
+                const wireSignal = circuitState.pinValues[w.fromPinId] || 0;
+                if (wireSignal === 1 && circuitState.power) {
+                    w.mesh.material.color.setHex(0x10b981); // Bright Green Signal
+                    w.mesh.material.emissive.setHex(0x059669);
+                } else {
+                    w.mesh.material.color.setStyle(w.color);
+                    w.mesh.material.emissive.setHex(0x000000);
+                }
+            });
+
+            // Update Output LEDs
+            for (let i = 1; i <= 7; i++) {
+                const ledMesh = scene.getObjectByName(`led_mesh_${i}`);
+                if (ledMesh) {
+                    const ledSignal = circuitState.pinValues[`LED${i}_IN`] || 0;
+                    if (ledSignal === 1 && circuitState.power) {
+                        ledMesh.material.color.setHex(0x22c55e); // Glowing Green
+                        ledMesh.material.emissive.setHex(0x15803d);
+                    } else {
+                        ledMesh.material.color.setHex(0x450a0a); // Off Dark Red
+                        ledMesh.material.emissive.setHex(0x000000);
+                    }
+                }
+            }
+
+            // Update 7-Segment Display LEDs
+            update7SegmentVisual(circuitState.power ? circuitState.bcdDisplayValue : -1);
+
+            // Update Active Wire Count Counter Overlay
+            document.getElementById('wire-count').innerText = circuitState.wires.length;
+
+            // Update Live Inspector Sidebar
+            updateInspectorUI();
+        }
+
+        function update7SegmentVisual(digit) {
+            // Segment map for digits 0-9
+            const segMap = {
+                0: ['a', 'b', 'c', 'd', 'e', 'f'],
+                1: ['b', 'c'],
+                2: ['a', 'b', 'd', 'e', 'g'],
+                3: ['a', 'b', 'c', 'd', 'g'],
+                4: ['b', 'c', 'f', 'g'],
+                5: ['a', 'c', 'd', 'f', 'g'],
+                6: ['a', 'c', 'd', 'e', 'f', 'g'],
+                7: ['a', 'b', 'c'],
+                8: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
+                9: ['a', 'b', 'c', 'd', 'f', 'g']
+            };
+
+            const activeSegs = segMap[digit] || [];
+            for (let segKey in segmentMeshes) {
+                const segMesh = segmentMeshes[segKey];
+                if (activeSegs.includes(segKey)) {
+                    segMesh.material.color.setHex(0xef4444); // Bright Red Segment
+                } else {
+                    segMesh.material.color.setHex(0x331010); // Dim Off
+                }
+            }
+        }
+
+        function onPointerDown(event) {
+            // Calculate normalized mouse coordinate
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+
+            // Raycast against pins and interactive switches
+            const intersects = raycaster.intersectObjects([...pinMeshes, ...interactiveMeshes], true);
+
+            if (intersects.length > 0) {
+                const hitObj = intersects[0].object;
+
+                // 1. Clicked Power Toggle Switch
+                if (hitObj.name === 'toggle_power') {
+                    circuitState.power = !circuitState.power;
+                    hitObj.rotation.z = circuitState.power ? -Math.PI / 6 : Math.PI / 6;
+
+                    // Power Badge UI Update
+                    const badge = document.getElementById('power-badge');
+                    const dot = document.getElementById('power-dot');
+                    const txt = document.getElementById('power-text');
+                    if (circuitState.power) {
+                        badge.className = "flex items-center px-3 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 text-xs font-semibold space-x-2 transition-all duration-300";
+                        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping inline-block";
+                        txt.innerText = "POWER ON (+5V)";
+                    } else {
+                        badge.className = "flex items-center px-3 py-1.5 rounded-lg bg-red-950/80 border border-red-500/40 text-red-400 text-xs font-semibold space-x-2 transition-all duration-300";
+                        dot.className = "w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse inline-block";
+                        txt.innerText = "POWER OFF";
+                    }
+
+                    evaluateCircuitLogic();
+                    return;
+                }
+
+                // 2. Clicked Input Toggle Switches (SW1 - SW7)
+                if (hitObj.name && hitObj.name.startsWith('toggle_sw_')) {
+                    const swIdx = parseInt(hitObj.name.replace('toggle_sw_', ''));
+                    circuitState.switches[swIdx] = circuitState.switches[swIdx] === 1 ? 0 : 1;
+                    hitObj.rotation.z = circuitState.switches[swIdx] === 1 ? -Math.PI / 6 : Math.PI / 6;
+                    
+                    evaluateCircuitLogic();
+                    return;
+                }
+
+                // 3. Clicked Pulse Momentary Switch
+                if (hitObj.name === 'button_pulse') {
+                    circuitState.pulse = 1;
+                    hitObj.position.y -= 0.08;
+                    evaluateCircuitLogic();
+
+                    setTimeout(() => {
+                        circuitState.pulse = 0;
+                        hitObj.position.y += 0.08;
+                        evaluateCircuitLogic();
+                    }, 250);
+                    return;
+                }
+
+                // 4. Clicked IC Chip (Inspect Truth Table)
+                if (hitObj.name && hitObj.name.startsWith('ic_')) {
+                    const gateId = hitObj.userData.gateId;
+                    openInspectorForGate(gateId);
+                    return;
+                }
+
+                // 5. Clicked Pin Socket (Wiring Mode)
+                if (hitObj.userData && hitObj.userData.isPin) {
+                    const pinId = hitObj.userData.pinId;
+
+                    if (wireInteraction.mode === 'wire') {
+                        if (!wireInteraction.startPin) {
+                            // First Pin Selection
+                            wireInteraction.startPin = pinId;
+                            document.getElementById('wiring-status-badge').innerText = `HUBUNGKAN DARI: ${pinId}`;
+                            document.getElementById('wiring-status-badge').className = "text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono animate-pulse border border-amber-500/30";
+                        } else {
+                            // Second Pin Selection -> Connect Cable!
+                            if (wireInteraction.startPin !== pinId) {
+                                connectPins(wireInteraction.startPin, pinId, wireInteraction.selectedColor);
+                            }
+                            // Reset selection
+                            wireInteraction.startPin = null;
+                            document.getElementById('wiring-status-badge').innerText = "SIAP";
+                            document.getElementById('wiring-status-badge').className = "text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono";
+                        }
+                    }
+                    return;
+                }
+            }
+        }
+
+        function connectPins(p1Id, p2Id, colorHex) {
+            // Check if connection already exists
+            const existingIndex = circuitState.wires.findIndex(w => 
+                (w.fromPinId === p1Id && w.toPinId === p2Id) || (w.fromPinId === p2Id && w.toPinId === p1Id)
+            );
+
+            if (existingIndex !== -1) {
+                // If clicked existing cable, remove it!
+                const existingWire = circuitState.wires[existingIndex];
+                scene.remove(existingWire.mesh);
+                circuitState.wires.splice(existingIndex, 1);
+            } else {
+                // Add new wire cable
+                const pin1 = pinsRegistry[p1Id];
+                const pin2 = pinsRegistry[p2Id];
+
+                const cableMesh = createCableMesh(pin1.pos, pin2.pos, colorHex);
+                scene.add(cableMesh);
+
+                circuitState.wires.push({
+                    id: `wire_${Date.now()}`,
+                    fromPinId: p1Id,
+                    toPinId: p2Id,
+                    color: colorHex,
+                    mesh: cableMesh
+                });
+            }
+
+            evaluateCircuitLogic();
+        }
+
+        function hasConnection(p1, p2) {
+            return circuitState.wires.some(w => 
+                (w.fromPinId === p1 && w.toPinId === p2) || (w.fromPinId === p2 && w.toPinId === p1)
+            );
+        }
+
+        function clearAllWires() {
+            circuitState.wires.forEach(w => scene.remove(w.mesh));
+            circuitState.wires = [];
+            evaluateCircuitLogic();
+        }
+
+        function onPointerMove(event) {
+            // Highlight pins on hover
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(pinMeshes);
+
+            pinMeshes.forEach(p => p.material.color.setHex(pinsRegistry[p.userData.pinId].color));
+
+            if (intersects.length > 0) {
+                const hoveredPin = intersects[0].object;
+                hoveredPin.material.color.setHex(0x38bdf8); // Light Blue hover highlight
+            }
+        }
+
+        let activeInspectedGate = 'AND';
+
+        function openInspectorForGate(gateId) {
+            activeInspectedGate = gateId;
+            updateInspectorUI();
+        }
+
+        function updateInspectorUI() {
+            const gateId = activeInspectedGate;
+            const titleEl = document.getElementById('inspector-title');
+            const codeEl = document.getElementById('inspector-ic-code');
+            const descEl = document.getElementById('inspector-desc');
+            const tbody = document.getElementById('truth-table-body');
+            const readoutA = document.getElementById('readout-in-a');
+            const readoutB = document.getElementById('readout-in-b');
+
+            const gateData = {
+                AND: { code: '7408 IC', title: 'Gerbang AND', desc: 'Output bernilai 1 hanya jika semua input bernilai 1.' },
+                OR: { code: '7432 IC', title: 'Gerbang OR', desc: 'Output bernilai 1 jika minimal salah satu input bernilai 1.' },
+                NOT: { code: '7404 IC', title: 'Gerbang NOT', desc: 'Output merupakan kebalikan (inversi) dari nilai input.' },
+                NAND: { code: '7400 IC', title: 'Gerbang NAND', desc: 'Kebalikan dari AND. Output bernilai 0 hanya jika semua input 1.' },
+                NOR: { code: '7402 IC', title: 'Gerbang NOR', desc: 'Kebalikan dari OR. Output bernilai 1 hanya jika semua input 0.' },
+                XOR: { code: '7486 IC', title: 'Gerbang XOR', desc: 'Output bernilai 1 jika nilai input berbeda satu sama lain.' },
+                XNOR: { code: '7472 IC', title: 'Gerbang XNOR', desc: 'Output bernilai 1 jika nilai kedua input sama.' }
+            }[gateId] || { code: '7408 IC', title: 'Gerbang AND', desc: '' };
+
+            titleEl.innerText = gateData.title;
+            codeEl.innerText = gateData.code;
+            descEl.innerText = gateData.desc;
+
+            // Get Current Logic Inputs
+            const inA = circuitState.pinValues[`${gateId}_IN_A`] || 0;
+            const inB = circuitState.pinValues[`${gateId}_IN_B`] || 0;
+            const inNOT = circuitState.pinValues['NOT_IN'] || 0;
+
+            readoutA.innerText = gateId === 'NOT' ? inNOT : inA;
+            readoutB.innerText = gateId === 'NOT' ? '-' : inB;
+
+            // Build Truth Table Rows
+            if (gateId === 'NOT') {
+                tbody.innerHTML = `
+                    <tr class="${inNOT === 0 ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40' : 'hover:bg-slate-800/40'}">
+                        <td class="py-1.5 border-r border-slate-800" colspan="2">0</td>
+                        <td class="py-1.5 font-bold text-emerald-400">1</td>
+                    </tr>
+                    <tr class="${inNOT === 1 ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40' : 'hover:bg-slate-800/40'}">
+                        <td class="py-1.5 border-r border-slate-800" colspan="2">1</td>
+                        <td class="py-1.5 font-bold text-rose-400">0</td>
+                    </tr>
+                `;
+            } else {
+                const rows = [
+                    { a: 0, b: 0 }, { a: 0, b: 1 }, { a: 1, b: 0 }, { a: 1, b: 1 }
+                ];
+
+                tbody.innerHTML = rows.map(r => {
+                    let out = 0;
+                    if (gateId === 'AND') out = (r.a && r.b) ? 1 : 0;
+                    else if (gateId === 'OR') out = (r.a || r.b) ? 1 : 0;
+                    else if (gateId === 'NAND') out = !(r.a && r.b) ? 1 : 0;
+                    else if (gateId === 'NOR') out = !(r.a || r.b) ? 1 : 0;
+                    else if (gateId === 'XOR') out = (r.a !== r.b) ? 1 : 0;
+                    else if (gateId === 'XNOR') out = (r.a === r.b) ? 1 : 0;
+
+                    const isActive = (r.a === inA && r.b === inB);
+                    const activeStyle = isActive ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40' : 'hover:bg-slate-800/40';
+
+                    return `
+                        <tr class="${activeStyle}">
+                            <td class="py-1.5 border-r border-slate-800">${r.a}</td>
+                            <td class="py-1.5 border-r border-slate-800">${r.b}</td>
+                            <td class="py-1.5 font-bold ${out === 1 ? 'text-emerald-400' : 'text-rose-400'}">${out}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        function setInteractionMode(mode) {
+            wireInteraction.mode = mode;
+            const btnWire = document.getElementById('btn-mode-wire');
+            const btnSelect = document.getElementById('btn-mode-select');
+
+            if (mode === 'wire') {
+                btnWire.className = "flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-teal-500 text-slate-950 font-semibold text-xs shadow-lg shadow-teal-500/20 hover:bg-teal-400 transition";
+                btnSelect.className = "flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-slate-800 text-slate-300 font-medium text-xs hover:bg-slate-700 border border-slate-700 transition";
+            } else {
+                btnSelect.className = "flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-teal-500 text-slate-950 font-semibold text-xs shadow-lg shadow-teal-500/20 hover:bg-teal-400 transition";
+                btnWire.className = "flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-slate-800 text-slate-300 font-medium text-xs hover:bg-slate-700 border border-slate-700 transition";
+            }
+        }
+
+        function setSelectedWireColor(colorHex) {
+            wireInteraction.selectedColor = colorHex;
+        }
+
+        function setCameraView(viewMode) {
+            const btn3d = document.getElementById('btn-view-3d');
+            const btnTop = document.getElementById('btn-view-top');
+
+            if (viewMode === 'top') {
+                camera.position.set(0, 28, 0.1);
+                controls.target.set(0, 0, 0);
+                btnTop.className = "px-2.5 py-1 text-xs font-medium rounded-md bg-emerald-500 text-slate-950 shadow hover:bg-emerald-400 transition";
+                btn3d.className = "px-2.5 py-1 text-xs font-medium rounded-md text-slate-300 hover:bg-slate-700 transition";
+            } else {
+                camera.position.set(0, 22, 18);
+                controls.target.set(0, 0, 0);
+                btn3d.className = "px-2.5 py-1 text-xs font-medium rounded-md bg-emerald-500 text-slate-950 shadow hover:bg-emerald-400 transition";
+                btnTop.className = "px-2.5 py-1 text-xs font-medium rounded-md text-slate-300 hover:bg-slate-700 transition";
+            }
+            controls.update();
+        }
+
+        function setLabTab(tab) {
+            const contentFree = document.getElementById('content-free');
+            const contentQuiz = document.getElementById('content-quiz');
+            const tabFree = document.getElementById('tab-free');
+            const tabQuiz = document.getElementById('tab-quiz');
+
+            if (tab === 'free') {
+                contentFree.classList.remove('hidden');
+                contentQuiz.classList.add('hidden');
+                tabFree.className = "px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-semibold";
+                tabQuiz.className = "px-2 py-1 rounded-md text-slate-400 hover:text-slate-200";
+            } else {
+                contentFree.classList.add('hidden');
+                contentQuiz.classList.remove('hidden');
+                tabQuiz.className = "px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-semibold";
+                tabFree.className = "px-2 py-1 rounded-md text-slate-400 hover:text-slate-200";
+            }
+        }
+
+        function loadQuizTask(index) {
+            currentQuizIndex = index;
+            const task = quizTasks[index];
+            document.getElementById('quiz-step-title').innerText = `Tantangan ${index + 1} / ${quizTasks.length}`;
+            document.getElementById('quiz-desc').innerHTML = task.desc;
+
+            // Reset buttons highlight
+            for (let i = 0; i < quizTasks.length; i++) {
+                const btn = document.getElementById(`quiz-btn-${i}`);
+                if (i === index) {
+                    btn.className = "w-full text-left p-2.5 rounded-lg bg-slate-800/90 border border-teal-500/50 flex items-center justify-between text-slate-200 hover:bg-slate-700/80 transition";
+                } else {
+                    btn.className = "w-full text-left p-2.5 rounded-lg bg-slate-900/50 border border-slate-800 flex items-center justify-between text-slate-400 hover:bg-slate-800/60 transition";
+                }
+            }
+        }
+
+        function checkCurrentQuizTask() {
+            const task = quizTasks[currentQuizIndex];
+            const result = task.check();
+
+            if (result.pass) {
+                showModal("Tantangan Berhasil! 🎉", result.msg, true);
+                document.getElementById('quiz-status-pill').innerText = "SELESAI";
+                document.getElementById('quiz-status-pill').className = "px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            } else {
+                showModal("Belum Lengkap", result.msg, false);
+            }
+        }
+
+        function showModal(title, msg, isSuccess) {
+            const dialog = document.getElementById('modal-dialog');
+            const iconBg = document.getElementById('modal-icon-bg');
+            const icon = document.getElementById('modal-icon');
+
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = msg;
+
+            if (isSuccess) {
+                iconBg.className = "w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto text-emerald-400 text-2xl shadow-lg";
+                icon.className = "fa-solid fa-trophy";
+            } else {
+                iconBg.className = "w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mx-auto text-amber-400 text-2xl shadow-lg";
+                icon.className = "fa-solid fa-triangle-exclamation";
+            }
+
+            dialog.classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('modal-content-box').classList.remove('scale-95');
+            document.getElementById('modal-content-box').classList.add('scale-100');
+        }
+
+        function closeModal() {
+            const dialog = document.getElementById('modal-dialog');
+            dialog.classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('modal-content-box').classList.remove('scale-100');
+            document.getElementById('modal-content-box').classList.add('scale-95');
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Smooth controls damping
+            controls.update();
+
+            // Render 3D Scene
+            renderer.render(scene, camera);
+        }
+
+        // Initialize 3D App on window load
+        window.onload = function() {
+            init3D();
+            loadQuizTask(0);
+        };
+    </script>
+</body>
+</html>
+```
