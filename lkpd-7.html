@@ -54,7 +54,7 @@
             background-color: #eff6ff !important;
         }
 
-        /* Certificate Print CSS Optimization for A4 Landscape */
+        /* Certificate Print CSS Optimization for A5 Landscape */
         @media print {
             body * {
                 visibility: hidden;
@@ -78,7 +78,7 @@
                 display: none !important;
             }
             @page {
-                size: A4 landscape;
+                size: A5 landscape;
                 margin: 0;
             }
         }
@@ -437,7 +437,7 @@
                         🔄 COBA LAGI (PERCOBAAN BARU)
                     </button>
                     <button onclick="window.print()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-sm">
-                        🖨️ CETAK SERTIFIKAT / PDF
+                        🖨️ CETAK SERTIFIKAT A5 / PDF
                     </button>
                     <button onclick="returnToDashboard()" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-xl transition flex items-center gap-2 text-sm">
                         🏠 KEMBALI KE DASHBOARD
@@ -445,71 +445,78 @@
                 </div>
             </div>
 
-            <!-- DYNAMIC PRINTABLE CERTIFICATE CONTAINER (A4 LANDSCAPE RATIO) -->
-            <div id="certificate-print-area" class="bg-white p-8 md:p-12 rounded-3xl border-8 shadow-2xl relative overflow-hidden font-sans max-w-4xl mx-auto my-4 transition-all">
+            <!-- DYNAMIC PRINTABLE CERTIFICATE CONTAINER (A5 LANDSCAPE RATIO) -->
+            <div id="certificate-print-area" class="bg-gradient-to-r from-pink-500 via-purple-500 via-indigo-500 via-cyan-500 to-emerald-500 p-1.5 md:p-2 rounded-3xl shadow-2xl relative overflow-hidden font-sans max-w-3xl mx-auto my-4 transition-all">
                 
-                <div id="cert-inner-frame" class="border-2 p-6 md:p-10 rounded-2xl h-full flex flex-col justify-between text-center relative bg-gradient-to-br">
+                <div id="cert-inner-frame" class="bg-white/95 backdrop-blur-md p-5 md:p-8 rounded-[22px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner">
                     
+                    <!-- Decorative Colorful Glow Accent Blobs -->
+                    <div class="absolute -top-12 -left-12 w-36 h-36 bg-pink-400/20 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -bottom-12 -right-12 w-36 h-36 bg-cyan-400/20 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-amber-300/15 rounded-full blur-3xl pointer-events-none"></div>
+
                     <!-- Header -->
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-center gap-3">
-                            <span class="text-3xl">🎓</span>
-                            <h2 class="font-outfit text-xs md:text-sm tracking-widest font-black uppercase text-slate-600">SMP NEGERI 1 TINGGIMONCONG</h2>
-                            <span class="text-3xl">🎓</span>
+                    <div class="space-y-1 relative z-10">
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="text-2xl animate-bounce">🌟</span>
+                            <h2 class="font-outfit text-xs md:text-sm tracking-widest font-black uppercase bg-clip-text text-transparent bg-gradient-to-r from-purple-700 via-indigo-700 to-sky-700">
+                                SMP NEGERI 1 TINGGIMONCONG
+                            </h2>
+                            <span class="text-2xl animate-bounce">🌟</span>
                         </div>
-                        <h1 class="font-outfit text-2xl md:text-4xl font-black text-slate-900 tracking-tight uppercase">
+                        <h1 class="font-outfit text-2xl md:text-3xl font-black tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-pink-600 via-purple-600 via-indigo-600 to-sky-600 drop-shadow-sm">
                             SERTIFIKAT PENYELESAIAN LKPD
                         </h1>
-                        <p class="text-xs md:text-sm font-extrabold tracking-widest uppercase text-sky-800">
+                        <p class="text-[11px] md:text-xs font-black tracking-wider uppercase text-slate-700 bg-gradient-to-r from-amber-100 via-pink-100 to-sky-100 py-1 px-3.5 rounded-full inline-block border border-slate-200/80 shadow-sm">
                             INFORMATIKA KELAS VII — "JAGO MENGGUNAKAN PERANGKAT TIK & INTERNET"
                         </p>
                     </div>
 
                     <!-- Awardee Info -->
-                    <div class="my-6 space-y-3">
-                        <p class="text-xs uppercase text-slate-500 tracking-widest font-bold">Diberikan Kepada Siswa Bestari:</p>
-                        <h3 id="cert-student-name" class="font-outfit text-3xl md:text-4xl font-black text-slate-900 underline decoration-2 underline-offset-8">
+                    <div class="my-3 space-y-1.5 relative z-10">
+                        <p class="text-[10px] uppercase text-purple-700 tracking-widest font-extrabold">Diberikan Kepada Siswa Bestari:</p>
+                        <h3 id="cert-student-name" class="font-outfit text-2xl md:text-3xl font-black text-slate-900 bg-clip-text text-transparent bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900">
                             ANDI MUHAMMAD RIZKY
                         </h3>
-                        <p id="cert-student-class" class="text-slate-700 font-extrabold text-sm">
+                        <p id="cert-student-class" class="text-slate-800 font-extrabold text-xs bg-slate-100/90 inline-block px-3 py-1 rounded-full border border-slate-200">
                             Kelas: VII A • Nomor Absen: 05
                         </p>
-                        <p class="text-xs md:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed pt-2 font-medium">
-                            Telah menyelesaikan Lembar Kerja Peserta Didik (LKPD) Interaktif mencakup materi Perangkat TIK, Antarmuka Pengguna, Manajemen File & Folder, Peramban (Browser), dan E-mail.
+                        <p class="text-[11px] md:text-xs text-slate-600 max-w-xl mx-auto leading-relaxed font-medium pt-1">
+                            Telah menyelesaikan Lembar Kerja Peserta Didik (LKPD) Interaktif mencakup Perangkat TIK, Antarmuka Pengguna, Manajemen File & Folder, Peramban (Browser), dan E-mail.
                         </p>
                     </div>
 
-                    <!-- Score Badges Summary -->
-                    <div class="grid grid-cols-3 gap-3 max-w-md mx-auto my-3 bg-white/90 p-4 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="text-center border-r border-slate-200">
-                            <span class="text-[9px] text-slate-500 font-bold uppercase block">Nilai LKPD</span>
-                            <span id="cert-score-display" class="text-2xl md:text-3xl font-black text-slate-900">92/100</span>
+                    <!-- Colorful Score Badges Summary -->
+                    <div class="grid grid-cols-3 gap-2 max-w-md mx-auto my-2 p-2.5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-sky-500/10 border border-purple-200/80 shadow-sm relative z-10 backdrop-blur-sm">
+                        <div class="text-center border-r border-slate-200/80 pr-1">
+                            <span class="text-[8px] text-purple-700 font-extrabold uppercase block">Nilai LKPD</span>
+                            <span id="cert-score-display" class="text-xl md:text-2xl font-black text-slate-900">92/100</span>
                         </div>
-                        <div class="text-center border-r border-slate-200">
-                            <span class="text-[9px] text-slate-500 font-bold uppercase block">Predikat</span>
-                            <span id="cert-predicate-display" class="text-xs md:text-sm font-black text-amber-600">🏆 SANGAT BAIK</span>
+                        <div class="text-center border-r border-slate-200/80 pr-1">
+                            <span class="text-[8px] text-amber-700 font-extrabold uppercase block">Predikat</span>
+                            <span id="cert-predicate-display" class="text-[10px] md:text-xs font-black text-amber-600 block truncate">🏆 SANGAT BAIK</span>
                         </div>
                         <div class="text-center">
-                            <span class="text-[9px] text-slate-500 font-bold uppercase block">Percobaan</span>
-                            <span id="cert-attempt-display" class="text-sm md:text-base font-black text-indigo-700">Ke-1</span>
+                            <span class="text-[8px] text-indigo-700 font-extrabold uppercase block">Percobaan</span>
+                            <span id="cert-attempt-display" class="text-xs md:text-sm font-black text-indigo-700">Ke-1</span>
                         </div>
                     </div>
 
                     <!-- Signatures & Date Footer -->
-                    <div class="flex justify-between items-end pt-6 text-left border-t border-slate-200 mt-4">
+                    <div class="flex justify-between items-end pt-3 text-left border-t border-purple-200/60 mt-2 relative z-10">
                         <div>
-                            <p class="text-[10px] text-slate-500 font-bold">Tanggal Penyelesaian:</p>
+                            <p class="text-[9px] text-slate-500 font-bold">Tanggal Penyelesaian:</p>
                             <p id="cert-date-display" class="text-xs font-bold text-slate-800">18 Oktober 2026</p>
-                            <p class="text-[9px] text-slate-400 mt-0.5">ID LKPD: <span id="cert-id-code">INF-LKPD-8291</span></p>
+                            <p class="text-[8px] text-slate-400 mt-0.5">ID LKPD: <span id="cert-id-code">INF-LKPD-8291</span></p>
                         </div>
 
-                        <div class="text-center space-y-1">
-                            <p class="text-[10px] font-semibold text-slate-600">Guru Mata Pelajaran Informatika,</p>
-                            <div class="h-10 flex items-center justify-center italic text-xs text-slate-400 font-serif">
+                        <div class="text-center space-y-0.5">
+                            <p class="text-[9px] font-bold text-slate-600">Guru Mata Pelajaran Informatika,</p>
+                            <div class="h-8 flex items-center justify-center italic text-[11px] text-slate-400 font-serif">
                                 (Tanda Tangan Guru)
                             </div>
                             <p class="text-xs font-extrabold text-slate-900 border-b border-slate-400 pb-0.5">Syarifuddin, S. Pd., M. Si.</p>
-                            <p class="text-[9px] text-slate-500">NIP. SMPN 1 Tinggimoncong</p>
+                            <p class="text-[8px] text-slate-500">NIP. SMPN 1 Tinggimoncong</p>
                         </div>
                     </div>
 
@@ -1688,19 +1695,19 @@
             const certArea = document.getElementById('certificate-print-area');
             const certFrame = document.getElementById('cert-inner-frame');
 
-            // Color palette dynamically tailored by score band
+            // Vibrant colorful gradient palettes tailored for A5 certificate display
             if (record.score >= 90) {
-                certArea.className = "bg-white p-8 md:p-12 rounded-3xl border-8 border-emerald-700 shadow-2xl relative overflow-hidden font-sans max-w-4xl mx-auto my-4";
-                certFrame.className = "border-2 border-emerald-500 p-6 md:p-10 rounded-2xl h-full flex flex-col justify-between text-center relative bg-gradient-to-br from-emerald-50/40 via-white to-amber-50/30";
+                certArea.className = "bg-gradient-to-r from-amber-400 via-pink-500 via-purple-500 via-indigo-500 to-emerald-400 p-1.5 md:p-2 rounded-3xl shadow-2xl relative overflow-hidden font-sans max-w-3xl mx-auto my-4 transition-all";
+                certFrame.className = "bg-gradient-to-br from-amber-50/95 via-white to-emerald-50/95 backdrop-blur-md p-5 md:p-8 rounded-[22px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner";
             } else if (record.score >= 80) {
-                certArea.className = "bg-white p-8 md:p-12 rounded-3xl border-8 border-sky-700 shadow-2xl relative overflow-hidden font-sans max-w-4xl mx-auto my-4";
-                certFrame.className = "border-2 border-sky-500 p-6 md:p-10 rounded-2xl h-full flex flex-col justify-between text-center relative bg-gradient-to-br from-sky-50/40 via-white to-indigo-50/20";
+                certArea.className = "bg-gradient-to-r from-sky-400 via-indigo-500 via-purple-500 to-teal-400 p-1.5 md:p-2 rounded-3xl shadow-2xl relative overflow-hidden font-sans max-w-3xl mx-auto my-4 transition-all";
+                certFrame.className = "bg-gradient-to-br from-sky-50/95 via-white to-indigo-50/95 backdrop-blur-md p-5 md:p-8 rounded-[22px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner";
             } else if (record.score >= 70) {
-                certArea.className = "bg-white p-8 md:p-12 rounded-3xl border-8 border-amber-600 shadow-2xl relative overflow-hidden font-sans max-w-4xl mx-auto my-4";
-                certFrame.className = "border-2 border-amber-400 p-6 md:p-10 rounded-2xl h-full flex flex-col justify-between text-center relative bg-gradient-to-br from-amber-50/40 via-white to-orange-50/20";
+                certArea.className = "bg-gradient-to-r from-amber-400 via-orange-500 via-rose-500 to-yellow-400 p-1.5 md:p-2 rounded-3xl shadow-2xl relative overflow-hidden font-sans max-w-3xl mx-auto my-4 transition-all";
+                certFrame.className = "bg-gradient-to-br from-amber-50/95 via-white to-orange-50/95 backdrop-blur-md p-5 md:p-8 rounded-[22px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner";
             } else {
-                certArea.className = "bg-white p-8 md:p-12 rounded-3xl border-8 border-slate-600 shadow-2xl relative overflow-hidden font-sans max-w-4xl mx-auto my-4";
-                certFrame.className = "border-2 border-slate-400 p-6 md:p-10 rounded-2xl h-full flex flex-col justify-between text-center relative bg-gradient-to-br from-slate-50 via-white to-slate-100";
+                certArea.className = "bg-gradient-to-r from-teal-400 via-sky-500 via-indigo-500 to-purple-400 p-1.5 md:p-2 rounded-3xl shadow-2xl relative overflow-hidden font-sans max-w-3xl mx-auto my-4 transition-all";
+                certFrame.className = "bg-gradient-to-br from-teal-50/95 via-white to-sky-50/95 backdrop-blur-md p-5 md:p-8 rounded-[22px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner";
             }
 
             switchView('view-certificate');
