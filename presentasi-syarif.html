@@ -163,7 +163,7 @@ small,.small{font-size:.8em;font-weight:600;color:var(--ink2)}
 .ans.picked{outline:4px solid var(--ink);outline-offset:3px}
 .q-fb{min-height:3.2em;font-weight:700}
 .q-fb.ok{color:#0b7a55}.q-fb.no{color:#b84a00}
-.q-end .big{font-size:2.2rem;letter-spacing:4px}
+.q-end .big{font-size:clamp(1.4rem,3vw,2.2rem);letter-spacing:2px;line-height:1.3}
 
 /* ---------- Timer ---------- */
 .mission{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(12px,2vw,24px);width:100%;align-items:stretch}
@@ -227,6 +227,26 @@ small,.small{font-size:.8em;font-weight:600;color:var(--ink2)}
 .frame{width:clamp(200px,24vw,300px);aspect-ratio:1/1.05;background:#fff;border:3px solid var(--ink);border-radius:8px;padding:12px 12px 36px;box-shadow:6px 6px 0 var(--ink);rotate:-3deg;display:flex}
 .frame .ph{flex:1;border:3px dashed var(--ink2);border-radius:6px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.8em;overflow:hidden;background:var(--cream);cursor:pointer}
 .frame img{width:100%;height:100%;object-fit:cover;display:block}
+
+
+/* ---------- Jejak Petualang ---------- */
+.trail{position:relative;width:100%;padding-top:66px;max-width:900px}
+.trail .line{position:absolute;left:1%;right:1%;bottom:calc(clamp(28px,3.4vw,42px)/2 - 4px);height:8px;border:3px solid var(--ink);border-radius:99px;
+  background:repeating-linear-gradient(90deg,#fff 0 10px,var(--sky2) 10px 20px)}
+.nodes{position:relative;display:flex;justify-content:space-between;padding:0 1%}
+.node{width:clamp(28px,3.4vw,42px);aspect-ratio:1;border-radius:50%;border:3px solid var(--ink);background:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8em;transition:background .3s,transform .3s}
+.node.cur{background:var(--sun);transform:scale(1.18)}
+.node.ok{background:var(--mint)} .node.no{background:#FFC38A}
+.hiker{position:absolute;bottom:calc(clamp(28px,3.4vw,42px) + 4px);left:0;width:clamp(46px,5.4vw,70px);transform:translateX(-50%);
+  transition:left .7s cubic-bezier(.4,1.4,.6,1);z-index:2}
+.hiker svg{width:100%;height:auto;display:block;overflow:visible}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px;width:100%}
+.opt{justify-content:flex-start;text-align:left;border-radius:18px;background:#fff;font-weight:700;box-shadow:0 4px 0 var(--ink)}
+.opt .let{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--sun);border:3px solid var(--ink);display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:.85em}
+.opt.right{background:var(--mint)} .opt.wrong{background:#FFC38A}
+.opts.locked .opt{pointer-events:none}
+.opts.locked .opt:not(.right):not(.wrong){opacity:.55}
 
 /* ---------- Kontrol bawah ---------- */
 .controls{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:30;display:flex;gap:8px;align-items:center;
@@ -533,8 +553,18 @@ small,.small{font-size:.8em;font-weight:600;color:var(--ink2)}
   </div></div>
 </section>
 
-<!-- 14. PENUTUP -->
-<section class="slide" aria-label="Slide 14: Penutup dan pesan">
+<!-- 14. JEJAK PETUALANG -->
+<section class="slide" aria-label="Slide 14: Jejak Petualang">
+  <div class="inner"><div class="stage" style="flex-direction:column">
+    <h2 data-type="Jejak Petualang 🥾🗺️"></h2>
+    <p class="pop" style="--d:1">10 pos menantimu. Jawab dengan tepat untuk mengumpulkan bintang ⭐ sampai garis finis!</p>
+    <div class="trail pop" style="--d:2"><div class="line"></div><div class="hiker" id="hiker"></div><div class="nodes" id="nodes"></div></div>
+    <div class="sticker c-cream quiz pop" style="--d:3;width:min(100%,900px)" id="jejak"></div>
+  </div></div>
+</section>
+
+<!-- 15. PENUTUP -->
+<section class="slide" aria-label="Slide 15: Penutup dan pesan">
   <div class="inner"><div class="stage">
     <div class="mascot" data-who="boy" data-mood="flag" aria-hidden="true"></div>
     <div class="main">
@@ -553,8 +583,8 @@ small,.small{font-size:.8em;font-weight:600;color:var(--ink2)}
   </div></div>
 </section>
 
-<!-- 15. TERIMA KASIH -->
-<section class="slide" aria-label="Slide 15: Terima kasih">
+<!-- 16. TERIMA KASIH -->
+<section class="slide" aria-label="Slide 16: Terima kasih">
   <div class="inner" style="text-align:center">
     <div class="stage" style="flex-direction:column;gap:clamp(10px,2vh,20px)">
       <h1 class="pop" style="--d:0">TERIMA KASIH! 🙏</h1>
@@ -582,7 +612,7 @@ small,.small{font-size:.8em;font-weight:600;color:var(--ink2)}
 
 <nav class="controls" aria-label="Navigasi slide">
   <button id="prev" aria-label="Slide sebelumnya">‹</button>
-  <span id="counter">1 / 15</span>
+  <span id="counter">1 / 16</span>
   <button id="next" aria-label="Slide berikutnya">›</button>
   <button id="notesBtn" title="Catatan pemateri (N)">📝<span class="hide-sm"> Catatan</span></button>
   <button id="fsBtn" title="Layar penuh (F)" aria-label="Layar penuh">⛶</button>
@@ -611,12 +641,13 @@ const NOTES = [
  "Tegaskan: pemimpin bukan soal jabatan, tapi soal sikap. Klik tiap ciri satu per satu dan minta siswa memberi contoh nyata di kelas. \"Teman yang membantu temannya juga pemimpin!\" (±4 menit)",
  "Klik \"Gabungkan!\" dan bangun momen: Disiplin + Teladan = Pemimpin Hebat. Tanya: \"Gimana mau ngajak teman tepat waktu kalau kita sendiri sering telat?\" Biarkan hening sebentar supaya terasa. (±3 menit)",
  "Ceritakan kisah Dimas dengan gaya bercerita. Beri 1 menit diskusi dengan teman sebangku, lalu klik pertanyaan untuk membuka jawaban. Ajak 2 siswa berbagi pendapat. (±5 menit)",
- "Beri 10 detik per soal, siswa bisa menjawab dengan angkat tangan atau berdiri/duduk. Bahas penjelasan setiap soal sebelum lanjut. Beri apresiasi di akhir, apa pun skornya. (±5 menit)",
+ "Kuis 10 soal Benar/Salah. Beri ±20 detik per soal, siswa menjawab dengan angkat tangan atau berdiri/duduk. Bahas penjelasan setiap soal sebelum lanjut. Beri apresiasi di akhir, apa pun skornya. (±8 menit)",
  "Bagi kelompok 5-6 orang dan tentukan peran: pemimpin, anggota, pengamat. Klik Mulai untuk memutar timer 5 menit. Keliling kelompok, beri semangat, lalu pilih 1-2 kelompok untuk tampil. Bunyi \"ting\" menandakan waktu habis. (±10 menit)",
  "Beri 2 menit hening untuk menulis. Ingatkan: komitmen kecil tapi nyata lebih baik daripada besar tapi tidak jalan. Siswa bisa menempel komitmen di dinding dan memindai QR untuk mengisi refleksi lewat HP. Pastikan link kuesioner sudah diganti. (±5 menit)",
  "Mulai dari Tepuk Disiplin untuk menaikkan energi, lalu lanjut Simon Says Pemimpin. Siswa yang salah ikut jadi juri supaya tidak ada yang tersingkir lama. Gunakan petunjuk pemateri jika perlu. (±5 menit)",
  "Biarkan quote berganti otomatis. Minta satu siswa membacakan quote favoritnya dan alasannya. Suasana mulai tenang dan hangat sebelum penutup. (±2 menit)",
  "Jelaskan 7 tantangan harian. Klik tiap kartu untuk mencontohkan stempel bintang. Ajak siswa menantang satu teman untuk ikut. \"Berani coba? Siapa yang mau tantang temannya? 🙋\" (±3 menit)",
+ "Jejak Petualang adalah tantangan 10 pos pilihan ganda berbasis situasi nyata. Bisa dikerjakan bergiliran per kelompok atau bersama-sama dengan voting angkat tangan A-D. Setelah jawaban, bacakan penjelasannya. Gelar akhir (Pemimpin Legendaris dst.) jadi penutup yang seru. (±8 menit)",
  "Rangkum tiga poin utama. Sampaikan pesan pribadi dengan tulus (teks pesan bisa diedit langsung di slide). Apresiasi partisipasi siswa. (±3 menit)",
  "Ucapkan terima kasih, pasang foto bersama (klik bingkai untuk memilih foto), tampilkan QR kuesioner, lalu klik Rayakan! dan tutup dengan yel-yel Tepuk Disiplin bersama. (±2 menit)"
 ];
@@ -825,17 +856,22 @@ const QUIZ=[
  {q:"Pemimpin yang baik memberi contoh lewat perbuatan.",a:true,e:"Benar! Teladan lebih kuat daripada perintah. 🌟"},
  {q:"Telat sesekali nggak ada pengaruhnya buat tim.",a:false,e:"Salah! Telat bikin teman lain menunggu. Kebiasaan kecil berdampak besar. ⏰"},
  {q:"Pemimpin yang baik mau mendengar pendapat temannya.",a:true,e:"Benar! Mendengar itu tanda pemimpin yang peduli. 👂"},
- {q:"Disiplin bisa dilatih sedikit demi sedikit.",a:true,e:"Benar! Tidak ada yang langsung jago, semua mulai dari langkah kecil. 🌱"}
+ {q:"Disiplin bisa dilatih sedikit demi sedikit.",a:true,e:"Benar! Tidak ada yang langsung jago, semua mulai dari langkah kecil. 🌱"},
+ {q:"Pemimpin boleh melempar kesalahan ke orang lain supaya dirinya aman.",a:false,e:"Salah! Pemimpin berani bertanggung jawab atas hasilnya. 💪"},
+ {q:"Menepati janji termasuk bentuk disiplin.",a:true,e:"Benar! Janji yang ditepati bikin orang percaya padamu. 🤝"},
+ {q:"Pemimpin hebat harus selalu jadi yang paling pintar dan paling kuat.",a:false,e:"Salah! Pemimpin hebat itu jujur, peduli, dan mau terus belajar. 📚"},
+ {q:"Membuang sampah pada tempatnya adalah contoh disiplin.",a:true,e:"Benar! Disiplin dimulai dari hal-hal kecil sehari-hari. 🗑️"},
+ {q:"Memimpin diri sendiri adalah langkah pertama sebelum memimpin orang lain.",a:true,e:"Benar! Kalau diri sendiri sudah tertib, orang lain akan percaya. 🚀"}
 ];
 let qi=0,score=0;
 function renderQuiz(){
   const box=$("#quiz");
   if(qi>=QUIZ.length){
     const stars="⭐".repeat(score)+"☆".repeat(QUIZ.length-score);
-    const msg=score===5?"Sempurna! Kamu calon pemimpin disiplin sejati! 🏆":score>=3?"Keren! Tinggal sedikit lagi jadi master disiplin 💪":"Tidak apa-apa, belajar itu proses. Ayo coba lagi! 🌱";
+    const msg=score===QUIZ.length?"Sempurna! Kamu calon pemimpin disiplin sejati! 🏆":score>=7?"Keren! Tinggal sedikit lagi jadi master disiplin 💪":score>=5?"Lumayan! Ayo terus berlatih supaya makin disiplin 🌟":"Tidak apa-apa, belajar itu proses. Ayo coba lagi! 🌱";
     box.innerHTML=`<div class="q-end"><div class="big">${stars}</div><h3>Skor kamu: ${score} dari ${QUIZ.length}</h3><p>${msg}</p><br><button class="btn" id="qRetry">🔁 Main lagi</button></div>`;
     $("#qRetry").onclick=()=>{qi=0;score=0;renderQuiz();};
-    if(score>=3) confetti(130);
+    if(score>=7) confetti(130);
     return;
   }
   const Q=QUIZ[qi];
@@ -998,10 +1034,91 @@ $("#photoIn").addEventListener("change",e=>{
 });
 $("#partyBtn").onclick=()=>{confetti(180);beep(523,.12);beep(659,.12,.12);beep(784,.12,.24);beep(1047,.3,.36);};
 
+/* ====== SLIDE 14: JEJAK PETUALANG ====== */
+const JEJAK=[
+ {q:"Bel masuk berbunyi, tapi kamu masih asyik ngobrol di kantin. Apa yang paling tepat?",
+  o:["Segera ke kelas supaya tidak terlambat","Lanjut ngobrol, toh gurunya belum datang","Jalan pelan-pelan saja biar santai","Tunggu semua teman selesai makan dulu"],
+  e:"Menghargai waktu adalah bentuk disiplin yang paling dasar. ⏰"},
+ {q:"Kamu ketua kelas, dan ada teman yang tidak melaksanakan piket. Sikap pemimpin yang baik adalah…",
+  o:["Mengajak bicara baik-baik dan mencari solusi bersama","Memarahinya di depan kelas","Mengerjakan semuanya sendiri sambil kesal","Membiarkan saja supaya tidak ribut"],
+  e:"Pemimpin menyelesaikan masalah dengan komunikasi yang baik, bukan dengan amarah. 🗣️"},
+ {q:"Ciri pemimpin yang bertanggung jawab saat tim gagal adalah…",
+  o:["Mengakui kesalahan dan memperbaikinya","Menyalahkan anggota yang paling pendiam","Pura-pura tidak tahu","Memindahkan tugas ke orang lain"],
+  e:"Bertanggung jawab artinya berani menanggung hasil dan memperbaikinya. 💪"},
+ {q:"Disiplin sejati terlihat ketika…",
+  o:["Tidak ada yang melihat, tapi kita tetap melakukan hal yang benar","Ada guru yang mengawasi","Ada hadiah yang menanti","Kita takut dihukum"],
+  e:"Disiplin yang tumbuh dari diri sendiri lebih kuat daripada disiplin karena diawasi. 👀"},
+ {q:"Dua temanmu berbeda pendapat dalam kerja kelompok. Langkah terbaik seorang pemimpin?",
+  o:["Mendengarkan keduanya lalu memutuskan bersama secara adil","Memilih ide sendiri tanpa bertanya","Membiarkan mereka bertengkar sampai capek","Menyuruh mereka diam"],
+  e:"Pemimpin mau mendengar dan memutuskan dengan adil. 👂"},
+ {q:"Kamu sudah berjanji mengumpulkan data kelompok sebelum Jumat, tapi tiba-tiba ada acara seru. Apa yang kamu lakukan?",
+  o:["Menepati janji dulu, acara seru menyusul","Mengabaikan janji, nanti juga dimaafkan","Berharap tidak ada yang ingat","Menyuruh teman mengerjakan bagianmu"],
+  e:"Menepati janji membuat orang lain percaya padamu. 🤝"},
+ {q:"Cara paling efektif memberi teladan disiplin di kelas adalah…",
+  o:["Mulai dari diri sendiri: datang tepat waktu dan berpakaian rapi","Sering menceramahi teman-teman","Membuat banyak aturan baru","Menghukum siapa saja yang melanggar"],
+  e:"Teladan nyata jauh lebih ampuh daripada ceramah. 🌟"},
+ {q:"Temanmu sering terlambat karena sulit bangun pagi. Pemimpin yang peduli akan…",
+  o:["Bertanya penyebabnya dan membantu menyusun kebiasaan yang lebih baik","Mengejeknya di depan kelas","Menjauhinya supaya tidak ketularan","Melaporkan semuanya ke guru tanpa bicara dulu"],
+  e:"Peduli artinya membantu teman tumbuh, bukan mempermalukannya. ❤️"},
+ {q:"Kebiasaan kecil mana yang paling melatih disiplin?",
+  o:["Mengerjakan PR sebelum bermain","Menunda PR sampai malam","Bermain HP sampai larut","Mengerjakan tugas kalau sudah diingatkan"],
+  e:"Menyelesaikan kewajiban lebih dulu melatih kita mengatur diri. 📚"},
+ {q:"Pernyataan yang paling tepat tentang kepemimpinan adalah…",
+  o:["Pemimpin adalah siapa pun yang memberi contoh baik dan menggerakkan teman","Pemimpin hanya orang yang punya jabatan","Pemimpin adalah yang suaranya paling keras","Pemimpin tidak boleh membuat kesalahan"],
+  e:"Kepemimpinan itu soal sikap, bukan sekadar jabatan. 👑"}
+];
+let jI=0,jScore=0,jRes=[];
+function shuffled(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function placeHiker(){
+  const nodes=$$("#nodes .node"); if(!nodes.length) return;
+  const n=nodes[Math.min(jI,nodes.length-1)];
+  $("#hiker").style.left=(n.offsetLeft+n.offsetWidth/2)+"px";
+}
+function drawNodes(){
+  $("#nodes").innerHTML=JEJAK.map((_,i)=>{
+    const r=jRes[i], cls=r==="ok"?"ok":r==="no"?"no":(i===jI?"cur":"");
+    return `<div class="node ${cls}">${r==="ok"?"⭐":(i+1)}</div>`;
+  }).join("");
+  $("#hiker").innerHTML=mascotSVG("boy",jI>=JEJAK.length?"cheer":"happy");
+  placeHiker();
+}
+function renderJejak(){
+  drawNodes();
+  const box=$("#jejak");
+  if(jI>=JEJAK.length){
+    const rank=jScore>=9?"Pemimpin Legendaris 👑":jScore>=7?"Penjelajah Disiplin 🧭":jScore>=5?"Petualang Muda 🥾":"Calon Petualang 🌱";
+    box.innerHTML=`<div class="q-end"><div class="big">🏁</div><h3>Kamu sampai di garis finis!</h3><p>Bintang terkumpul: <b>${jScore} dari ${JEJAK.length}</b></p><p>Gelarmu: <b>${rank}</b></p><br><button class="btn" id="jRetry">🔁 Ulangi petualangan</button></div>`;
+    $("#jRetry").onclick=()=>{jI=0;jScore=0;jRes=[];renderJejak();};
+    if(jScore>=7){confetti(150);beep(523,.12);beep(659,.12,.12);beep(784,.2,.24);}
+    return;
+  }
+  const Q=JEJAK[jI], opts=shuffled(Q.o.map((t,k)=>({t:t,ok:k===0})));
+  box.innerHTML=`<div class="q-meta">Pos ${jI+1} dari ${JEJAK.length} · ⭐ ${jScore}</div>
+    <div class="q-text">${Q.q}</div>
+    <div class="opts" id="jOpts">${opts.map((o,k)=>`<button class="btn opt" data-ok="${o.ok}"><span class="let">${"ABCD"[k]}</span><span>${o.t}</span></button>`).join("")}</div>
+    <div class="q-fb" id="jFb" aria-live="polite"></div><div id="jAct"></div>`;
+  $$(".opt",box).forEach(b=>b.onclick=()=>{
+    const ok=b.dataset.ok==="true";
+    $("#jOpts").classList.add("locked");
+    b.classList.add(ok?"right":"wrong");
+    if(!ok) $$(".opt",box).forEach(x=>{if(x.dataset.ok==="true")x.classList.add("right");});
+    jRes[jI]=ok?"ok":"no"; if(ok) jScore++;
+    const fb=$("#jFb"); fb.classList.add(ok?"ok":"no");
+    fb.textContent=(ok?"Tepat! ⭐ ":"Belum tepat. ")+Q.e;
+    if(ok){beep(784,.12);beep(988,.18,.1);const r=b.getBoundingClientRect();confetti(40,r.left+r.width/2,r.top);} else beep(220,.25);
+    drawNodes();
+    $("#jAct").innerHTML=`<button class="btn" id="jNext">${jI===JEJAK.length-1?"Sampai finis 🏁":"Pos berikutnya ➜"}</button>`;
+    $("#jNext").onclick=()=>{jI++;renderJejak();};
+  });
+}
+renderJejak();
+addEventListener("resize",placeHiker);
+
 /* ====== HOOK MASUK/KELUAR SLIDE ====== */
 function onEnter(n){
   if(n===11){showQuote(0);startQuotes();}
-  if(n===14){setTimeout(()=>confetti(160),700);}
+  if(n===13){placeHiker();}
+  if(n===15){setTimeout(()=>confetti(160),700);}
 }
 function onLeave(p){
   if(p===11){clearInterval(qTimer);}
