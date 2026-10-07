@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -54,28 +54,48 @@
             background-color: #eff6ff !important;
         }
 
-        /* Certificate Print CSS Optimization for A5 Landscape */
+        /* Certificate Print CSS Optimization for Single Page (A5 Landscape & A4) */
         @media print {
+            html, body {
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                background: white !important;
+            }
             body * {
                 visibility: hidden;
+            }
+            header, footer, nav, .no-print {
+                display: none !important;
             }
             #certificate-print-area, #certificate-print-area * {
                 visibility: visible;
             }
             #certificate-print-area {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100vw;
-                height: 100vh;
-                margin: 0;
-                padding: 0;
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                margin: 0 !important;
+                padding: 8mm !important;
+                box-sizing: border-box !important;
                 background: white !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            .no-print {
-                display: none !important;
+            #cert-inner-frame {
+                height: 100% !important;
+                padding: 12px 20px !important;
+                box-sizing: border-box !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                min-height: auto !important;
             }
             @page {
                 size: A5 landscape;
@@ -423,78 +443,77 @@
         </section>
 
         <!-- VIEW 5: AUTOMATIC CERTIFICATE & RESULTS SCREEN -->
-        <section id="view-certificate" class="hidden space-y-8">
+        <section id="view-certificate" class="hidden space-y-6">
             <!-- Controls Banner (Non-Printable) -->
-            <div class="no-print bg-white rounded-3xl p-6 border border-slate-200 shadow-lg text-center space-y-4">
-                <span class="text-4xl animate-bounce inline-block">🎉</span>
-                <h2 class="font-outfit text-2xl md:text-3xl font-extrabold text-slate-900">PENGERJAAN LKPD SELESAI!</h2>
-                <p id="cert-feedback-message" class="text-slate-600 text-sm max-w-xl mx-auto font-medium">
+            <div class="no-print bg-white rounded-3xl p-5 border border-slate-200 shadow-lg text-center space-y-3">
+                <span class="text-3xl animate-bounce inline-block">🎉</span>
+                <h2 class="font-outfit text-xl md:text-2xl font-extrabold text-slate-900">PENGERJAAN LKPD SELESAI!</h2>
+                <p id="cert-feedback-message" class="text-slate-600 text-xs md:text-sm max-w-xl mx-auto font-medium">
                     Pesan apresiasi...
                 </p>
 
-                <div class="flex flex-wrap justify-center gap-3 pt-2">
-                    <button onclick="retakeLKPD()" class="px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+                <div class="flex flex-wrap justify-center gap-2.5 pt-1">
+                    <button onclick="retakeLKPD()" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-xs md:text-sm">
                         🔄 COBA LAGI (PERCOBAAN BARU)
                     </button>
-                    <button onclick="window.print()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+                    <button onclick="window.print()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-xs md:text-sm">
                         🖨️ CETAK SERTIFIKAT A5 / PDF
                     </button>
-                    <button onclick="returnToDashboard()" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-xl transition flex items-center gap-2 text-sm">
+                    <button onclick="returnToDashboard()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-xl transition flex items-center gap-2 text-xs md:text-sm">
                         🏠 KEMBALI KE DASHBOARD
                     </button>
                 </div>
             </div>
 
-            <!-- DYNAMIC PRINTABLE CERTIFICATE CONTAINER (A5 LANDSCAPE RATIO) -->
-            <div id="certificate-print-area" class="bg-gradient-to-r from-pink-500 via-purple-500 via-indigo-500 via-cyan-500 to-emerald-500 p-1.5 md:p-2 rounded-3xl shadow-2xl relative overflow-hidden font-sans max-w-3xl mx-auto my-4 transition-all">
+            <!-- DYNAMIC PRINTABLE CERTIFICATE CONTAINER (OPTIMIZED FOR A5 LANDSCAPE COMPACT RATIO) -->
+            <div id="certificate-print-area" class="bg-gradient-to-r from-pink-500 via-purple-500 via-indigo-500 via-cyan-500 to-emerald-500 p-1.5 md:p-2 rounded-2xl shadow-xl relative overflow-hidden font-sans max-w-2xl mx-auto my-2 transition-all">
                 
-                <div id="cert-inner-frame" class="bg-white/95 backdrop-blur-md p-5 md:p-8 rounded-[22px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner">
+                <div id="cert-inner-frame" class="bg-white/95 backdrop-blur-md p-4 md:p-6 rounded-[16px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner min-h-[360px] md:min-h-[400px]">
                     
                     <!-- Decorative Colorful Glow Accent Blobs -->
-                    <div class="absolute -top-12 -left-12 w-36 h-36 bg-pink-400/20 rounded-full blur-2xl pointer-events-none"></div>
-                    <div class="absolute -bottom-12 -right-12 w-36 h-36 bg-cyan-400/20 rounded-full blur-2xl pointer-events-none"></div>
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-amber-300/15 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -top-10 -left-10 w-28 h-28 bg-pink-400/20 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -bottom-10 -right-10 w-28 h-28 bg-cyan-400/20 rounded-full blur-2xl pointer-events-none"></div>
 
                     <!-- Header -->
-                    <div class="space-y-1 relative z-10">
-                        <div class="flex items-center justify-center gap-2">
-                            <span class="text-2xl animate-bounce">🌟</span>
-                            <h2 class="font-outfit text-xs md:text-sm tracking-widest font-black uppercase bg-clip-text text-transparent bg-gradient-to-r from-purple-700 via-indigo-700 to-sky-700">
+                    <div class="space-y-0.5 relative z-10">
+                        <div class="flex items-center justify-center gap-1.5">
+                            <span class="text-lg animate-bounce">🌟</span>
+                            <h2 class="font-outfit text-[11px] md:text-xs tracking-widest font-black uppercase bg-clip-text text-transparent bg-gradient-to-r from-purple-700 via-indigo-700 to-sky-700">
                                 SMP NEGERI 1 TINGGIMONCONG
                             </h2>
-                            <span class="text-2xl animate-bounce">🌟</span>
+                            <span class="text-lg animate-bounce">🌟</span>
                         </div>
-                        <h1 class="font-outfit text-2xl md:text-3xl font-black tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-pink-600 via-purple-600 via-indigo-600 to-sky-600 drop-shadow-sm">
+                        <h1 class="font-outfit text-xl md:text-2xl font-black tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-pink-600 via-purple-600 via-indigo-600 to-sky-600 drop-shadow-sm">
                             SERTIFIKAT PENYELESAIAN LKPD
                         </h1>
-                        <p class="text-[11px] md:text-xs font-black tracking-wider uppercase text-slate-700 bg-gradient-to-r from-amber-100 via-pink-100 to-sky-100 py-1 px-3.5 rounded-full inline-block border border-slate-200/80 shadow-sm">
+                        <p class="text-[9px] md:text-[10px] font-black tracking-wider uppercase text-slate-700 bg-gradient-to-r from-amber-100 via-pink-100 to-sky-100 py-0.5 px-3 rounded-full inline-block border border-slate-200/80 shadow-sm">
                             INFORMATIKA KELAS VII — "JAGO MENGGUNAKAN PERANGKAT TIK & INTERNET"
                         </p>
                     </div>
 
                     <!-- Awardee Info -->
-                    <div class="my-3 space-y-1.5 relative z-10">
-                        <p class="text-[10px] uppercase text-purple-700 tracking-widest font-extrabold">Diberikan Kepada Siswa Bestari:</p>
-                        <h3 id="cert-student-name" class="font-outfit text-2xl md:text-3xl font-black text-slate-900 bg-clip-text text-transparent bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900">
+                    <div class="my-1.5 space-y-1 relative z-10">
+                        <p class="text-[9px] uppercase text-purple-700 tracking-widest font-extrabold">Diberikan Kepada Siswa Bestari:</p>
+                        <h3 id="cert-student-name" class="font-outfit text-xl md:text-2xl font-black text-slate-900 bg-clip-text text-transparent bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900">
                             ANDI MUHAMMAD RIZKY
                         </h3>
-                        <p id="cert-student-class" class="text-slate-800 font-extrabold text-xs bg-slate-100/90 inline-block px-3 py-1 rounded-full border border-slate-200">
+                        <p id="cert-student-class" class="text-slate-800 font-extrabold text-[11px] bg-slate-100/90 inline-block px-2.5 py-0.5 rounded-full border border-slate-200">
                             Kelas: VII A • Nomor Absen: 05
                         </p>
-                        <p class="text-[11px] md:text-xs text-slate-600 max-w-xl mx-auto leading-relaxed font-medium pt-1">
+                        <p class="text-[10px] md:text-[11px] text-slate-600 max-w-lg mx-auto leading-tight font-medium pt-0.5">
                             Telah menyelesaikan Lembar Kerja Peserta Didik (LKPD) Interaktif mencakup Perangkat TIK, Antarmuka Pengguna, Manajemen File & Folder, Peramban (Browser), dan E-mail.
                         </p>
                     </div>
 
                     <!-- Colorful Score Badges Summary -->
-                    <div class="grid grid-cols-3 gap-2 max-w-md mx-auto my-2 p-2.5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-sky-500/10 border border-purple-200/80 shadow-sm relative z-10 backdrop-blur-sm">
+                    <div class="grid grid-cols-3 gap-2 max-w-sm mx-auto my-1 p-2 rounded-xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-sky-500/10 border border-purple-200/80 shadow-sm relative z-10 backdrop-blur-sm">
                         <div class="text-center border-r border-slate-200/80 pr-1">
                             <span class="text-[8px] text-purple-700 font-extrabold uppercase block">Nilai LKPD</span>
-                            <span id="cert-score-display" class="text-xl md:text-2xl font-black text-slate-900">92/100</span>
+                            <span id="cert-score-display" class="text-lg md:text-xl font-black text-slate-900">92/100</span>
                         </div>
                         <div class="text-center border-r border-slate-200/80 pr-1">
                             <span class="text-[8px] text-amber-700 font-extrabold uppercase block">Predikat</span>
-                            <span id="cert-predicate-display" class="text-[10px] md:text-xs font-black text-amber-600 block truncate">🏆 SANGAT BAIK</span>
+                            <span id="cert-predicate-display" class="text-[9px] md:text-[10px] font-black text-amber-600 block truncate">🏆 SANGAT BAIK</span>
                         </div>
                         <div class="text-center">
                             <span class="text-[8px] text-indigo-700 font-extrabold uppercase block">Percobaan</span>
@@ -503,19 +522,19 @@
                     </div>
 
                     <!-- Signatures & Date Footer -->
-                    <div class="flex justify-between items-end pt-3 text-left border-t border-purple-200/60 mt-2 relative z-10">
+                    <div class="flex justify-between items-end pt-2 text-left border-t border-purple-200/60 mt-1 relative z-10">
                         <div>
-                            <p class="text-[9px] text-slate-500 font-bold">Tanggal Penyelesaian:</p>
-                            <p id="cert-date-display" class="text-xs font-bold text-slate-800">18 Oktober 2026</p>
+                            <p class="text-[8px] text-slate-500 font-bold">Tanggal Penyelesaian:</p>
+                            <p id="cert-date-display" class="text-[11px] font-bold text-slate-800">18 Oktober 2026</p>
                             <p class="text-[8px] text-slate-400 mt-0.5">ID LKPD: <span id="cert-id-code">INF-LKPD-8291</span></p>
                         </div>
 
                         <div class="text-center space-y-0.5">
-                            <p class="text-[9px] font-bold text-slate-600">Guru Mata Pelajaran Informatika,</p>
-                            <div class="h-8 flex items-center justify-center italic text-[11px] text-slate-400 font-serif">
+                            <p class="text-[8px] font-bold text-slate-600">Guru Mata Pelajaran Informatika,</p>
+                            <div class="h-6 flex items-center justify-center italic text-[10px] text-slate-400 font-serif">
                                 (Tanda Tangan Guru)
                             </div>
-                            <p class="text-xs font-extrabold text-slate-900 border-b border-slate-400 pb-0.5">Syarifuddin, S. Pd., M. Si.</p>
+                            <p class="text-[11px] font-extrabold text-slate-900 border-b border-slate-400 pb-0.5">Syarifuddin, S. Pd., M. Si.</p>
                             <p class="text-[8px] text-slate-500">NIP. SMPN 1 Tinggimoncong</p>
                         </div>
                     </div>
