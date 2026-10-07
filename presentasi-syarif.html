@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LDK: Kedisiplinan dan Kepemimpinan | SMPN 4 Mandalle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#BDE7FF; --sky2:#7CC8F5; --sun:#FFD43B; --mint:#A8F0D4; --mint2:#4FD6A5;
+  --orange:#FF8A2B; --white:#fff; --ink:#173A5E; --ink2:#35638F; --cream:#FFF8D6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Poppins','Montserrat','Segoe UI',system-ui,sans-serif;
+  color:var(--ink); font-weight:600; line-height:1.45;
+  font-size:clamp(.95rem,1.45vw,1.3rem);
+  background:linear-gradient(135deg,#BDE7FF 0%,#D5F8EA 52%,#FFF1B0 100%) fixed;
+  overflow:hidden;
+}
+button{font-family:inherit;font-weight:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:4px solid var(--orange);outline-offset:3px}
+
+/* ---------- Latar dekoratif ---------- */
+.bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.cloud{position:absolute;width:150px;height:46px;background:#fff;border-radius:999px;opacity:.85;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:72px;height:72px;top:-36px;left:24px}
+.cloud::after{width:54px;height:54px;top:-24px;right:26px}
+@keyframes drift{from{transform:translateX(-25vw)}to{transform:translateX(125vw)}}
+.lines{position:absolute;inset:0;width:100%;height:100%}
+.lines path{fill:none;stroke-width:5;stroke-linecap:round;stroke-dasharray:2 16;vector-effect:non-scaling-stroke;animation:dash 7s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-180}}
+.star{position:absolute;animation:twinkle 2.8s ease-in-out infinite}
+@keyframes twinkle{0%,100%{transform:scale(.7) rotate(0);opacity:.55}50%{transform:scale(1.15) rotate(18deg);opacity:1}}
+
+/* ---------- Progress bar ---------- */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:30;padding:10px 18px}
+.bar{position:relative;height:14px;border:3px solid var(--ink);border-radius:99px;background:rgba(255,255,255,.75)}
+#barFill{display:block;height:100%;width:0;border-radius:99px;transition:width .6s ease;
+  background:repeating-linear-gradient(45deg,var(--orange) 0 12px,#FFB066 12px 24px)}
+#rocket{position:absolute;top:-13px;left:0;font-size:24px;transform:translateX(-50%) rotate(45deg);transition:left .6s ease}
+
+/* ---------- Slide ---------- */
+.deck{position:fixed;inset:0;z-index:1}
+.slide{
+  position:absolute;inset:0;padding:48px 4vw 86px;display:flex;overflow-y:auto;
+  opacity:0;visibility:hidden;transform:translateX(70px);
+  transition:opacity .55s ease,transform .55s ease,visibility 0s .55s;
+}
+.slide.before{transform:translateX(-70px)}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .55s ease,transform .55s ease,visibility 0s}
+.inner{margin:auto;width:100%;max-width:1200px}
+.stage{display:flex;align-items:center;gap:2vw;width:100%}
+.stage>.main{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:clamp(10px,1.9vh,20px);text-align:center}
+.mascot{flex:0 0 clamp(100px,12vw,180px);animation:floaty 3.6s ease-in-out infinite}
+.mascot svg{width:100%;height:auto;display:block;overflow:visible}
+.mascot.mini{flex:0 0 auto;width:78px;animation:none}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.wavearm{animation:wave 1s ease-in-out infinite alternate}
+@keyframes wave{from{transform:rotate(8deg)}to{transform:rotate(-24deg)}}
+
+h1,h2,h3{font-weight:900;line-height:1.08}
+h1{font-size:clamp(2.1rem,6.6vw,5.8rem);color:var(--ink);text-shadow:3px 3px 0 #fff,6px 6px 0 var(--sun)}
+h2{font-size:clamp(1.55rem,3.8vw,3.3rem);color:var(--ink);text-shadow:2px 2px 0 #fff,4px 4px 0 var(--sun)}
+h3{font-size:clamp(1.1rem,2vw,1.7rem)}
+.lead{font-size:clamp(1rem,1.8vw,1.5rem);max-width:46ch}
+small,.small{font-size:.8em;font-weight:600;color:var(--ink2)}
+.row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px}
+
+/* ---------- Komponen bergaya stiker ---------- */
+.sticker{
+  background:#fff;border:3px solid var(--ink);border-radius:22px;
+  box-shadow:6px 6px 0 var(--ink);padding:clamp(12px,1.8vh,20px) clamp(14px,1.6vw,22px);
+}
+.c-sun{background:var(--sun)} .c-mint{background:var(--mint)} .c-sky{background:var(--sky)}
+.c-orange{background:#FFC38A} .c-cream{background:var(--cream)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:99px;padding:6px 18px;font-weight:700;font-size:.85em}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;background:var(--sun);border:3px solid var(--ink);border-radius:99px;
+  padding:10px 22px;font-size:1em;font-weight:800;box-shadow:0 5px 0 var(--ink);
+  transition:transform .12s,box-shadow .12s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--ink)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn.mint{background:var(--mint)} .btn.orange{background:var(--orange)} .btn.sky{background:var(--sky)} .btn.white{background:#fff}
+.btn.big{font-size:1.25em;padding:14px 30px}
+.btn[disabled]{opacity:.55;pointer-events:none}
+.btn.on{background:var(--orange);box-shadow:0 1px 0 var(--ink);transform:translateY(4px)}
+.grid{display:grid;gap:clamp(10px,1.6vw,18px);width:100%;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.ico{font-size:clamp(2rem,4vw,3.2rem);line-height:1}
+
+/* animasi masuk */
+@keyframes zoomIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-13px)}60%{transform:translateY(-5px)}}
+.slide.active .pop{animation:zoomIn .6s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(.12s + var(--d,0)*.12s)}
+.slide.active .bounce{display:inline-block;animation:bounce 1.8s ease-in-out infinite;animation-delay:var(--bd,0s)}
+.bounce{display:inline-block}
+.typing::after{content:"▍";margin-left:2px;color:var(--orange);animation:blink .7s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- Slide 1 ---------- */
+.s-title .inner{text-align:center;display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2vh,22px)}
+.hello{font-size:clamp(1.1rem,2.3vw,2rem);font-weight:800}
+.presenter{display:flex;align-items:center;gap:14px;font-size:clamp(1rem,1.9vw,1.6rem)}
+.name-tag{
+  min-width:5.2ch;min-height:1.5em;background:var(--sun);border:3px solid var(--ink);border-radius:18px;padding:2px 22px;
+  box-shadow:5px 5px 0 var(--ink);font-size:clamp(1.8rem,4.6vw,4rem);font-weight:900;color:var(--ink);rotate:-2deg;position:relative
+}
+.name-tag::before,.name-tag::after{content:"✨";position:absolute;font-size:.5em;animation:twinkle 1.8s ease-in-out infinite}
+.name-tag::before{top:-.55em;left:-.4em}.name-tag::after{bottom:-.5em;right:-.4em;animation-delay:.6s}
+.hero-row{display:flex;align-items:flex-end;justify-content:center;gap:clamp(12px,4vw,56px);flex-wrap:wrap}
+.hero-row .mascot{flex-basis:clamp(100px,13vw,190px)}
+
+/* ---------- Poll ---------- */
+.poll{width:min(100%,640px);text-align:center}
+.bars{display:grid;gap:10px;margin-top:12px;text-align:left}
+.bar-row{display:grid;gap:4px}
+.bar-track{height:30px;border:3px solid var(--ink);border-radius:99px;background:#fff;overflow:hidden}
+.bar-track i{display:block;height:100%;width:0;transition:width .5s ease}
+#bar-susah i,#bar-susah{background:var(--mint2)} #bar-mudah i,#bar-mudah{background:var(--orange)}
+.bar-label{display:flex;justify-content:space-between;font-size:.85em}
+
+/* ---------- Ciri pemimpin ---------- */
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.chip{background:#fff;border:3px solid var(--ink);border-radius:99px;padding:8px 18px;font-weight:800;box-shadow:0 4px 0 var(--ink);transition:transform .12s,background .15s}
+.chip:hover{transform:translateY(-3px)}
+.chip.sel{background:var(--sun);transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.detail{min-height:4.2em;width:min(100%,640px);display:flex;align-items:center;justify-content:center}
+
+/* ---------- Disiplin contoh ---------- */
+.ex{text-align:left;display:flex;gap:12px;align-items:center;cursor:pointer;transition:background .2s,transform .12s;width:100%;font-size:inherit}
+.ex:hover{transform:translateY(-3px)}
+.ex .ico{flex:0 0 auto}
+.ex .tick{margin-left:auto;font-size:1.5em;opacity:.25;transition:opacity .2s,transform .3s}
+.ex.done{background:var(--mint)}
+.ex.done .tick{opacity:1;transform:scale(1.2) rotate(-8deg)}
+
+/* ---------- Persamaan ---------- */
+.eq{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:clamp(8px,1.5vw,18px)}
+.eq .term{text-align:center;min-width:150px}
+.op{font-size:clamp(1.8rem,4vw,3.4rem);font-weight:900}
+.spin{display:inline-block;animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result{transition:transform .5s cubic-bezier(.2,1.6,.4,1),opacity .4s}
+.result.hidden{opacity:.15;transform:scale(.7)}
+
+/* ---------- Komik ---------- */
+.panel{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.panel .scene{font-size:2rem}
+.panel p{font-size:.92em}
+.reveal{margin-top:6px;min-height:3.6em;width:min(100%,680px);display:flex;align-items:center;justify-content:center}
+
+/* ---------- Kuis ---------- */
+.quiz{width:min(100%,720px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;min-height:300px;justify-content:center}
+.q-meta{font-size:.85em;color:var(--ink2)}
+.q-text{font-size:clamp(1.15rem,2.3vw,1.9rem);font-weight:800;line-height:1.3}
+.ans{font-size:1.15em;padding:14px 30px}
+.ans.picked{outline:4px solid var(--ink);outline-offset:3px}
+.q-fb{min-height:3.2em;font-weight:700}
+.q-fb.ok{color:#0b7a55}.q-fb.no{color:#b84a00}
+.q-end .big{font-size:2.2rem;letter-spacing:4px}
+
+/* ---------- Timer ---------- */
+.mission{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(12px,2vw,24px);width:100%;align-items:stretch}
+.mission .left{text-align:left;display:flex;flex-direction:column;gap:10px}
+.roles{display:flex;flex-wrap:wrap;gap:8px}
+.role{background:#fff;border:3px solid var(--ink);border-radius:99px;padding:3px 14px;font-weight:700;font-size:.85em}
+.timer{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.ring{position:relative;width:clamp(140px,17vw,210px);aspect-ratio:1}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:12}
+#tRing{stroke:var(--orange);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.ring .time{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:clamp(1.8rem,3.6vw,3rem);font-weight:900}
+.timer.warn .time{color:#d6481f;animation:pulse .8s ease-in-out infinite}
+.timer.done .time{color:#0b7a55}
+@keyframes pulse{50%{transform:scale(1.12)}}
+
+/* ---------- Refleksi ---------- */
+.komit{display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(12px,2vw,24px);width:100%;align-items:start}
+.komit input{width:100%;font:inherit;font-weight:700;padding:11px 16px;border:3px solid var(--ink);border-radius:16px;background:#fff;color:var(--ink)}
+.komit input::placeholder{color:#6f8ba6}
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;min-height:90px;margin-top:6px}
+.note{border:3px solid var(--ink);border-radius:8px 8px 8px 22px;padding:10px 12px;font-size:.82em;text-align:left;box-shadow:3px 3px 0 var(--ink);animation:zoomIn .4s both}
+.note:nth-child(odd){rotate:-2deg}.note:nth-child(even){rotate:1.8deg}
+.qr{background:#fff;border:3px solid var(--ink);border-radius:18px;padding:12px;display:inline-flex;align-items:center;justify-content:center;min-width:174px;min-height:174px;font-size:.7em}
+.qr img,.qr canvas{display:block}
+.linkbtn{background:none;border:none;text-decoration:underline;font-size:.78em;color:var(--ink2);padding:4px}
+
+/* ---------- Games ---------- */
+.tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pane{display:none;width:min(100%,720px)}
+.pane.show{display:block}
+.tepuk-line{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 18px;margin:8px 0;border:3px solid var(--ink);border-radius:18px;background:#fff;font-size:clamp(1.1rem,2.4vw,2rem);font-weight:900;transition:transform .15s,background .15s}
+.tepuk-line.on{background:var(--sun);transform:scale(1.07);box-shadow:5px 5px 0 var(--ink)}
+.simon-out{min-height:5.4em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:clamp(1.15rem,2.5vw,2.1rem);font-weight:900}
+.simon-out .hint{font-size:.5em;font-weight:700}
+.simon-out.say{color:var(--ink)}.simon-out.nosay{color:#4a6a89}
+.switch{display:inline-flex;gap:8px;align-items:center;font-size:.8em}
+.switch input{width:18px;height:18px;accent-color:var(--orange)}
+
+/* ---------- Quote ---------- */
+.board{width:min(100%,820px);min-height:clamp(170px,26vh,260px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;position:relative}
+.board::before,.board::after{content:"⭐";position:absolute;font-size:1.6rem;animation:twinkle 2.2s ease-in-out infinite}
+.board::before{top:-14px;left:-12px}.board::after{bottom:-14px;right:-12px;animation-delay:.9s}
+#quoteText{font-size:clamp(1.2rem,2.7vw,2.2rem);font-weight:800;line-height:1.3}
+.dots{display:flex;gap:8px;justify-content:center}
+.dots button{width:16px;height:16px;border-radius:50%;border:3px solid var(--ink);background:#fff;padding:0}
+.dots button.on{background:var(--orange)}
+
+/* ---------- Tantangan 7 hari ---------- */
+.days{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px;width:100%}
+.day{position:relative;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.88em;transition:transform .12s;width:100%}
+.day:hover{transform:translateY(-3px)}
+.day b{font-size:1.05em}
+.day .stamp{position:absolute;top:-12px;right:-8px;font-size:2rem;transform:scale(0) rotate(-40deg);transition:transform .35s cubic-bezier(.2,1.8,.4,1)}
+.day.done{background:var(--mint)}
+.day.done .stamp{transform:scale(1) rotate(-12deg)}
+.progress{font-weight:800}
+
+/* ---------- Penutup ---------- */
+.msg{text-align:left;max-width:640px}
+.frame{width:clamp(200px,24vw,300px);aspect-ratio:1/1.05;background:#fff;border:3px solid var(--ink);border-radius:8px;padding:12px 12px 36px;box-shadow:6px 6px 0 var(--ink);rotate:-3deg;display:flex}
+.frame .ph{flex:1;border:3px dashed var(--ink2);border-radius:6px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.8em;overflow:hidden;background:var(--cream);cursor:pointer}
+.frame img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ---------- Kontrol bawah ---------- */
+.controls{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:30;display:flex;gap:8px;align-items:center;
+  background:#fff;border:3px solid var(--ink);border-radius:99px;padding:6px 10px;box-shadow:0 5px 0 var(--ink)}
+.controls button{background:var(--sky);border:3px solid var(--ink);border-radius:99px;min-width:44px;height:40px;padding:0 12px;font-weight:800}
+.controls button:hover{background:var(--sun)}
+#counter{min-width:68px;text-align:center;font-weight:800}
+.notes{position:fixed;left:50%;bottom:76px;z-index:29;width:min(94vw,860px);transform:translate(-50%,130%);transition:transform .35s ease;
+  background:var(--cream);border:3px solid var(--ink);border-radius:20px;box-shadow:6px 6px 0 var(--ink);padding:14px 18px;max-height:34vh;overflow:auto;font-size:.95rem}
+.notes.open{transform:translate(-50%,0)}
+.notes h4{font-size:1rem;margin-bottom:4px}
+.notes p{font-weight:600}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+@media (max-width:820px){
+  .stage>.mascot{display:none}
+  .mission,.komit{grid-template-columns:1fr}
+  .controls .hide-sm{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <svg class="lines" viewBox="0 0 1000 600" preserveAspectRatio="none">
+    <path d="M-20 520 C 200 380, 330 640, 560 500 S 900 380, 1020 460" stroke="#FF8A2B"/>
+    <path d="M-20 90 C 160 200, 300 -20, 520 110 S 860 220, 1020 60" stroke="#fff"/>
+    <path d="M-20 330 C 120 260, 260 420, 420 330 S 760 250, 1020 340" stroke="#4FD6A5"/>
+  </svg>
+  <div id="stars"></div>
+</div>
+
+<div class="topbar" aria-hidden="true"><div class="bar"><i id="barFill"></i><span id="rocket">🚀</span></div></div>
+
+<main class="deck" id="deck">
+
+<!-- 1. PEMBUKA -->
+<section class="slide s-title" aria-label="Slide 1: Pembuka">
+  <div class="inner">
+    <div class="pill pop" style="--d:0">🎓 Latihan Dasar Kepemimpinan · SMPN 4 Mandalle</div>
+    <h1 class="pop" style="--d:1">KEDISIPLINAN<br>&amp; KEPEMIMPINAN</h1>
+    <div class="hello pop" style="--d:2">Halo, calon pemimpin hebat! <span class="bounce">🌟</span></div>
+    <div class="presenter pop" style="--d:3"><span>Bersama pemateri</span><b class="name-tag" data-type="Syarif"></b></div>
+    <div class="hero-row pop" style="--d:4">
+      <div class="mascot" data-who="boy" data-mood="wave" aria-hidden="true"></div>
+      <button class="btn big" data-next>Mulai petualangan 🚀</button>
+      <div class="mascot" data-who="girl" data-mood="cheer" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. ICE BREAKING -->
+<section class="slide" aria-label="Slide 2: Ice breaking">
+  <div class="inner"><div class="stage">
+    <div class="mascot" data-who="girl" data-mood="think" aria-hidden="true"></div>
+    <div class="main">
+      <h2 data-type="Apa arti disiplin bagimu? 🤔"></h2>
+      <div class="grid" style="max-width:820px">
+        <div class="sticker c-sun pop" style="--d:2"><span class="ico bounce">⏰</span><h3>Tepat waktu</h3></div>
+        <div class="sticker c-mint pop" style="--d:3"><span class="ico bounce" style="--bd:.2s">📏</span><h3>Taat aturan</h3></div>
+        <div class="sticker c-orange pop" style="--d:4"><span class="ico bounce" style="--bd:.4s">💪</span><h3>Tanggung jawab</h3></div>
+      </div>
+      <div class="sticker poll pop" style="--d:5">
+        <h3>Pilih satu: disiplin itu…</h3>
+        <div class="row" style="margin-top:10px">
+          <button class="btn mint" data-vote="susah">😩 Susah</button>
+          <button class="btn orange" data-vote="mudah">😎 Mudah</button>
+          <button class="btn white" id="pollReset" title="Ulangi polling">↺</button>
+        </div>
+        <div class="bars">
+          <div class="bar-row"><div class="bar-label"><span>😩 Susah</span><span id="cnt-susah">0 suara</span></div><div class="bar-track" ><i id="bar-susah"></i></div></div>
+          <div class="bar-row"><div class="bar-label"><span>😎 Mudah</span><span id="cnt-mudah">0 suara</span></div><div class="bar-track"><i id="bar-mudah"></i></div></div>
+        </div>
+        <small>Minta siswa angkat tangan, lalu klik tombol sebanyak tangan yang terangkat.</small>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- 3. TUJUAN -->
+<section class="slide" aria-label="Slide 3: Tujuan LDK">
+  <div class="inner"><div class="stage">
+    <div class="main">
+      <h2 data-type="Tujuan LDK hari ini 🎯"></h2>
+      <div class="grid" style="max-width:900px">
+        <div class="sticker c-sun pop" style="--d:2"><span class="ico bounce">🧠</span><h3>Paham</h3><p>apa itu disiplin dan kenapa penting buat kita.</p></div>
+        <div class="sticker c-mint pop" style="--d:3"><span class="ico bounce" style="--bd:.2s">👑</span><h3>Kenal</h3><p>ciri-ciri pemimpin hebat yang bisa kamu tiru.</p></div>
+        <div class="sticker c-orange pop" style="--d:4"><span class="ico bounce" style="--bd:.4s">✊</span><h3>Berani</h3><p>bikin komitmen nyata dan mulai hari ini.</p></div>
+      </div>
+      <p class="lead pop" style="--d:5">Habis ini kamu bukan cuma tahu, tapi juga mulai jalan. Siapa setuju? 🙋</p>
+    </div>
+    <div class="mascot" data-who="boy" data-mood="cheer" aria-hidden="true"></div>
+  </div></div>
+</section>
+
+<!-- 4. APA ITU KEDISIPLINAN -->
+<section class="slide" aria-label="Slide 4: Apa itu kedisiplinan">
+  <div class="inner"><div class="stage">
+    <div class="mascot" data-who="boy" data-mood="happy" aria-hidden="true"></div>
+    <div class="main">
+      <h2 data-type="Apa itu Kedisiplinan? ⏰"></h2>
+      <div class="sticker c-sky pop" style="--d:2;max-width:760px">
+        <p><b>Disiplin</b> artinya melakukan hal yang benar, di waktu yang tepat, bahkan saat tidak ada yang melihat. 👀</p>
+      </div>
+      <p class="pop" style="--d:3">Contoh sehari-hari, klik yang sudah kamu lakukan:</p>
+      <div class="grid two" style="max-width:860px">
+        <button class="sticker ex pop" style="--d:3"><span class="ico">⏰</span><span>Datang sebelum bel berbunyi</span><span class="tick">✅</span></button>
+        <button class="sticker ex pop" style="--d:4"><span class="ico">🗑️</span><span>Buang sampah di tempatnya</span><span class="tick">✅</span></button>
+        <button class="sticker ex pop" style="--d:5"><span class="ico">📚</span><span>Kerjakan PR tanpa diomeli</span><span class="tick">✅</span></button>
+        <button class="sticker ex pop" style="--d:6"><span class="ico">👔</span><span>Seragam rapi setiap hari</span><span class="tick">✅</span></button>
+      </div>
+      <div class="progress" id="exCount">Kamu sudah disiplin di 0 dari 4 hal 💪</div>
+    </div>
+  </div></div>
+</section>
+
+<!-- 5. APA ITU KEPEMIMPINAN -->
+<section class="slide" aria-label="Slide 5: Apa itu kepemimpinan">
+  <div class="inner"><div class="stage">
+    <div class="main">
+      <h2 data-type="Apa itu Kepemimpinan? 👑"></h2>
+      <p class="lead pop" style="--d:2">Pemimpin bukan soal jabatan, tapi soal sikap: <b>menggerakkan dan memberi contoh</b>.</p>
+      <div class="chips pop" style="--d:3" id="chips">
+        <button class="chip" data-d="Berkata apa adanya, mengakui kesalahan, dan bisa dipercaya teman-temannya.">🤝 Jujur</button>
+        <button class="chip" data-d="Berani menanggung hasilnya, baik atau buruk, dan tidak lempar kesalahan ke orang lain.">💪 Bertanggung jawab</button>
+        <button class="chip" data-d="Berani mengambil keputusan dan mencoba hal baru, walau deg-degan.">🦁 Berani</button>
+        <button class="chip" data-d="Dengarkan dulu, baru memutuskan. Kita punya dua telinga tapi cuma satu mulut. 😄">👂 Mau mendengar</button>
+        <button class="chip" data-d="Memperhatikan teman yang kesulitan dan mengajak semua ikut maju bersama.">❤️ Peduli</button>
+      </div>
+      <div class="sticker c-cream detail pop" style="--d:4"><p id="chipDetail">Klik salah satu ciri untuk melihat artinya 👆</p></div>
+    </div>
+    <div class="mascot" data-who="girl" data-mood="flag" aria-hidden="true"></div>
+  </div></div>
+</section>
+
+<!-- 6. HUBUNGAN -->
+<section class="slide" aria-label="Slide 6: Hubungan disiplin dan kepemimpinan">
+  <div class="inner"><div class="stage">
+    <div class="mascot" data-who="boy" data-mood="think" aria-hidden="true"></div>
+    <div class="main">
+      <h2 data-type="Disiplin & Kepemimpinan 🔗"></h2>
+      <div class="eq pop" style="--d:2">
+        <div class="sticker c-sun term"><span class="ico spin">⚙️</span><h3>Disiplin</h3></div>
+        <span class="op">+</span>
+        <div class="sticker c-mint term"><span class="ico bounce">🌟</span><h3>Teladan</h3></div>
+        <span class="op">=</span>
+        <div class="sticker c-orange term result hidden" id="eqResult"><span class="ico">🚀</span><h3>Pemimpin Hebat</h3></div>
+      </div>
+      <button class="btn big pop" style="--d:3" id="eqBtn">Gabungkan! ✨</button>
+      <p class="lead pop" style="--d:4">Gimana mau ngajak teman tepat waktu kalau kita sendiri sering telat? 🤔</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- 7. STUDI KASUS -->
+<section class="slide" aria-label="Slide 7: Studi kasus">
+  <div class="inner"><div class="stage">
+    <div class="main">
+      <h2 data-type="Studi kasus: Ketua OSIS yang Disiplin 🏫"></h2>
+      <div class="grid" style="max-width:980px">
+        <div class="sticker c-sky panel pop" style="--d:2"><div class="mascot mini" data-who="boy" data-mood="wave" aria-hidden="true"></div><span class="scene">☀️ 06.15</span><p>Dimas, Ketua OSIS, sudah di sekolah. Lapangan ikut dia sapu.</p></div>
+        <div class="sticker c-sun panel pop" style="--d:3"><div class="mascot mini" data-who="boy" data-mood="flag" aria-hidden="true"></div><span class="scene">📋 Rapat</span><p>Rapat dimulai tepat waktu. Janji ke teman-teman selalu ditepati.</p></div>
+        <div class="sticker c-mint panel pop" style="--d:4"><div class="mascot mini" data-who="girl" data-mood="cheer" aria-hidden="true"></div><span class="scene">🌈 Hasilnya</span><p>Teman-temannya ikut rajin. Sekolah jadi makin kompak!</p></div>
+      </div>
+      <div class="row pop" style="--d:5">
+        <button class="btn sky" data-reveal="Datang paling awal, menepati jadwal, dan ikut piket tanpa disuruh.">Apa yang dilakukan Dimas?</button>
+        <button class="btn sky" data-reveal="Teman-temannya jadi ikut rajin, percaya padanya, dan kerja sama makin enak.">Apa dampaknya?</button>
+      </div>
+      <div class="sticker c-cream reveal pop" style="--d:5"><p id="revealText">Diskusi 1 menit dengan teman sebangku, lalu klik untuk cek jawabannya.</p></div>
+    </div>
+  </div></div>
+</section>
+
+<!-- 8. KUIS -->
+<section class="slide" aria-label="Slide 8: Kuis benar atau salah">
+  <div class="inner"><div class="stage">
+    <div class="mascot" data-who="girl" data-mood="happy" aria-hidden="true"></div>
+    <div class="main">
+      <h2 data-type="Kuis Benar atau Salah ✅❌"></h2>
+      <div class="sticker c-cream quiz pop" style="--d:2" id="quiz"></div>
+    </div>
+  </div></div>
+</section>
+
+<!-- 9. MISI PEMIMPIN MUDA -->
+<section class="slide" aria-label="Slide 9: Misi Pemimpin Muda">
+  <div class="inner">
+    <div class="stage" style="flex-direction:column">
+      <h2 data-type="Misi Pemimpin Muda 🚀"></h2>
+      <div class="mission">
+        <div class="sticker c-sun left pop" style="--d:2">
+          <h3>Misi kelompok (5 menit)</h3>
+          <p id="missionText">Tim kalian terlambat dan tugas belum selesai. Siapa yang memimpin, dan bagaimana caranya?</p>
+          <div class="roles"><span class="role">👑 Pemimpin</span><span class="role">🧑‍🤝‍🧑 Anggota</span><span class="role">🔍 Pengamat</span></div>
+          <div class="row" style="justify-content:flex-start"><button class="btn white" id="missionRand">🎲 Acak misi lain</button></div>
+          <small>Kelompok 5 sampai 6 orang. Ganti peran setelah satu putaran.</small>
+        </div>
+        <div class="sticker c-cream timer pop" style="--d:3" id="timerBox">
+          <div class="ring">
+            <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" stroke="#fff"/><circle id="tRing" cx="60" cy="60" r="54"/></svg>
+            <div class="time" id="tTime">05:00</div>
+          </div>
+          <div id="tMsg" aria-live="polite" style="font-weight:800;min-height:1.4em">Siap? Klik Mulai!</div>
+          <div class="row">
+            <button class="btn mint" id="tStart">▶ Mulai</button>
+            <button class="btn white" id="tPlus">+1 menit</button>
+            <button class="btn white" id="tReset">↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. REFLEKSI -->
+<section class="slide" aria-label="Slide 10: Refleksi komitmen">
+  <div class="inner"><div class="stage" style="flex-direction:column">
+    <h2 data-type="1 Komitmen Disiplinku Hari Ini ✍️"></h2>
+    <div class="komit">
+      <div class="sticker c-sun pop" style="--d:2;text-align:left">
+        <h3>Aku berkomitmen untuk…</h3>
+        <div class="row" style="margin:10px 0">
+          <input id="komitInput" maxlength="70" placeholder="contoh: datang 10 menit lebih awal" aria-label="Tulis komitmenmu">
+          <button class="btn orange" id="komitBtn">📌 Tempel!</button>
+        </div>
+        <div class="chips" id="komitChips" style="justify-content:flex-start">
+          <button class="chip">Datang 10 menit lebih awal</button>
+          <button class="chip">Kerjakan PR sebelum main</button>
+          <button class="chip">Bangun tanpa dibangunin</button>
+        </div>
+        <div class="wall" id="wall"></div>
+      </div>
+      <div class="sticker c-cream pop" style="--d:3;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <h3>Isi refleksi lewat HP 📱</h3>
+        <div class="qr" data-qr></div>
+        <small>Pindai kode QR ini</small>
+        <button class="linkbtn" data-editlink>✏️ Ubah link kuesioner</button>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- 11. GAMES -->
+<section class="slide" aria-label="Slide 11: Games">
+  <div class="inner"><div class="stage">
+    <div class="mascot" data-who="boy" data-mood="cheer" aria-hidden="true"></div>
+    <div class="main">
+      <h2 data-type="Games Seru! 🎉"></h2>
+      <div class="tabs pop" style="--d:2">
+        <button class="btn on" data-tab="tepuk">👏 Tepuk Disiplin</button>
+        <button class="btn" data-tab="simon">🗣️ Simon Says Pemimpin</button>
+      </div>
+      <div class="pane show sticker c-cream pop" style="--d:3" id="pane-tepuk">
+        <div id="tepukLines"></div>
+        <div class="row" style="margin-top:6px">
+          <button class="btn mint" id="tepukGo">▶ Mulai yel-yel</button>
+          <button class="btn white" data-tempo="pelan">🐢 Pelan</button>
+          <button class="btn white on" data-tempo="sedang">🙂 Sedang</button>
+          <button class="btn white" data-tempo="cepat">🐇 Cepat</button>
+        </div>
+      </div>
+      <div class="pane sticker c-cream" id="pane-simon">
+        <div class="simon-out" id="simonOut"><span>Tekan tombol, dengarkan perintahnya!</span></div>
+        <div class="row">
+          <button class="btn orange" id="simonBtn">🎲 Beri perintah!</button>
+          <label class="switch"><input type="checkbox" id="hintToggle"> 👀 Petunjuk untuk pemateri</label>
+        </div>
+        <small>Ikuti perintah hanya kalau diawali "Pemimpin bilang". Yang salah ikut jadi juri!</small>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- 12. PAPAN MOTIVASI -->
+<section class="slide" aria-label="Slide 12: Papan motivasi">
+  <div class="inner"><div class="stage">
+    <div class="main">
+      <h2 data-type="Papan Motivasi 💬"></h2>
+      <div class="sticker c-mint board pop" style="--d:2">
+        <div id="quoteText" aria-live="polite"></div>
+        <small id="quoteBy"></small>
+      </div>
+      <div class="row pop" style="--d:3">
+        <button class="btn white" id="qPrev" aria-label="Quote sebelumnya">‹</button>
+        <div class="dots" id="qDots"></div>
+        <button class="btn white" id="qNext" aria-label="Quote berikutnya">›</button>
+      </div>
+      <p class="pop" style="--d:4">Quote mana yang paling kena di hatimu? Sebutkan nomornya! 🙋</p>
+    </div>
+    <div class="mascot" data-who="girl" data-mood="wave" aria-hidden="true"></div>
+  </div></div>
+</section>
+
+<!-- 13. TANTANGAN 7 HARI -->
+<section class="slide" aria-label="Slide 13: Tantangan 7 hari">
+  <div class="inner"><div class="stage" style="flex-direction:column">
+    <h2 data-type="Tantangan 7 Hari Kedisiplinan 📅"></h2>
+    <div class="days" id="days"></div>
+    <div class="progress pop" style="--d:3" id="dayCount">0 dari 7 hari selesai</div>
+    <div class="row"><div class="mascot mini" data-who="boy" data-mood="flag" aria-hidden="true"></div><p class="lead">Berani coba? Tantang satu temanmu untuk ikut! 🙋</p><div class="mascot mini" data-who="girl" data-mood="cheer" aria-hidden="true"></div></div>
+  </div></div>
+</section>
+
+<!-- 14. PENUTUP -->
+<section class="slide" aria-label="Slide 14: Penutup dan pesan">
+  <div class="inner"><div class="stage">
+    <div class="mascot" data-who="boy" data-mood="flag" aria-hidden="true"></div>
+    <div class="main">
+      <h2 data-type="Penutup & Pesan Syarif 💌"></h2>
+      <div class="grid" style="max-width:860px">
+        <div class="sticker c-sun pop" style="--d:2"><span class="ico bounce">⏰</span><p><b>Disiplin</b> itu kebiasaan kecil yang dilakukan terus-menerus.</p></div>
+        <div class="sticker c-mint pop" style="--d:3"><span class="ico bounce" style="--bd:.2s">👑</span><p><b>Pemimpin</b> memberi contoh, bukan hanya perintah.</p></div>
+        <div class="sticker c-orange pop" style="--d:4"><span class="ico bounce" style="--bd:.4s">✊</span><p><b>Mulai</b> dari dirimu sendiri, mulai hari ini.</p></div>
+      </div>
+      <div class="sticker c-cream msg pop" style="--d:5">
+        <h3>💌 Pesan dari Syarif</h3>
+        <p contenteditable="true" spellcheck="false" id="pesan">Kalian semua punya bakat jadi pemimpin. Mulainya dari hal kecil: tepat waktu, jujur, dan peduli. Jangan tunggu jadi ketua dulu. Mulai hari ini, jadilah teladan di kelasmu!</p>
+        <small>(Klik teks untuk mengubah pesan sesuai gaya bicara pemateri)</small>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- 15. TERIMA KASIH -->
+<section class="slide" aria-label="Slide 15: Terima kasih">
+  <div class="inner" style="text-align:center">
+    <div class="stage" style="flex-direction:column;gap:clamp(10px,2vh,20px)">
+      <h1 class="pop" style="--d:0">TERIMA KASIH! 🙏</h1>
+      <p class="lead pop" style="--d:1">Sampai jumpa, calon pemimpin hebat dari SMPN 4 Mandalle! 🌈</p>
+      <div class="row" style="align-items:flex-end;gap:clamp(12px,3vw,40px)">
+        <div class="mascot" data-who="boy" data-mood="wave" aria-hidden="true"></div>
+        <div class="frame pop" style="--d:2"><label class="ph" id="phLabel">📸 Klik untuk pasang foto bersama<input type="file" accept="image/*" id="photoIn" hidden></label></div>
+        <div class="mascot" data-who="girl" data-mood="cheer" aria-hidden="true"></div>
+      </div>
+      <div class="row pop" style="--d:3">
+        <div class="qr" data-qr></div>
+        <div style="text-align:left;max-width:260px"><b>Isi kuesioner refleksi</b><br><small>Pindai kode QR di samping.</small><br><button class="linkbtn" data-editlink>✏️ Ubah link kuesioner</button></div>
+        <button class="btn big orange" id="partyBtn">🎉 Rayakan!</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<aside class="notes" id="notes" aria-live="polite">
+  <h4>🗣️ Catatan pemateri</h4>
+  <p id="notesText"></p>
+</aside>
+
+<nav class="controls" aria-label="Navigasi slide">
+  <button id="prev" aria-label="Slide sebelumnya">‹</button>
+  <span id="counter">1 / 15</span>
+  <button id="next" aria-label="Slide berikutnya">›</button>
+  <button id="notesBtn" title="Catatan pemateri (N)">📝<span class="hide-sm"> Catatan</span></button>
+  <button id="fsBtn" title="Layar penuh (F)" aria-label="Layar penuh">⛶</button>
+</nav>
+
+<canvas id="confetti"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ====== PENGATURAN: ganti link kuesioner refleksi di sini ====== */
+let FORM_URL = "https://forms.gle/GANTI-DENGAN-LINK-KUESIONER-ANDA";
+
+const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+
+/* ====== CATATAN PEMATERI ====== */
+const NOTES = [
+ "Sapa dengan senyum dan energi tinggi: \"Selamat pagi, calon pemimpin hebat! Siap seru-seruan sambil belajar? Siapa yang semangat? 🙋\" Perkenalkan diri, lalu bilang hari ini kita belajar sambil main. (±2 menit)",
+ "Tanyakan: \"Kalau dengar kata disiplin, apa yang terlintas di kepalamu?\" Beri 2-3 siswa kesempatan menjawab, apresiasi semua jawaban. Lalu lakukan polling: angkat tangan, klik tombol sesuai jumlah tangan. Jawab santai, jangan menghakimi. (±5 menit)",
+ "Bacakan tiga tujuan dengan semangat. Tekankan bahwa hari ini bukan ceramah, tapi banyak game dan diskusi. Tutup dengan: \"Siapa setuju? 🙋\" (±2 menit)",
+ "Definisi kunci: disiplin = melakukan hal yang benar, bahkan saat tidak ada yang melihat. Tanya retoris: \"Pernah telat gara-gara begadang main HP? 😅\" Minta siswa klik contoh yang sudah mereka lakukan, lalu apresiasi. (±4 menit)",
+ "Tegaskan: pemimpin bukan soal jabatan, tapi soal sikap. Klik tiap ciri satu per satu dan minta siswa memberi contoh nyata di kelas. \"Teman yang membantu temannya juga pemimpin!\" (±4 menit)",
+ "Klik \"Gabungkan!\" dan bangun momen: Disiplin + Teladan = Pemimpin Hebat. Tanya: \"Gimana mau ngajak teman tepat waktu kalau kita sendiri sering telat?\" Biarkan hening sebentar supaya terasa. (±3 menit)",
+ "Ceritakan kisah Dimas dengan gaya bercerita. Beri 1 menit diskusi dengan teman sebangku, lalu klik pertanyaan untuk membuka jawaban. Ajak 2 siswa berbagi pendapat. (±5 menit)",
+ "Beri 10 detik per soal, siswa bisa menjawab dengan angkat tangan atau berdiri/duduk. Bahas penjelasan setiap soal sebelum lanjut. Beri apresiasi di akhir, apa pun skornya. (±5 menit)",
+ "Bagi kelompok 5-6 orang dan tentukan peran: pemimpin, anggota, pengamat. Klik Mulai untuk memutar timer 5 menit. Keliling kelompok, beri semangat, lalu pilih 1-2 kelompok untuk tampil. Bunyi \"ting\" menandakan waktu habis. (±10 menit)",
+ "Beri 2 menit hening untuk menulis. Ingatkan: komitmen kecil tapi nyata lebih baik daripada besar tapi tidak jalan. Siswa bisa menempel komitmen di dinding dan memindai QR untuk mengisi refleksi lewat HP. Pastikan link kuesioner sudah diganti. (±5 menit)",
+ "Mulai dari Tepuk Disiplin untuk menaikkan energi, lalu lanjut Simon Says Pemimpin. Siswa yang salah ikut jadi juri supaya tidak ada yang tersingkir lama. Gunakan petunjuk pemateri jika perlu. (±5 menit)",
+ "Biarkan quote berganti otomatis. Minta satu siswa membacakan quote favoritnya dan alasannya. Suasana mulai tenang dan hangat sebelum penutup. (±2 menit)",
+ "Jelaskan 7 tantangan harian. Klik tiap kartu untuk mencontohkan stempel bintang. Ajak siswa menantang satu teman untuk ikut. \"Berani coba? Siapa yang mau tantang temannya? 🙋\" (±3 menit)",
+ "Rangkum tiga poin utama. Sampaikan pesan pribadi dengan tulus (teks pesan bisa diedit langsung di slide). Apresiasi partisipasi siswa. (±3 menit)",
+ "Ucapkan terima kasih, pasang foto bersama (klik bingkai untuk memilih foto), tampilkan QR kuesioner, lalu klik Rayakan! dan tutup dengan yel-yel Tepuk Disiplin bersama. (±2 menit)"
+];
+
+/* ====== MASKOT "KAK DISI" (SVG kartun siswa SMP) ====== */
+function mascotSVG(who,mood){
+  const girl = who==="girl", navy="#173A5E", skin="#F7CDA4";
+  const hair = girl?"#6B4030":"#3D2B24", bottom = girl?"#FF8A2B":"#3E9BE0";
+  const limb=(x1,y1,x2,y2,cls,style)=>`<g class="${cls||""}" style="${style||""}"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${navy}" stroke-width="13" stroke-linecap="round"/><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${skin}" stroke-width="7" stroke-linecap="round"/></g>`;
+  let L,R,extra="";
+  switch(mood){
+    case "wave":  L=limb(38,92,28,124); R=limb(82,92,102,62,"wavearm","transform-origin:82px 92px"); break;
+    case "cheer": L=limb(38,92,18,58);  R=limb(82,92,102,58); break;
+    case "think": L=limb(38,92,28,124); R=limb(82,92,68,78);
+      extra=`<text x="92" y="24" font-size="26" font-weight="900" fill="${navy}">?</text>`; break;
+    case "flag":  L=limb(38,92,28,124); R=limb(82,92,100,72);
+      extra=`<line x1="100" y1="20" x2="100" y2="100" stroke="${navy}" stroke-width="4" stroke-linecap="round"/><path d="M100 22 L128 32 L100 44Z" fill="#FF8A2B" stroke="${navy}" stroke-width="3" stroke-linejoin="round"/>`; break;
+    default:      L=limb(38,92,28,124); R=limb(82,92,92,124);
+  }
+  const open = mood==="cheer"||mood==="wave";
+  const happyEyes = mood==="cheer"||mood==="happy"||mood==="flag"||mood==="wave";
+  const eyes = happyEyes
+    ? `<path d="M42 45 Q48 38 54 45" fill="none" stroke="${navy}" stroke-width="3.2" stroke-linecap="round"/><path d="M66 45 Q72 38 78 45" fill="none" stroke="${navy}" stroke-width="3.2" stroke-linecap="round"/>`
+    : `<circle cx="48" cy="45" r="3.8" fill="${navy}"/><circle cx="72" cy="45" r="3.8" fill="${navy}"/><path d="M64 34 Q72 30 79 35" fill="none" stroke="${navy}" stroke-width="3" stroke-linecap="round"/>`;
+  const mouth = open
+    ? `<path d="M46 56 Q60 76 74 56 Z" fill="#D64545" stroke="${navy}" stroke-width="3" stroke-linejoin="round"/>`
+    : mood==="think"
+      ? `<path d="M52 62 Q60 59 68 63" fill="none" stroke="${navy}" stroke-width="3" stroke-linecap="round"/>`
+      : `<path d="M47 56 Q60 70 73 56" fill="none" stroke="${navy}" stroke-width="3.2" stroke-linecap="round"/>`;
+  const bot = girl
+    ? `<path d="M40 112 L80 112 L86 138 L34 138Z" fill="${bottom}" stroke="${navy}" stroke-width="3" stroke-linejoin="round"/>`
+    : `<rect x="40" y="112" width="40" height="26" rx="7" fill="${bottom}" stroke="${navy}" stroke-width="3"/>`;
+  const hairBack = girl
+    ? `<circle cx="29" cy="54" r="9" fill="${hair}" stroke="${navy}" stroke-width="3"/><circle cx="91" cy="54" r="9" fill="${hair}" stroke="${navy}" stroke-width="3"/>` : "";
+  const bow = girl
+    ? `<path d="M52 19 L60 26 L68 19 L68 33 L60 26 L52 33Z" fill="#FF8A2B" stroke="${navy}" stroke-width="2.5" stroke-linejoin="round"/>` : "";
+  return `<svg viewBox="-5 0 135 160" role="img" aria-hidden="true">
+    ${hairBack}
+    <rect x="30" y="80" width="60" height="44" rx="14" fill="#FF8A2B" stroke="${navy}" stroke-width="3"/>
+    <rect x="47" y="134" width="10" height="16" rx="4" fill="${skin}" stroke="${navy}" stroke-width="3"/>
+    <rect x="63" y="134" width="10" height="16" rx="4" fill="${skin}" stroke="${navy}" stroke-width="3"/>
+    <ellipse cx="50" cy="153" rx="10" ry="5.5" fill="#fff" stroke="${navy}" stroke-width="3"/>
+    <ellipse cx="70" cy="153" rx="10" ry="5.5" fill="#fff" stroke="${navy}" stroke-width="3"/>
+    ${bot}
+    <rect x="38" y="76" width="44" height="42" rx="13" fill="#fff" stroke="${navy}" stroke-width="3"/>
+    <path d="M52 77 L60 89 L68 77" fill="none" stroke="${navy}" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="72" cy="100" r="4" fill="#FFD43B" stroke="${navy}" stroke-width="2"/>
+    ${L}${R}
+    <circle cx="60" cy="46" r="27" fill="${skin}" stroke="${navy}" stroke-width="3"/>
+    <path d="M33 46 Q28 12 60 15 Q92 12 87 46 Q78 30 60 31 Q42 30 33 46Z" fill="${hair}" stroke="${navy}" stroke-width="3" stroke-linejoin="round"/>
+    ${bow}
+    <circle cx="42" cy="56" r="5" fill="#FF9AA2" opacity=".6"/><circle cx="78" cy="56" r="5" fill="#FF9AA2" opacity=".6"/>
+    ${eyes}${mouth}${extra}
+  </svg>`;
+}
+$$(".mascot").forEach(el=>{ el.innerHTML = mascotSVG(el.dataset.who||"boy", el.dataset.mood||"happy"); });
+
+/* ====== LATAR: bintang & awan ====== */
+(function decor(){
+  const st=$("#stars"), cols=["#FFD43B","#fff","#FF8A2B","#FFD43B"];
+  for(let i=0;i<22;i++){
+    const s=document.createElementNS("http://www.w3.org/2000/svg","svg");
+    const size=14+Math.random()*22;
+    s.setAttribute("viewBox","0 0 24 24"); s.setAttribute("width",size); s.setAttribute("height",size);
+    s.classList.add("star");
+    s.style.left=(Math.random()*96)+"%"; s.style.top=(Math.random()*92)+"%";
+    s.style.animationDelay=(Math.random()*3)+"s"; s.style.animationDuration=(2+Math.random()*2.5)+"s";
+    s.innerHTML=`<path d="M12 1.5l3 7.2 7.7.6-5.9 5 1.9 7.5L12 17.9 5.3 21.8l1.9-7.5-5.9-5 7.7-.6z" fill="${cols[i%cols.length]}" stroke="#173A5E" stroke-width="1.4" stroke-linejoin="round"/>`;
+    st.appendChild(s);
+  }
+  const bg=$(".bg");
+  [[8,70,"#"],[22,95,""],[46,80,""],[70,110,""]].forEach((c,i)=>{
+    const d=document.createElement("div"); d.className="cloud";
+    d.style.top=c[0]+"%"; d.style.animationDuration=c[1]+"s"; d.style.animationDelay=(-i*22)+"s";
+    d.style.transform="scale("+(0.7+i*0.18)+")";
+    bg.insertBefore(d,bg.firstChild);
+  });
+})();
+
+/* ====== KONFETI & SUARA ====== */
+const cv=$("#confetti"), cx=cv.getContext("2d"); let parts=[], raf=null;
+function sizeCv(){cv.width=innerWidth;cv.height=innerHeight}
+sizeCv(); addEventListener("resize",sizeCv);
+function confetti(n=140,x=innerWidth/2,y=innerHeight*.35){
+  if(REDUCED) return;
+  const colors=["#FFD43B","#FF8A2B","#4FD6A5","#7CC8F5","#ffffff"];
+  for(let i=0;i<n;i++) parts.push({x,y,vx:(Math.random()-.5)*15,vy:Math.random()*-14-4,s:6+Math.random()*7,
+    c:colors[(Math.random()*colors.length)|0],r:Math.random()*6,vr:(Math.random()-.5)*.4,life:0});
+  if(!raf) raf=requestAnimationFrame(loop);
+}
+function loop(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts=parts.filter(p=>p.y<innerHeight+30&&p.life<280);
+  parts.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;p.life++;
+    cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore();});
+  raf = parts.length ? requestAnimationFrame(loop) : (cx.clearRect(0,0,cv.width,cv.height),null);
+}
+let ac;
+function beep(f=880,d=.15,t=0){
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    const o=ac.createOscillator(),g=ac.createGain(),s=ac.currentTime+t;
+    o.type="sine";o.frequency.value=f;o.connect(g);g.connect(ac.destination);
+    g.gain.setValueAtTime(.09,s);g.gain.exponentialRampToValueAtTime(.0001,s+d);
+    o.start(s);o.stop(s+d+.03);
+  }catch(e){}
+}
+
+/* ====== EFEK KETIK ====== */
+function typeInto(el,text,speed=45,delay=250){
+  clearTimeout(el._t0); clearInterval(el._t);
+  if(REDUCED){el.textContent=text;el.classList.remove("typing");return;}
+  const chars=Array.from(text); let i=0;
+  el.textContent=""; el.classList.add("typing");
+  el._t0=setTimeout(()=>{
+    el._t=setInterval(()=>{
+      i++; el.textContent=chars.slice(0,i).join("");
+      if(i>=chars.length){clearInterval(el._t);el.classList.remove("typing");}
+    },speed);
+  },delay);
+}
+function runTyping(slide){ $$("[data-type]",slide).forEach(el=>typeInto(el,el.dataset.type)); }
+
+/* ====== NAVIGASI ====== */
+const slides=$$(".slide"), total=slides.length; let cur=-1;
+function go(n){
+  n=Math.max(0,Math.min(total-1,n)); if(n===cur) return;
+  const prev=cur; cur=n;
+  slides.forEach((s,i)=>{s.classList.toggle("active",i===n);s.classList.toggle("before",i<n);});
+  slides[n].scrollTop=0;
+  const pct=(n/(total-1))*100;
+  $("#barFill").style.width=Math.max(pct,2)+"%";
+  $("#rocket").style.left=Math.max(pct,2)+"%";
+  $("#counter").textContent=(n+1)+" / "+total;
+  $("#notesText").textContent=NOTES[n]||"";
+  runTyping(slides[n]);
+  onLeave(prev); onEnter(n);
+  try{history.replaceState(null,"","#"+(n+1));}catch(e){}
+}
+const next=()=>go(cur+1), prevS=()=>go(cur-1);
+$("#next").onclick=next; $("#prev").onclick=prevS;
+$$("[data-next]").forEach(b=>b.addEventListener("click",next));
+$("#notesBtn").onclick=()=>$("#notes").classList.toggle("open");
+function toggleFS(){
+  if(!document.fullscreenElement){(document.documentElement.requestFullscreen||function(){}).call(document.documentElement);}
+  else document.exitFullscreen();
+}
+$("#fsBtn").onclick=toggleFS;
+addEventListener("keydown",e=>{
+  const tag=(e.target.tagName||"").toLowerCase();
+  if(tag==="input"||tag==="textarea"||e.target.isContentEditable) return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){e.preventDefault();next();}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();prevS();}
+  else if(e.key===" "&&e.target===document.body){e.preventDefault();next();}
+  else if(e.key==="Home"){go(0);} else if(e.key==="End"){go(total-1);}
+  else if(e.key==="n"||e.key==="N"){$("#notes").classList.toggle("open");}
+  else if(e.key==="f"||e.key==="F"){toggleFS();}
+});
+let tx=null;
+addEventListener("touchstart",e=>{tx=e.touches[0].clientX},{passive:true});
+addEventListener("touchend",e=>{
+  if(tx===null) return; const dx=e.changedTouches[0].clientX-tx; tx=null;
+  if(Math.abs(dx)>70 && !e.target.closest("input,textarea,.quiz,.days")) (dx<0?next():prevS());
+},{passive:true});
+
+/* ====== SLIDE 2: POLLING ====== */
+const votes={susah:0,mudah:0};
+function renderPoll(){
+  const t=votes.susah+votes.mudah;
+  ["susah","mudah"].forEach(k=>{
+    const p=t?Math.round(votes[k]/t*100):0;
+    $("#bar-"+k).style.width=p+"%";
+    $("#cnt-"+k).textContent=votes[k]+" suara ("+p+"%)";
+  });
+}
+$$("[data-vote]").forEach(b=>b.onclick=()=>{votes[b.dataset.vote]++;renderPoll();beep(b.dataset.vote==="mudah"?740:560,.09);});
+$("#pollReset").onclick=()=>{votes.susah=votes.mudah=0;renderPoll();};
+renderPoll();
+
+/* ====== SLIDE 4: CONTOH DISIPLIN ====== */
+$$(".ex").forEach(b=>b.onclick=()=>{
+  b.classList.toggle("done");
+  const n=$$(".ex.done").length;
+  $("#exCount").textContent="Kamu sudah disiplin di "+n+" dari 4 hal "+(n===4?"🏆 Luar biasa!":"💪");
+  if(b.classList.contains("done")){beep(700+n*90,.1); if(n===4) confetti(90);}
+});
+
+/* ====== SLIDE 5: CIRI PEMIMPIN ====== */
+$$("#chips .chip").forEach(c=>c.onclick=()=>{
+  $$("#chips .chip").forEach(x=>x.classList.remove("sel")); c.classList.add("sel");
+  $("#chipDetail").textContent=c.dataset.d; beep(620,.08);
+});
+
+/* ====== SLIDE 6: PERSAMAAN ====== */
+$("#eqBtn").onclick=()=>{
+  const r=$("#eqResult"); r.classList.remove("hidden");
+  confetti(110); beep(523,.12); beep(659,.12,.12); beep(784,.2,.24);
+};
+
+/* ====== SLIDE 7: STUDI KASUS ====== */
+$$("[data-reveal]").forEach(b=>b.onclick=()=>{$("#revealText").textContent=b.dataset.reveal;beep(600,.08);});
+
+/* ====== SLIDE 8: KUIS ====== */
+const QUIZ=[
+ {q:"Disiplin cuma perlu dilakukan saat ada guru yang mengawasi.",a:false,e:"Salah! Disiplin sejati tetap jalan walau tidak ada yang melihat. 👀"},
+ {q:"Pemimpin yang baik memberi contoh lewat perbuatan.",a:true,e:"Benar! Teladan lebih kuat daripada perintah. 🌟"},
+ {q:"Telat sesekali nggak ada pengaruhnya buat tim.",a:false,e:"Salah! Telat bikin teman lain menunggu. Kebiasaan kecil berdampak besar. ⏰"},
+ {q:"Pemimpin yang baik mau mendengar pendapat temannya.",a:true,e:"Benar! Mendengar itu tanda pemimpin yang peduli. 👂"},
+ {q:"Disiplin bisa dilatih sedikit demi sedikit.",a:true,e:"Benar! Tidak ada yang langsung jago, semua mulai dari langkah kecil. 🌱"}
+];
+let qi=0,score=0;
+function renderQuiz(){
+  const box=$("#quiz");
+  if(qi>=QUIZ.length){
+    const stars="⭐".repeat(score)+"☆".repeat(QUIZ.length-score);
+    const msg=score===5?"Sempurna! Kamu calon pemimpin disiplin sejati! 🏆":score>=3?"Keren! Tinggal sedikit lagi jadi master disiplin 💪":"Tidak apa-apa, belajar itu proses. Ayo coba lagi! 🌱";
+    box.innerHTML=`<div class="q-end"><div class="big">${stars}</div><h3>Skor kamu: ${score} dari ${QUIZ.length}</h3><p>${msg}</p><br><button class="btn" id="qRetry">🔁 Main lagi</button></div>`;
+    $("#qRetry").onclick=()=>{qi=0;score=0;renderQuiz();};
+    if(score>=3) confetti(130);
+    return;
+  }
+  const Q=QUIZ[qi];
+  box.innerHTML=`<div class="q-meta">Soal ${qi+1} dari ${QUIZ.length} · Skor ${score}</div>
+    <div class="q-text">${Q.q}</div>
+    <div class="row"><button class="btn mint ans" data-a="true">✅ BENAR</button><button class="btn orange ans" data-a="false">❌ SALAH</button></div>
+    <div class="q-fb" id="qFb" aria-live="polite"></div><div id="qAct"></div>`;
+  $$(".ans",box).forEach(b=>b.onclick=()=>{
+    const pick=b.dataset.a==="true", ok=pick===Q.a;
+    $$(".ans",box).forEach(x=>{x.disabled=true;x.setAttribute("disabled","");});
+    b.classList.add("picked");
+    const fb=$("#qFb"); fb.classList.add(ok?"ok":"no");
+    fb.textContent=(ok?"Tepat sekali! ":"Hampir! ")+Q.e;
+    if(ok){score++;beep(784,.12);beep(988,.18,.1);const r=b.getBoundingClientRect();confetti(45,r.left+r.width/2,r.top);}
+    else beep(220,.25);
+    $("#qAct").innerHTML=`<button class="btn" id="qNext">${qi===QUIZ.length-1?"Lihat skor 🎉":"Lanjut ➜"}</button>`;
+    $("#qNext").onclick=()=>{qi++;renderQuiz();};
+  });
+}
+renderQuiz();
+
+/* ====== SLIDE 9: MISI & TIMER ====== */
+const MISI=[
+ "Tim kalian terlambat dan tugas belum selesai. Siapa yang memimpin, dan bagaimana caranya?",
+ "Kerja bakti kelas: separuh teman malah bercanda. Apa yang kamu lakukan sebagai pemimpin?",
+ "Kelompokmu beda pendapat soal ide lomba kelas. Bagaimana memutuskannya dengan adil?"
+];
+let mi=0;
+$("#missionRand").onclick=()=>{mi=(mi+1+Math.floor(Math.random()*(MISI.length-1)))%MISI.length;$("#missionText").textContent=MISI[mi];beep(500,.08);};
+const RING_C=2*Math.PI*54; let tTotal=300,tLeft=300,tRun=null;
+const ring=$("#tRing"); ring.style.strokeDasharray=RING_C;
+const fmt=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+function drawTimer(){
+  $("#tTime").textContent=fmt(Math.max(tLeft,0));
+  ring.style.strokeDashoffset=RING_C*(1-Math.max(tLeft,0)/tTotal);
+  const box=$("#timerBox");
+  box.classList.toggle("warn",tLeft<=60&&tLeft>0); box.classList.toggle("done",tLeft<=0);
+}
+function stopTimer(){clearInterval(tRun);tRun=null;$("#tStart").textContent="▶ Mulai";}
+$("#tStart").onclick=()=>{
+  if(tRun){stopTimer();$("#tMsg").textContent="Dijeda ⏸️";return;}
+  if(tLeft<=0){tLeft=tTotal;}
+  $("#tStart").textContent="⏸ Jeda"; $("#tMsg").textContent="Diskusi dimulai! 🔥"; beep(660,.1);
+  tRun=setInterval(()=>{
+    tLeft--; drawTimer();
+    if(tLeft===60) $("#tMsg").textContent="Tinggal 1 menit! ⚡";
+    if(tLeft<=0){
+      stopTimer(); $("#tMsg").textContent="Waktu habis! Siapa mau tampil? 🎤";
+      beep(880,.2);beep(880,.2,.3);beep(1175,.35,.6); confetti(100);
+    }
+  },1000);
+};
+$("#tPlus").onclick=()=>{tLeft+=60;tTotal=Math.max(tTotal,tLeft);drawTimer();};
+$("#tReset").onclick=()=>{stopTimer();tTotal=300;tLeft=300;$("#tMsg").textContent="Siap? Klik Mulai!";drawTimer();};
+drawTimer();
+
+/* ====== SLIDE 10 & 15: QR + KOMITMEN ====== */
+function makeQR(){
+  $$("[data-qr]").forEach(box=>{
+    box.innerHTML="";
+    if(window.QRCode){
+      new QRCode(box,{text:FORM_URL,width:150,height:150,colorDark:"#173A5E",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
+    }else{
+      box.textContent="QR belum termuat (perlu internet). Buka: "+FORM_URL;
+    }
+  });
+}
+makeQR();
+$$("[data-editlink]").forEach(b=>b.onclick=()=>{
+  const v=prompt("Tempel link kuesioner/refleksi (Google Form, dll.):",FORM_URL);
+  if(v&&v.trim()){FORM_URL=v.trim();makeQR();}
+});
+const noteColors=["#FFD43B","#A8F0D4","#BDE7FF","#FFC38A"]; let noteN=0;
+function addNote(){
+  const inp=$("#komitInput"), v=inp.value.trim(); if(!v) {inp.focus();return;}
+  const wall=$("#wall"), d=document.createElement("div");
+  d.className="note"; d.style.background=noteColors[noteN++%noteColors.length];
+  d.textContent="Aku berkomitmen untuk "+v;
+  wall.insertBefore(d,wall.firstChild);
+  while(wall.children.length>8) wall.removeChild(wall.lastChild);
+  inp.value=""; beep(700,.08); beep(900,.12,.08); confetti(35,innerWidth*.35,innerHeight*.5);
+}
+$("#komitBtn").onclick=addNote;
+$("#komitInput").addEventListener("keydown",e=>{if(e.key==="Enter")addNote();});
+$$("#komitChips .chip").forEach(c=>c.onclick=()=>{$("#komitInput").value=c.textContent.toLowerCase();$("#komitInput").focus();});
+
+/* ====== SLIDE 11: GAMES ====== */
+$$("[data-tab]").forEach(b=>b.onclick=()=>{
+  $$("[data-tab]").forEach(x=>x.classList.toggle("on",x===b));
+  $$(".pane").forEach(p=>p.classList.toggle("show",p.id==="pane-"+b.dataset.tab));
+});
+const TEPUK=[["Di-si-plin!","👏👏"],["Hebat!","👏👏👏"],["Pemimpin muda…","🙌"],["SEMANGAT!","🔥💪"]];
+$("#tepukLines").innerHTML=TEPUK.map(l=>`<div class="tepuk-line"><span>${l[0]}</span><span>${l[1]}</span></div>`).join("");
+let tempo="sedang", tpT=null;
+$$("[data-tempo]").forEach(b=>b.onclick=()=>{tempo=b.dataset.tempo;$$("[data-tempo]").forEach(x=>x.classList.toggle("on",x===b));});
+$("#tepukGo").onclick=()=>{
+  clearTimeout(tpT);
+  const ms={pelan:1300,sedang:900,cepat:560}[tempo], lines=$$(".tepuk-line"); let i=0;
+  (function step(){
+    lines.forEach((l,k)=>l.classList.toggle("on",k===i%lines.length));
+    if(i<lines.length*3){beep(300+(i%4)*130,.12);i++;tpT=setTimeout(step,ms);}
+    else{tpT=setTimeout(()=>{lines.forEach(l=>l.classList.remove("on"));confetti(70);},ms);}
+  })();
+};
+const SIMON=["berdiri tegak","tepuk tangan tiga kali","angkat tangan kanan","duduk rapi","acungkan jempol","pegang telinga kirimu","tunjuk ke atas","berputar satu kali"];
+let lastSimon=-1;
+function simonGo(){
+  let k; do{k=Math.floor(Math.random()*SIMON.length);}while(k===lastSimon); lastSimon=k;
+  const says=Math.random()<.6, out=$("#simonOut"), c=SIMON[k];
+  out.className="simon-out "+(says?"say":"nosay");
+  out.innerHTML="";
+  const t=document.createElement("span");
+  t.textContent=says?("Pemimpin bilang: "+c+"!"):(c.charAt(0).toUpperCase()+c.slice(1)+"!");
+  out.appendChild(t);
+  if($("#hintToggle").checked){
+    const h=document.createElement("span"); h.className="hint";
+    h.textContent=says?"✅ Ikuti perintah ini!":"🚫 JANGAN diikuti!"; out.appendChild(h);
+  }
+  beep(says?700:380,.12);
+}
+$("#simonBtn").onclick=simonGo;
+
+/* ====== SLIDE 12: QUOTE ====== */
+const QUOTES=[
+ {t:"Disiplin adalah jembatan antara tujuan dan pencapaian.",a:"Jim Rohn"},
+ {t:"Pemimpin terbaik adalah yang memberi contoh, bukan hanya memberi perintah.",a:"Kak Disi"},
+ {t:"Langkah kecil yang dilakukan setiap hari mengalahkan semangat besar yang cuma sebentar.",a:"Kak Disi"},
+ {t:"Memimpin orang lain dimulai dari memimpin diri sendiri.",a:"Pepatah kepemimpinan"},
+ {t:"Disiplin itu bukan hukuman, tapi latihan jadi versi terbaik dirimu.",a:"Kak Disi"}
+];
+let qIdx=0,qTimer=null;
+$("#qDots").innerHTML=QUOTES.map((_,i)=>`<button aria-label="Quote ${i+1}" data-q="${i}"></button>`).join("");
+function showQuote(i){
+  qIdx=(i+QUOTES.length)%QUOTES.length;
+  typeInto($("#quoteText"),"“"+QUOTES[qIdx].t+"”",28,50);
+  $("#quoteBy").textContent="— "+QUOTES[qIdx].a;
+  $$("#qDots button").forEach((b,k)=>b.classList.toggle("on",k===qIdx));
+}
+$$("#qDots button").forEach(b=>b.onclick=()=>{showQuote(+b.dataset.q);startQuotes();});
+$("#qPrev").onclick=()=>{showQuote(qIdx-1);startQuotes();};
+$("#qNext").onclick=()=>{showQuote(qIdx+1);startQuotes();};
+function startQuotes(){clearInterval(qTimer);qTimer=setInterval(()=>showQuote(qIdx+1),8000);}
+
+/* ====== SLIDE 13: TANTANGAN 7 HARI ====== */
+const DAYS=[["⏰","Bangun tepat waktu"],["🛏️","Rapikan tempat tidur"],["📚","PR dulu, baru main"],["🚪","Datang 10 menit lebih awal"],["🧹","Bantu piket tanpa disuruh"],["📵","Kurangi HP 1 jam"],["📝","Evaluasi dirimu"]];
+$("#days").innerHTML=DAYS.map((d,i)=>`<button class="sticker day pop" style="--d:${i+2}" data-day="${i}"><span class="stamp">⭐</span><span class="ico">${d[0]}</span><b>Hari ${i+1}</b><span>${d[1]}</span></button>`).join("");
+$$(".day").forEach(b=>b.onclick=()=>{
+  b.classList.toggle("done");
+  const n=$$(".day.done").length;
+  $("#dayCount").textContent=n===7?"7 dari 7 hari selesai. Kamu Pemimpin Muda Disiplin! 🏅":n+" dari 7 hari selesai";
+  if(b.classList.contains("done")){beep(600+n*70,.1); if(n===7) confetti(160);}
+});
+
+/* ====== SLIDE 15: FOTO & PESTA ====== */
+$("#photoIn").addEventListener("change",e=>{
+  const f=e.target.files&&e.target.files[0]; if(!f) return;
+  const url=URL.createObjectURL(f), ph=$("#phLabel");
+  ph.innerHTML=""; const img=document.createElement("img"); img.src=url; img.alt="Foto bersama"; ph.appendChild(img);
+  confetti(80);
+});
+$("#partyBtn").onclick=()=>{confetti(180);beep(523,.12);beep(659,.12,.12);beep(784,.12,.24);beep(1047,.3,.36);};
+
+/* ====== HOOK MASUK/KELUAR SLIDE ====== */
+function onEnter(n){
+  if(n===11){showQuote(0);startQuotes();}
+  if(n===14){setTimeout(()=>confetti(160),700);}
+}
+function onLeave(p){
+  if(p===11){clearInterval(qTimer);}
+}
+
+/* ====== MULAI ====== */
+const startAt=parseInt((location.hash||"").replace("#",""),10);
+go(startAt>=1&&startAt<=total?startAt-1:0);
+})();
+</script>
+</body>
+</html>
