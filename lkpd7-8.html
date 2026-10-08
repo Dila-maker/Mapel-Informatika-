@@ -4,13 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LKPD Interaktif Informatika - Petualangan Gerbang Logika</title>
+    <title>LKPD Interaktif Informatika Kelas VIII - Petualangan Gerbang Logika</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- html2canvas Library for Certificate Image Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -26,7 +28,7 @@
                         gateNot: '#EF4444',
                         gateNand: '#8B5CF6',
                         gateNor: '#F97316',
-                        gateXor: '#EAB308',
+                        gateXor: '#EAB308'
                     }
                 }
             }
@@ -34,182 +36,162 @@
     </script>
 
     <style>
-        /* Custom Glowing & Graphic Effects */
-        .glow-bulb {
-            filter: drop-shadow(0px 0px 15px rgba(234, 179, 8, 0.8));
-        }
-        .glow-gate {
-            filter: drop-shadow(0px 4px 10px rgba(59, 130, 246, 0.3));
+        .glow-bulb-on {
+            filter: drop-shadow(0px 0px 18px rgba(250, 204, 21, 0.95));
         }
         .bg-grid-pattern {
-            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-            background-size: 24px 24px;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
-
-        /* Printable Certificate Styling */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #printableCertificateArea, #printableCertificateArea * {
-                visibility: visible;
-            }
-            #printableCertificateArea {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100vw;
-                height: 100vh;
-                margin: 0;
-                padding: 0;
-                background: white !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-            .no-print {
-                display: none !important;
-            }
-            @page {
-                size: A4 landscape;
-                margin: 0;
-            }
+        /* Custom Scrollbar for Smooth Touch UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.8);
         }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white bg-grid-pattern relative">
 
-    <!-- TOP NAVIGATION / APP HEADER -->
     <header class="no-print sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 shadow-lg">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-400 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/30">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="goToDashboardOrWelcome()">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-cyan-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/30">
                     ⚡
                 </div>
                 <div>
-                    <h1 class="font-heading font-bold text-lg leading-tight text-white flex items-center gap-2">
-                        <span>LKPD Informatika</span>
-                        <span class="text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-sans">Kelas VIII</span>
+                    <h1 class="font-heading font-bold text-base sm:text-lg leading-tight text-white flex items-center gap-2">
+                        <span>LKPD Informatika Class VIII</span>
+                        <span class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-sans font-semibold">Interactive Game</span>
                     </h1>
-                    <p class="text-xs text-slate-400">SMPN 1 Tinggimoncong • Guru: Syarifuddin, S.Pd., M.Si.</p>
+                    <p class="text-[11px] text-slate-400">SMPN 1 Tinggimoncong • Syarifuddin, S.Pd., M.Si.</p>
                 </div>
             </div>
 
-            <!-- Header Badge Info (Visible after identity set) -->
-            <div id="headerUserInfo" class="hidden flex items-center gap-4 bg-slate-800/80 px-4 py-1.5 rounded-full border border-slate-700 text-xs">
+            <!-- Student Badge Info (Shown when identity is set) -->
+            <div id="headerUserInfo" class="hidden flex items-center gap-3 bg-slate-800/90 px-3.5 py-1.5 rounded-full border border-slate-700 text-xs">
                 <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-user-circle text-indigo-400 text-sm"></i>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     <span id="navStudentName" class="font-semibold text-slate-200">Siswa</span>
                     <span id="navStudentClass" class="text-slate-400">(VIII)</span>
-                </div>
-                <div class="h-4 w-px bg-slate-700"></div>
-                <div class="text-amber-400 font-medium">
-                    <i class="fa-solid fa-rotate text-xs mr-1"></i>Percobaan <span id="navAttemptCount">1</span>
-                </div>
-                <div class="h-4 w-px bg-slate-700"></div>
-                <div class="text-emerald-400 font-bold">
-                    <i class="fa-solid fa-trophy text-xs mr-1"></i>Terbaik: <span id="navBestScore">-</span>
+                    <span id="navAttemptBadge" class="bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-md font-mono text-[10px] font-bold border border-indigo-500/30">Ke-1</span>
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
-                <button onclick="showSandboxModal()" class="no-print bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-400 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-microchip"></i>
-                    <span>Simulator Logika</span>
+                <button onclick="showHistoryModal()" id="btnNavHistory" class="hidden bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-400 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-trophy text-xs"></i>
+                    <span class="hidden sm:inline">Riwayat & Nilai</span>
                 </button>
-                <button onclick="confirmResetApp()" class="no-print bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition" title="Reset Semua Data">
-                    <i class="fa-solid fa-rotate-left"></i>
+                <button onclick="showSandboxModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-400 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-microchip text-xs"></i>
+                    <span class="hidden sm:inline">Simulator Gate</span>
+                </button>
+                <button onclick="confirmResetApp()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition" title="Mulai dari awal">
+                    <i class="fa-solid fa-rotate-left text-xs"></i>
                     <span class="hidden sm:inline">Reset</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- MAIN CONTAINER -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-        <!-- VIEW 1: HALAMAN AWAL / IDENTITAS SISWA -->
-        <section id="viewWelcome" class="max-w-3xl mx-auto py-6">
+        <!-- VIEW 1: WELCOME & STUDENT IDENTITY ENTRY -->
+        <section id="viewWelcome" class="max-w-3xl mx-auto py-4 sm:py-8">
             <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden backdrop-blur-xl">
-                <!-- Decorative Glows -->
-                <div class="absolute -top-24 -right-24 w-60 h-60 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -bottom-24 -left-24 w-60 h-60 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                <!-- Background Decorative Glows -->
+                <div class="absolute -top-20 -right-20 w-60 h-60 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-20 -left-20 w-60 h-60 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
-                <div class="text-center mb-8 relative z-10">
-                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-3">
-                        📚 LKPD Interaktif Informatika Kelas VIII
-                    </span>
-                    <h2 class="text-3xl sm:text-5xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-indigo-200 mb-3">
+                <div class="text-center mb-8 relative z-10 space-y-2">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-wider">
+                        📚 LKPD INTERAKTIF INFORMATIKA KELAS VIII
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-heading font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-300 to-indigo-400">
                         Petualangan Gerbang Logika
                     </h2>
-                    <p class="text-slate-400 text-sm sm:text-base max-w-lg mx-auto">
-                        SMPN 1 Tinggimoncong • Guru: Syarifuddin, S. Pd., M. Si.
+                    <p class="text-slate-400 text-xs sm:text-sm font-medium">
+                        SMPN 1 Tinggimoncong • Guru Mata Pelajaran: <strong class="text-slate-200">Syarifuddin, S. Pd., M. Si.</strong>
+                    </p>
+                    <p class="text-amber-400 text-xs font-semibold pt-1">
+                        ⏱️ Alokasi Waktu: ±80 Menit • Total 25 Aktivitas Interaktif
                     </p>
                 </div>
 
-                <!-- Logic Gates Graphic Palette -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
-                    <div class="bg-slate-800/60 border border-blue-500/30 rounded-2xl p-3 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-xl">🔵</div>
+                <!-- Logic Gates Palette Icons -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-8">
+                    <div class="bg-slate-800/60 border border-blue-500/30 rounded-2xl p-2.5 flex items-center gap-3">
+                        <span class="text-2xl">🔵</span>
                         <div>
-                            <div class="text-xs font-bold text-blue-400">Gerbang AND</div>
-                            <div class="text-[10px] text-slate-400">Semua harus 1</div>
+                            <div class="text-xs font-bold text-blue-400">AND (Si Ketat)</div>
+                            <div class="text-[10px] text-slate-400">Semua input harus 1</div>
                         </div>
                     </div>
-                    <div class="bg-slate-800/60 border border-emerald-500/30 rounded-2xl p-3 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-xl">🟢</div>
+                    <div class="bg-slate-800/60 border border-emerald-500/30 rounded-2xl p-2.5 flex items-center gap-3">
+                        <span class="text-2xl">🟢</span>
                         <div>
-                            <div class="text-xs font-bold text-emerald-400">Gerbang OR</div>
-                            <div class="text-[10px] text-slate-400">Cukup salah satu 1</div>
+                            <div class="text-xs font-bold text-emerald-400">OR (Si Pemurah)</div>
+                            <div class="text-[10px] text-slate-400">Salah satu input 1</div>
                         </div>
                     </div>
-                    <div class="bg-slate-800/60 border border-rose-500/30 rounded-2xl p-3 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center text-rose-400 font-bold text-xl">🔴</div>
+                    <div class="bg-slate-800/60 border border-rose-500/30 rounded-2xl p-2.5 flex items-center gap-3">
+                        <span class="text-2xl">🔴</span>
                         <div>
-                            <div class="text-xs font-bold text-rose-400">Gerbang NOT</div>
-                            <div class="text-[10px] text-slate-400">Membalik nilai</div>
+                            <div class="text-xs font-bold text-rose-400">NOT (Pembalik)</div>
+                            <div class="text-[10px] text-slate-400">Membalikkan sinyal</div>
                         </div>
                     </div>
-                    <div class="bg-slate-800/60 border border-purple-500/30 rounded-2xl p-3 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-xl">🟣</div>
+                    <div class="bg-slate-800/60 border border-purple-500/30 rounded-2xl p-2.5 flex items-center gap-3">
+                        <span class="text-2xl">🟣</span>
                         <div>
-                            <div class="text-xs font-bold text-purple-400">Gerbang NAND</div>
+                            <div class="text-xs font-bold text-purple-400">NAND</div>
                             <div class="text-[10px] text-slate-400">Kebalikan AND</div>
                         </div>
                     </div>
-                    <div class="bg-slate-800/60 border border-orange-500/30 rounded-2xl p-3 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-400 font-bold text-xl">🟠</div>
+                    <div class="bg-slate-800/60 border border-orange-500/30 rounded-2xl p-2.5 flex items-center gap-3">
+                        <span class="text-2xl">🟠</span>
                         <div>
-                            <div class="text-xs font-bold text-orange-400">Gerbang NOR</div>
+                            <div class="text-xs font-bold text-orange-400">NOR</div>
                             <div class="text-[10px] text-slate-400">Kebalikan OR</div>
                         </div>
                     </div>
-                    <div class="bg-slate-800/60 border border-amber-500/30 rounded-2xl p-3 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-xl">🟡</div>
+                    <div class="bg-slate-800/60 border border-amber-500/30 rounded-2xl p-2.5 flex items-center gap-3">
+                        <span class="text-2xl">🟡</span>
                         <div>
-                            <div class="text-xs font-bold text-amber-400">Gerbang XOR</div>
+                            <div class="text-xs font-bold text-amber-400">XOR (Si Beda)</div>
                             <div class="text-[10px] text-slate-400">Hanya jika berbeda</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- FORM IDENTITAS SISWA -->
-                <form id="formIdentity" onsubmit="handleIdentitySubmit(event)" class="space-y-4 bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
-                    <h3 class="text-base font-bold text-slate-200 flex items-center gap-2">
+                <!-- STUDENT FORM -->
+                <form id="formIdentity" onsubmit="handleIdentitySubmit(event)" class="space-y-4 bg-slate-950/80 p-6 rounded-2xl border border-slate-800">
+                    <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
                         <i class="fa-solid fa-id-card text-indigo-400"></i>
-                        Isi Identitas Siswa
+                        ISI IDENTITAS SISWA SEBELUM MEMULAI
                     </h3>
                     
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Nama Lengkap <span class="text-rose-400">*</span></label>
-                        <input type="text" id="inputName" required placeholder="Masukkan Nama Lengkap Sesuai Absen"
-                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Lengkap Siswa <span class="text-rose-400">*</span></label>
+                        <input type="text" id="inputName" required placeholder="Contoh: Muhammad Raihan Pratama"
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1">Kelas <span class="text-rose-400">*</span></label>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Kelas <span class="text-rose-400">*</span></label>
                             <select id="inputClass" required
-                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="">-- Pilih Kelas --</option>
                                 <option value="VIII A">VIII A</option>
                                 <option value="VIII B">VIII B</option>
@@ -219,13 +201,13 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1">Nomor Absen <span class="text-rose-400">*</span></label>
-                            <input type="number" id="inputAbsen" required min="1" max="40" placeholder="Contoh: 12"
-                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Nomor Absen <span class="text-rose-400">*</span></label>
+                            <input type="number" id="inputAbsen" required min="1" max="50" placeholder="Contoh: 15"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-600/30 transition transform active:scale-98 flex items-center justify-center gap-2 mt-2">
+                    <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-extrabold py-4 rounded-xl shadow-lg shadow-indigo-600/30 transition transform active:scale-98 flex items-center justify-center gap-2 mt-2 text-sm tracking-wide cursor-pointer">
                         <span>🚀 MULAI LKPD</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
@@ -233,279 +215,298 @@
             </div>
         </section>
 
-        <!-- VIEW 2: PETUNJUK LKPD -->
+        <!-- VIEW 2: INSTRUCTIONS SCREEN -->
         <section id="viewInstructions" class="hidden max-w-3xl mx-auto py-6">
-            <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden backdrop-blur-xl">
-                <div class="flex items-center gap-3 mb-6">
+            <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6 backdrop-blur-xl">
+                <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
                     <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl font-bold">
                         📌
                     </div>
                     <div>
-                        <h2 class="text-2xl font-heading font-bold text-white">Petunjuk Pengerjaan LKPD</h2>
-                        <p class="text-xs text-slate-400">Bacalah petunjuk di bawah ini sebelum memulai latihan.</p>
+                        <h2 class="text-2xl font-heading font-extrabold text-white">PETUNJUK PENGERJAAN LKPD</h2>
+                        <p class="text-xs text-slate-400">Bacalah dengan cermat sebelum melangkah ke tantangan!</p>
                     </div>
                 </div>
 
-                <div class="space-y-3 bg-slate-950/60 p-6 rounded-2xl border border-slate-800 text-sm text-slate-300 mb-8">
+                <div class="space-y-3 bg-slate-950/80 p-5 rounded-2xl border border-slate-800 text-xs sm:text-sm text-slate-300 leading-relaxed">
                     <div class="flex gap-3">
-                        <span class="font-bold text-amber-400">1.</span>
-                        <p>Bacalah setiap pertanyaan dan skenario dengan teliti.</p>
+                        <span class="text-emerald-400 font-bold">1.</span>
+                        <p>Bacalah setiap pertanyaan dan petunjuk soal dengan teliti.</p>
                     </div>
                     <div class="flex gap-3">
-                        <span class="font-bold text-amber-400">2.</span>
-                        <p>Kerjakan seluruh 25 aktivitas/soal interaktif dari Aktivitas 1 hingga 5.</p>
+                        <span class="text-emerald-400 font-bold">2.</span>
+                        <p>Kerjakan semua <strong>25 Aktivitas</strong> yang terbagi dalam 5 kategori materi (Dunia 0&1, AND & OR, NOT, NAND-NOR-XOR, Rangkaian Logika).</p>
                     </div>
                     <div class="flex gap-3">
-                        <span class="font-bold text-amber-400">3.</span>
-                        <p>Pilih jawaban yang paling tepat atau lengkapi tabel kebenaran & aktivitas interaktif.</p>
+                        <span class="text-emerald-400 font-bold">3.</span>
+                        <p>Aktivitas meliputi pilihan ganda (diacak otomatis), saklar lampu interaktif, pengisian tabel kebenaran, tebak gerbang, dan analisis rangkaian.</p>
                     </div>
                     <div class="flex gap-3">
-                        <span class="font-bold text-amber-400">4.</span>
-                        <p>Beberapa soal menggunakan visual rangkaian, simulasi saklar lampu, dan pencocokan.</p>
+                        <span class="text-emerald-400 font-bold">4.</span>
+                        <p>Setelah selesai, klik tombol <strong>"🏁 SELESAI & LIHAT HASIL (SERTIFIKAT)"</strong> untuk langsung melihat nilai, detail evaluasi, serta mengunduh sertifikat PNG otomatis.</p>
                     </div>
                     <div class="flex gap-3">
-                        <span class="font-bold text-amber-400">5.</span>
-                        <p>Setelah selesai, kamu akan langsung mendapatkan nilai otomatis dan predikat hasil.</p>
-                    </div>
-                    <div class="flex gap-3">
-                        <span class="font-bold text-amber-400">6.</span>
-                        <p>Setiap pengerjaan akan otomatis menghasilkan <strong>Sertifikat Digital</strong> berstandar resmi.</p>
-                    </div>
-                    <div class="flex gap-3">
-                        <span class="font-bold text-amber-400">7.</span>
-                        <p>Kamu boleh mengerjakan LKPD ini <strong>berulang kali</strong> untuk memperbaiki nilai. Nilai terbaikmu akan selalu dicatat!</p>
+                        <span class="text-emerald-400 font-bold">5.</span>
+                        <p>Kamu diperbolehkan <strong>mengerjakan LKPD berulang kali</strong> untuk mengasah kemampuan dan meraih predikat <strong class="text-amber-400">SANGAT BAIK</strong>!</p>
                     </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <button onclick="startActivityQuiz()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-600/30 transition text-center flex items-center justify-center gap-2">
+                <div class="flex items-center justify-between pt-2">
+                    <button onclick="showView('viewWelcome')" class="text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-1.5 px-4 py-2">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Identitas
+                    </button>
+                    <button onclick="startLKPD()" class="bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-extrabold px-8 py-3.5 rounded-xl shadow-lg shadow-emerald-600/30 transition flex items-center gap-2 text-xs uppercase tracking-wider cursor-pointer">
                         <span>▶️ MULAI MENGERJAKAN</span>
+                        <i class="fa-solid fa-play"></i>
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- VIEW 3: DASHBOARD & QUIZ RUNNER -->
+        <!-- VIEW 3: MAIN LKPD QUIZ RUNNER -->
         <section id="viewQuiz" class="hidden space-y-6">
             
-            <!-- DASHBOARD BAR -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 backdrop-blur-md">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-xl font-bold">
-                        👤
+            <!-- DASHBOARD TOP BAR -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 backdrop-blur-md shadow-xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold text-lg">
+                        🎮
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <h3 id="dashStudentName" class="font-bold text-white text-base">Nama Siswa</h3>
-                            <span id="dashStudentClass" class="text-xs bg-slate-800 border border-slate-700 text-indigo-300 px-2 py-0.5 rounded-md">Kelas</span>
+                            <h3 id="quizStudentName" class="font-bold text-white text-sm">Nama Siswa</h3>
+                            <span id="quizStudentClass" class="text-[10px] bg-slate-800 text-indigo-300 border border-slate-700 px-2 py-0.5 rounded">Kelas</span>
                         </div>
-                        <p class="text-xs text-slate-400">Percobaan ke-<span id="dashAttemptCount" class="font-bold text-amber-400">1</span> • Alokasi Waktu: ±80 Menit</p>
+                        <p class="text-[11px] text-slate-400">
+                            Percobaan ke-<strong id="quizAttemptNum" class="text-amber-400">1</strong> • Target Maksimal: <strong>100 Poin</strong>
+                        </p>
                     </div>
                 </div>
 
-                <!-- Progress indicator -->
-                <div class="flex-1 max-w-xs">
+                <!-- Overall Progress Bar -->
+                <div class="flex-1 max-w-xs w-full">
                     <div class="flex justify-between items-center text-xs mb-1">
-                        <span class="text-slate-400 font-medium">Progress LKPD</span>
-                        <span id="quizProgressPercent" class="text-indigo-400 font-bold">0%</span>
+                        <span class="text-slate-400 font-semibold">Progress LKPD</span>
+                        <span id="quizProgressPercent" class="text-emerald-400 font-extrabold">0%</span>
                     </div>
-                    <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-slate-700">
-                        <div id="quizProgressBar" class="bg-gradient-to-r from-indigo-500 to-cyan-400 h-2.5 rounded-full w-0 transition-all duration-300"></div>
+                    <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
+                        <div id="quizProgressBar" class="bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 h-3 rounded-full w-0 transition-all duration-300"></div>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <button onclick="showSandboxModal()" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-gamepad"></i>
-                        <span>Uji Coba Gate</span>
+                <!-- Quick Navigation Jump Button -->
+                <button onclick="scrollToFinishButton()" class="bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 text-xs font-bold px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-flag-checkered"></i>
+                    <span>Ke Tombol Selesai</span>
+                </button>
+            </div>
+
+            <!-- ACTIVITY TABS / NAVIGATION MENU -->
+            <div class="flex overflow-x-auto gap-2 pb-2 scrollbar-none border-b border-slate-800">
+                <button onclick="switchActivityTab(1)" id="tabAct1" class="tab-act-btn whitespace-nowrap bg-indigo-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 border border-indigo-500">
+                    <span>🟡 Aktivitas 1</span>
+                    <span class="text-[10px] opacity-80">(Dunia 0&1)</span>
+                </button>
+                <button onclick="switchActivityTab(2)" id="tabAct2" class="tab-act-btn whitespace-nowrap bg-slate-800 text-slate-400 hover:text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 border border-slate-700">
+                    <span>🔵 Aktivitas 2</span>
+                    <span class="text-[10px] opacity-80">(AND & OR)</span>
+                </button>
+                <button onclick="switchActivityTab(3)" id="tabAct3" class="tab-act-btn whitespace-nowrap bg-slate-800 text-slate-400 hover:text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 border border-slate-700">
+                    <span>🔴 Aktivitas 3</span>
+                    <span class="text-[10px] opacity-80">(NOT)</span>
+                </button>
+                <button onclick="switchActivityTab(4)" id="tabAct4" class="tab-act-btn whitespace-nowrap bg-slate-800 text-slate-400 hover:text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 border border-slate-700">
+                    <span>🟣 Aktivitas 4</span>
+                    <span class="text-[10px] opacity-80">(NAND, NOR, XOR)</span>
+                </button>
+                <button onclick="switchActivityTab(5)" id="tabAct5" class="tab-act-btn whitespace-nowrap bg-slate-800 text-slate-400 hover:text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 border border-slate-700">
+                    <span>🏁 Aktivitas 5</span>
+                    <span class="text-[10px] opacity-80">(Rangkaian & Evaluasi)</span>
+                </button>
+            </div>
+
+            <!-- QUESTIONS CONTAINER -->
+            <div id="questionsListContainer" class="space-y-6">
+                <!-- Generated dynamically via JS -->
+            </div>
+
+            <!-- SUBMIT LKPD BOTTOM ACTION BAR -->
+            <div id="finishActionBar" class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 text-center space-y-4 backdrop-blur-xl shadow-2xl mt-8">
+                <div class="max-w-md mx-auto space-y-1">
+                    <h4 class="text-base font-bold text-white flex items-center justify-center gap-2">
+                        <span>🏁</span> SELESAI MENGERJAKAN SELURUH LKPD?
+                    </h4>
+                    <p class="text-xs text-slate-400">
+                        Pastikan semua soal dari Aktivitas 1 hingga 5 telah terisi sebelum menyerahkan jawaban.
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-3">
+                    <button id="btnSubmitLKPD" onclick="submitLKPD()" class="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-600 hover:from-emerald-400 hover:to-indigo-500 text-slate-950 font-black text-sm px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/20 transition transform active:scale-95 flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-paper-plane text-base"></i>
+                        <span>SELESAI & LIHAT HASIL (SERTIFIKAT)</span>
                     </button>
                 </div>
             </div>
-
-            <!-- ACTIVITY NAVIGATION TABS -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-                <button id="tabAct1" onclick="switchActivityTab(1)" class="tab-btn active bg-amber-500/20 border border-amber-500/50 text-amber-300 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-2">
-                    <span>🟡 Aktivitas 1</span>
-                    <span class="text-[10px] opacity-75">(Dunia 0 & 1)</span>
-                </button>
-                <button id="tabAct2" onclick="switchActivityTab(2)" class="tab-btn bg-slate-900 border border-slate-800 text-slate-400 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-2">
-                    <span>🔵 Aktivitas 2</span>
-                    <span class="text-[10px] opacity-75">(AND & OR)</span>
-                </button>
-                <button id="tabAct3" onclick="switchActivityTab(3)" class="tab-btn bg-slate-900 border border-slate-800 text-slate-400 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-2">
-                    <span>🔴 Aktivitas 3</span>
-                    <span class="text-[10px] opacity-75">(Gerbang NOT)</span>
-                </button>
-                <button id="tabAct4" onclick="switchActivityTab(4)" class="tab-btn bg-slate-900 border border-slate-800 text-slate-400 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-2">
-                    <span>🟣 Aktivitas 4</span>
-                    <span class="text-[10px] opacity-75">(NAND, NOR, XOR)</span>
-                </button>
-                <button id="tabAct5" onclick="switchActivityTab(5)" class="tab-btn bg-slate-900 border border-slate-800 text-slate-400 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-2">
-                    <span>🏁 Aktivitas 5</span>
-                    <span class="text-[10px] opacity-75">(Rangkaian & Evaluasi)</span>
-                </button>
-            </div>
-
-            <!-- CONTAINER SOAL/AKTIVITAS -->
-            <div id="questionsContainer" class="space-y-6">
-                <!-- Dynamically Rendered Questions via JS -->
-            </div>
-
-            <!-- SUBMIT LKPD BUTTON -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 text-center backdrop-blur-md">
-                <p class="text-xs text-slate-400 mb-3">Pastikan seluruh 25 soal dan tabel kebenaran sudah terisi dengan benar sebelum menyelesaikan.</p>
-                <button onclick="finishQuizAndShowResult()" class="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-600 hover:from-emerald-400 hover:to-indigo-500 text-white font-heading font-extrabold text-base px-8 py-3.5 rounded-xl shadow-xl shadow-emerald-500/20 transition transform active:scale-98">
-                    🚀 SELESAIKAN & LIHAT SERTIFIKAT
-                </button>
-            </div>
         </section>
 
-        <!-- VIEW 4: HASIL & SERTIFIKAT -->
-        <section id="viewResult" class="hidden space-y-8 py-4">
-            
-            <!-- SCORE & PREDIKAT CARD -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 text-center backdrop-blur-xl relative overflow-hidden">
-                <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold mb-4">
-                    🎉 HASIL PENGERJAAN LKPD PERCOBAAN KE-<span id="resAttemptNum">1</span>
+        <!-- VIEW 4: EVALUATION & ANSWER REVIEW SCREEN -->
+        <section id="viewResult" class="hidden space-y-8 py-4 max-w-4xl mx-auto">
+            <!-- RESULT CARD HEADER -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-10 text-center backdrop-blur-xl relative overflow-hidden shadow-2xl space-y-6">
+                
+                <div id="resBadgeHeader" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+                    🎉 LKPD BERHASIL DISELESAIKAN!
                 </div>
 
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-6 my-4">
-                    <div class="w-36 h-36 rounded-full bg-gradient-to-tr from-indigo-600 to-cyan-500 p-1 flex items-center justify-center shadow-xl shadow-indigo-500/30">
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                    <!-- Score Dial -->
+                    <div class="w-36 h-36 rounded-full bg-gradient-to-tr from-emerald-500 via-cyan-500 to-indigo-600 p-1 flex items-center justify-center shadow-2xl shadow-emerald-500/20">
                         <div class="w-full h-full bg-slate-950 rounded-full flex flex-col items-center justify-center p-2">
-                            <span class="text-xs text-slate-400 font-medium">NILAI KAMU</span>
-                            <span id="resScoreNum" class="text-4xl font-heading font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-500">100</span>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">NILAI AKHIR</span>
+                            <span id="resScoreNum" class="text-4xl font-heading font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500">100</span>
                             <span class="text-[10px] text-slate-500">DARI 100 POIN</span>
                         </div>
                     </div>
 
-                    <div class="text-left max-w-md">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span id="resPredicateBadge" class="text-xl sm:text-2xl font-bold text-amber-400">🏆 SANGAT BAIK</span>
+                    <div class="text-center sm:text-left space-y-2 max-w-md">
+                        <div id="resPredicateBadge" class="text-2xl font-bold text-amber-400 flex items-center justify-center sm:justify-start gap-2">
+                            🏆 SANGAT BAIK
                         </div>
-                        <p id="resFeedbackText" class="text-sm text-slate-300 leading-relaxed">
-                            Luar biasa! Kamu sudah sangat memahami konsep gerbang logika dasar dan kombinasinya!
+                        <p id="resFeedbackMsg" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Luar biasa! Kamu telah menyelesaikan seluruh 25 aktivitas gerbang logika dengan pemahaman yang sangat matang!
                         </p>
-                        <div class="mt-3 text-xs text-slate-400 flex items-center gap-4">
-                            <span>Jawaban Benar: <strong id="resCorrectCount" class="text-emerald-400">25</strong>/25</span>
-                            <span>Nilai Terbaik: <strong id="resBestScore" class="text-amber-400">100</strong></span>
+                        <div class="text-xs text-slate-400 pt-1 flex items-center justify-center sm:justify-start gap-4 font-medium">
+                            <span>Benar: <strong id="resCorrectCount" class="text-emerald-400">25</strong> / 25</span>
+                            <span>•</span>
+                            <span>Percobaan: <strong id="resAttemptNum" class="text-amber-400">Ke-1</strong></span>
                         </div>
                     </div>
                 </div>
 
                 <!-- ACTION BUTTONS -->
-                <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
-                    <button onclick="scrollToCertificate()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-5 py-3 rounded-xl shadow-lg transition flex items-center gap-2">
-                        <i class="fa-solid fa-certificate"></i>
-                        <span>LIHAT SERTIFIKAT</span>
+                <div class="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-slate-800">
+                    <button onclick="showCertificateFromCurrent()" class="bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-black px-6 py-3.5 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-certificate text-sm"></i>
+                        <span>🎓 LIHAT SERTIFIKAT OTOMATIS</span>
                     </button>
-                    <button onclick="retryQuiz()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold px-5 py-3 rounded-xl transition flex items-center gap-2">
-                        <i class="fa-solid fa-rotate-right"></i>
-                        <span>🔄 COBA LAGI (PERCOBAAN KETIGA)</span>
+                    <button onclick="retryLKPD()" class="bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 text-xs font-bold px-6 py-3.5 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-rotate-right text-sm"></i>
+                        <span>🔄 COBA LAGI (ACAK SOAL)</span>
                     </button>
-                    <button onclick="printCertificate()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-5 py-3 rounded-xl shadow-lg transition flex items-center gap-2">
-                        <i class="fa-solid fa-print"></i>
-                        <span>🖨️ CETAK SERTIFIKAT / SIMPAN PDF</span>
+                    <button onclick="showHistoryModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold px-6 py-3.5 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-clock-rotate-left text-sm"></i>
+                        <span>📊 RIWAYAT PERCOBAAN</span>
                     </button>
                 </div>
             </div>
 
-            <!-- RIWAYAT PENGERJAAN & NILAI TERBAIK TABLE -->
-            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
-                <h3 class="text-base font-bold text-slate-100 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-amber-400"></i>
-                    Riwayat Pengerjaan & Nilai Terbaik
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead>
-                            <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider">
-                                <th class="p-3">Percobaan</th>
-                                <th class="p-3">Tanggal & Waktu</th>
-                                <th class="p-3">Nilai</th>
-                                <th class="p-3">Predikat</th>
-                                <th class="p-3 text-right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody" class="divide-y divide-slate-800/60 text-slate-300">
-                            <!-- Rendered dynamically -->
-                        </tbody>
-                    </table>
+            <!-- DETAILED ANSWER REVIEW (JAWABAN BENAR & SALAH) -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 backdrop-blur-xl shadow-2xl">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="text-lg font-heading font-bold text-white flex items-center gap-2">
+                            <span>📋</span> DETAIL EVALUASI JAWABAN (25 SOAL)
+                        </h3>
+                        <p class="text-xs text-slate-400">Periksa jawabanmu, kaji pembahasan, dan pelajari hal yang masih belum tepat.</p>
+                    </div>
+                </div>
+
+                <div id="answerReviewList" class="space-y-4">
+                    <!-- Dynamic review items rendered via JS -->
                 </div>
             </div>
+        </section>
 
-            <!-- SERTIFIKAT AKHIR (PRINTABLE A4 LANDSCAPE FRAME) -->
-            <div id="printableCertificateArea" class="pt-4">
-                <div id="certFrame" class="max-w-4xl mx-auto bg-slate-900 border-8 border-amber-500/40 rounded-3xl p-8 sm:p-12 text-slate-900 relative shadow-2xl overflow-hidden" style="aspect-ratio: 1.414 / 1;">
+        <!-- VIEW 5: CERTIFICATE VIEW -->
+        <section id="viewCertificate" class="hidden space-y-6 py-4">
+            
+            <div class="max-w-xl mx-auto flex items-center justify-between bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                <button onclick="showView('viewResult')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Evaluasi Jawaban</span>
+                </button>
+                <button id="btnDownloadCert" onclick="downloadCertificateImage()" class="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-600 hover:from-emerald-400 hover:to-indigo-500 text-slate-950 text-xs font-black px-5 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-download"></i>
+                    <span>UNDUH SERTIFIKAT (GAMBAR PNG)</span>
+                </button>
+            </div>
+
+            <!-- CERTIFICATE DISPLAY (4x9 FORMAT) -->
+            <div id="printableCertificateArea" class="py-2 flex justify-center">
+                <div id="certFrame" class="w-full max-w-md bg-slate-950 border-4 border-emerald-500 rounded-3xl p-5 sm:p-6 text-slate-100 relative shadow-2xl overflow-hidden aspect-[4/9] flex flex-col justify-between">
                     
-                    <!-- DYNAMIC CERTIFICATE CONTAINER (STYLING INJECTED VIA JS ACCORDING TO GRADE SCORE) -->
-                    <div id="certContentInner" class="w-full h-full border-4 border-amber-400/60 p-6 sm:p-8 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-amber-50/95 via-white to-amber-50/90">
-                        
-                        <!-- Watermark Icon Background -->
-                        <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-                            <i class="fa-solid fa-microchip text-[260px] text-slate-900"></i>
-                        </div>
+                    <!-- Background Watermark Glows -->
+                    <div class="absolute -top-16 -right-16 w-48 h-48 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-indigo-500/15 rounded-full blur-2xl pointer-events-none"></div>
 
-                        <!-- Certificate Header -->
-                        <div>
-                            <div class="flex items-center justify-between border-b-2 border-amber-300/60 pb-3 mb-4">
+                    <!-- Inner Decorative Border -->
+                    <div id="certContentInner" class="w-full h-full border-2 border-emerald-400/60 p-5 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-slate-900/95 backdrop-blur-md">
+                        
+                        <!-- Header Logos & Title -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between border-b border-slate-700/80 pb-2.5">
                                 <div class="text-left">
-                                    <div class="text-xs font-bold tracking-widest text-amber-800 uppercase">SMPN 1 TINGGIMONCONG</div>
-                                    <div class="text-[10px] text-slate-600">Mata Pelajaran: Informatika (Kelas VIII)</div>
+                                    <div class="text-[11px] font-black tracking-wider text-slate-200 uppercase">SMPN 1 TINGGIMONCONG</div>
+                                    <div class="text-[9px] text-slate-400 font-semibold">Informatika • Kelas VIII</div>
                                 </div>
-                                <div class="text-3xl">🎓</div>
+                                <div class="text-2xl">⚡</div>
                                 <div class="text-right">
-                                    <div class="text-xs font-bold text-slate-700">Tahun Ajaran 2026/2027</div>
-                                    <div id="certAttemptBadge" class="text-[10px] font-semibold text-amber-700">Percobaan ke-1</div>
+                                    <div id="certAttemptHeader" class="text-[10px] font-black text-emerald-400 uppercase">PERCOBAAN KE-1</div>
+                                    <div class="text-[8px] text-slate-400 font-semibold">2026/2027</div>
                                 </div>
                             </div>
 
-                            <h2 class="text-2xl sm:text-4xl font-heading font-extrabold text-slate-900 tracking-wide uppercase">
-                                SERTIFIKAT PENYELESAIAN LKPD
-                            </h2>
-                            <p class="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-                                Lembar Kerja Peserta Didik Interaktif "Petualangan Gerbang Logika"
-                            </p>
+                            <div class="pt-1">
+                                <div class="inline-block px-3 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[9px] font-bold uppercase tracking-widest mb-1">
+                                    🎓 SERTIFIKAT PENYELESAIAN
+                                </div>
+                                <h2 class="text-lg font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-indigo-300 tracking-wide uppercase">
+                                    PETUALANGAN GERBANG LOGIKA
+                                </h2>
+                            </div>
                         </div>
 
-                        <!-- Recipient Body -->
-                        <div class="my-3 space-y-2">
-                            <p class="text-xs text-slate-500 uppercase tracking-widest">Diberikan Kepada Siswa:</p>
-                            <h3 id="certStudentName" class="text-2xl sm:text-4xl font-heading font-black text-indigo-950 underline decoration-amber-400 decoration-2">
+                        <!-- Recipient Name & Details -->
+                        <div class="my-auto space-y-2 py-2">
+                            <p class="text-[9px] text-slate-400 uppercase tracking-widest font-bold">Diberikan Kepada Siswa:</p>
+                            <h3 id="certStudentName" class="text-xl font-heading font-black text-white underline decoration-amber-400 decoration-2 break-words">
                                 NAMA SISWA LENGKAP
                             </h3>
-                            <p id="certStudentMeta" class="text-xs sm:text-sm text-slate-700 font-semibold">
-                                Kelas: VIII A | Absen: 12
+                            <p id="certStudentMeta" class="text-xs text-indigo-300 font-bold">
+                                Kelas: VIII A | No. Absen: 15
                             </p>
-                            <p class="text-xs text-slate-600 max-w-xl mx-auto pt-2">
-                                Telah menyelesaikan seluruh rangkaian aktivitas pembelajaran dan evaluasi interaktif gerbang logika (AND, OR, NOT, NAND, NOR, XOR) dengan hasil sebagai berikut:
+                            <p class="text-[10px] text-slate-300 max-w-xs mx-auto leading-tight pt-1">
+                                Telah menyelesaikan 25 aktivitas materi Gerbang Logika Digital (AND, OR, NOT, NAND, NOR, XOR), Tabel Kebenaran & Rangkaian Komputasi.
                             </p>
                         </div>
 
-                        <!-- Score & Predicate Badge -->
-                        <div class="flex items-center justify-center gap-6 my-2 bg-amber-100/60 border border-amber-300/80 rounded-xl p-3 max-w-md mx-auto">
-                            <div>
-                                <div class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">NILAI AKHIR</div>
-                                <div id="certScore" class="text-2xl sm:text-3xl font-black text-amber-700">100 / 100</div>
-                            </div>
-                            <div class="h-8 w-px bg-amber-300"></div>
-                            <div>
-                                <div class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">PREDIKAT</div>
-                                <div id="certPredicate" class="text-base sm:text-lg font-bold text-emerald-700">🏆 SANGAT BAIK</div>
+                        <!-- Score Box -->
+                        <div id="certScoreBox" class="bg-slate-950/90 border border-emerald-500/40 rounded-2xl p-3 my-2 shadow-inner">
+                            <div class="grid grid-cols-2 gap-2 divide-x divide-slate-800">
+                                <div>
+                                    <div class="text-[8px] text-slate-400 font-bold uppercase tracking-wider">NILAI AKHIR</div>
+                                    <div id="certScore" class="text-2xl font-black text-amber-400">100 / 100</div>
+                                </div>
+                                <div>
+                                    <div class="text-[8px] text-slate-400 font-bold uppercase tracking-wider">PREDIKAT</div>
+                                    <div id="certPredicate" class="text-xs font-bold text-emerald-400 mt-1">🏆 SANGAT BAIK</div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Certificate Footer Signatures -->
-                        <div class="pt-4 grid grid-cols-2 gap-4 border-t border-slate-300 text-xs text-slate-700">
-                            <div class="text-left">
-                                <p class="text-[10px] text-slate-500">Tanggal Penyelesaian:</p>
-                                <p id="certDate" class="font-bold text-slate-800">18 Oktober 2026</p>
-                                <p class="text-[10px] text-slate-400 mt-4">Verifikasi Digital: LKPD-INF-VIII-SMPN1TGC</p>
+                        <!-- Signatures & Date -->
+                        <div class="pt-2 border-t border-slate-800 text-[10px] text-slate-300 grid grid-cols-2 gap-2 text-left">
+                            <div>
+                                <p class="text-[8px] text-slate-500">Tanggal Penyelesaian:</p>
+                                <p id="certDate" class="font-bold text-slate-200 text-[9px]">8 Oktober 2026</p>
+                                <p id="certCode" class="text-[7px] font-mono text-slate-500 mt-1">ID: CERT-LKPD-80921</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-[10px] text-slate-500">Guru Mata Pelajaran Informatika,</p>
-                                <div class="h-8"></div>
-                                <p class="font-bold text-slate-900 underline">Syarifuddin, S. Pd., M. Si.</p>
-                                <p class="text-[10px] text-slate-600">NIP. SMPN 1 Tinggimoncong</p>
+                                <p class="text-[8px] text-slate-500">Guru Mata Pelajaran,</p>
+                                <div class="h-4"></div>
+                                <p class="font-bold text-slate-200 text-[9px] underline">Syarifuddin, S.Pd., M.Si.</p>
+                                <p class="text-[8px] text-slate-400">SMPN 1 Tinggimoncong</p>
                             </div>
                         </div>
 
@@ -516,7 +517,50 @@
 
     </main>
 
-    <!-- MODAL: SIMULATOR LOGIKA SANDBOX -->
+    <!-- MODAL: ATTEMPT HISTORY & BEST SCORE -->
+    <div id="historyModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 space-y-6 relative shadow-2xl">
+            <button onclick="closeHistoryModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-bold">
+                    🏆
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">RIWAYAT PENGERJAAN & NILAI TERBAIK</h3>
+                    <p class="text-xs text-slate-400">Catatan perkembangan belajar siswa di perangkat ini.</p>
+                </div>
+            </div>
+
+            <!-- BEST SCORE HIGHLIGHT -->
+            <div class="bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-indigo-500/10 p-4 rounded-2xl border border-amber-500/30 flex items-center justify-around">
+                <div class="text-center">
+                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Nilai Terbaik</div>
+                    <div id="histBestScore" class="text-3xl font-black text-amber-400">0 / 100</div>
+                </div>
+                <div class="h-10 w-px bg-slate-800"></div>
+                <div class="text-center">
+                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Percobaan Terbaik</div>
+                    <div id="histBestAttempt" class="text-sm font-bold text-indigo-300">Belum ada</div>
+                </div>
+            </div>
+
+            <!-- HISTORY LIST -->
+            <div class="max-h-60 overflow-y-auto space-y-2 pr-1">
+                <div id="histListContainer" class="space-y-2 text-xs">
+                    <!-- Rendered via JS -->
+                </div>
+            </div>
+
+            <button onclick="closeHistoryModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl text-xs cursor-pointer">
+                Tutup Riwayat
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: LOGIC GATE SIMULATOR SANDBOX -->
     <div id="sandboxModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 space-y-6 relative shadow-2xl">
             <button onclick="closeSandboxModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
@@ -528,8 +572,8 @@
                     ⚡
                 </div>
                 <div>
-                    <h3 class="text-lg font-bold text-white">Simulator & Karakter Gerbang Logika</h3>
-                    <p class="text-xs text-slate-400">Uji coba saklar input dan amati status lampu output secara langsung!</p>
+                    <h3 class="text-lg font-bold text-white">Simulator Gate Interaktif</h3>
+                    <p class="text-xs text-slate-400">Cobalah saklar input A dan B untuk mengamati output lampu 💡!</p>
                 </div>
             </div>
 
@@ -543,18 +587,18 @@
                 <button onclick="selectSimGate('XOR')" id="simGateXOR" class="sim-gate-btn bg-slate-800 border border-slate-700 text-slate-400 px-3 py-2 rounded-xl text-xs font-bold text-center">XOR</button>
             </div>
 
-            <!-- Character / Analogy Card -->
+            <!-- Character Profile Card -->
             <div id="simCharacterCard" class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800 flex items-center gap-4">
                 <div id="simCharIcon" class="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl font-bold">🔒</div>
                 <div>
                     <h4 id="simCharTitle" class="text-sm font-bold text-white">Gerbang AND — "Si Ketat"</h4>
-                    <p id="simCharDesc" class="text-xs text-slate-400">Analogi: Membutuhkan 2 kunci sekaligus untuk membuka peti harta. Output 1 hanya jika SEMUA input bernilai 1.</p>
+                    <p id="simCharDesc" class="text-xs text-slate-400">Analogi: Membutuhkan 2 kunci sekaligus untuk membuka peti harta. Output 1 HANYA jika SEMUA input bernilai 1.</p>
                 </div>
             </div>
 
-            <!-- Interactive Circuit Board -->
+            <!-- Circuit Workbench -->
             <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-around gap-6">
-                <!-- Switches Input -->
+                <!-- Input Switches -->
                 <div class="space-y-3">
                     <div class="flex items-center gap-3">
                         <span class="text-xs font-bold text-slate-400 w-16">Input A:</span>
@@ -570,918 +614,1234 @@
                     </div>
                 </div>
 
-                <!-- Gate Graphic Display -->
+                <!-- Gate Graphic -->
                 <div class="text-center">
                     <div id="simGateBadge" class="w-20 h-20 rounded-2xl bg-blue-600/20 border-2 border-blue-500 flex flex-col items-center justify-center text-blue-400 font-bold text-xl shadow-lg">
                         <span id="simGateBadgeText">AND</span>
                     </div>
                 </div>
 
-                <!-- Output Bulb Display -->
+                <!-- Output Lamp -->
                 <div class="text-center space-y-1">
                     <div id="simBulbIcon" class="text-5xl transition-all duration-300 grayscale opacity-40">💡</div>
                     <div id="simOutputText" class="text-xs font-bold text-rose-400">Output: 0 (MATI)</div>
                 </div>
             </div>
 
-            <button onclick="closeSandboxModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl text-xs">
+            <button onclick="closeSandboxModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">
                 Tutup Simulator
             </button>
         </div>
     </div>
 
-    <!-- MODAL CONFIRM RESET -->
+    <!-- MODAL: ALERT NOTIFICATION -->
+    <div id="customAlertModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mx-auto">
+                ⚠️
+            </div>
+            <h3 id="customAlertTitle" class="text-base font-bold text-white">Pemberitahuan</h3>
+            <p id="customAlertMsg" class="text-xs text-slate-300 leading-relaxed">Pesan pemberitahuan.</p>
+            <button onclick="closeAlertModal()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">
+                Mengerti
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: RESET CONFIRMATION -->
     <div id="resetModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 text-center space-y-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
             <div class="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl mx-auto">
                 ⚠️
             </div>
-            <h3 class="text-lg font-bold text-white">Reset Riwayat Pengerjaan?</h3>
-            <p class="text-xs text-slate-400">Apakah kamu yakin ingin menghapus seluruh riwayat pengerjaan dan nilai terbaik di perangkat ini?</p>
-            <div class="flex gap-2">
-                <button onclick="closeResetModal()" class="flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs">
+            <h3 class="text-lg font-bold text-white">Reset Seluruh Data LKPD?</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">Apakah kamu yakin ingin menghapus seluruh riwayat pengerjaan, nama siswa, dan sertifikat di perangkat ini?</p>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeResetModal()" class="flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs cursor-pointer">
                     Batal
                 </button>
-                <button onclick="executeResetApp()" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-2.5 rounded-xl text-xs">
-                    Ya, Hapus Riwayat
+                <button onclick="executeResetApp()" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg cursor-pointer">
+                    Ya, Hapus Data
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        /* APP STATE MANAGEMENT */
-        let studentData = {
-            name: '',
-            studentClass: '',
-            absen: '',
-            attemptCount: 1,
-            bestScore: 0
+        const STORAGE_KEY = 'lkpd_logic_gates_v4';
+
+        // Global State
+        let appData = {
+            student: {
+                name: '',
+                studentClass: '',
+                absen: ''
+            },
+            history: [],
+            currentAttempt: 1,
+            userAnswers: {}
         };
 
-        let currentTab = 1;
-        let historyList = [];
-        let userAnswers = {};
+        let activeQuestions = [];
+        let activeTab = 1;
 
-        // Simulator sandbox state
-        let simState = {
-            gate: 'AND',
-            inputA: 0,
-            inputB: 0
-        };
-
-        /* 25 COMPLETE LKPD QUESTIONS DEFINITION */
-        const baseQuestions = [
-            // AKTIVITAS 1: DUNIA 0 DAN 1 (Q1 - Q5)
+        /* ALL 25 MASTER QUESTIONS DATA STRUCTURE */
+        const rawMasterQuestions = [
+            // AKTIVITAS 1 — DUNIA 0 DAN 1 (SOAL 1 - 5)
             {
                 id: 1,
                 act: 1,
-                type: 'mc',
-                q: "Komputer hanya mengenal dua keadaan dasar digital, yaitu...",
+                type: 'radio',
+                title: 'Soal 1: Konsep Keadaan Logika',
+                question: 'Komputer hanya mengenal dua keadaan dasar dalam sistem digital, yaitu...',
                 options: [
-                    { text: "0 (mati) dan 1 (hidup)", correct: true },
-                    { text: "2 dan 3", correct: false },
-                    { text: "Merah dan biru", correct: false },
-                    { text: "Besar dan kecil", correct: false }
-                ]
+                    { key: 'A', text: '0 (mati) dan 1 (hidup)', correct: true },
+                    { key: 'B', text: '2 dan 3', correct: false },
+                    { key: 'C', text: 'Merah dan biru', correct: false },
+                    { key: 'D', text: 'Besar dan kecil', correct: false }
+                ],
+                explanation: 'Sistem komputer bekerja secara biner yang hanya memiliki dua keadaan: 0 (mati/tidak ada arus) dan 1 (hidup/ada arus).'
             },
             {
                 id: 2,
                 act: 1,
-                type: 'mc',
-                q: "Angka 1 dalam logika digital merepresentasikan...",
+                type: 'radio',
+                title: 'Soal 2: Arti Nilai Biner 1',
+                question: 'Angka 1 dalam sistem logika digital melambangkan kondisi...',
                 options: [
-                    { text: "Ada arus listrik (High)", correct: true },
-                    { text: "Tidak ada arus listrik (Low)", correct: false },
-                    { text: "Komputer sedang rusak", correct: false },
-                    { text: "Layar komputer mati", correct: false }
-                ]
+                    { key: 'A', text: 'Tidak ada arus listrik', correct: false },
+                    { key: 'B', text: 'Ada arus listrik (ON/TRUE)', correct: true },
+                    { key: 'C', text: 'Komputer dalam keadaan rusak', correct: false },
+                    { key: 'D', text: 'Layar monitor mati', correct: false }
+                ],
+                explanation: 'Angka 1 merepresentasikan keberadaan sinyal/tegangan listrik (HIGH/TRUE/ON).'
             },
             {
                 id: 3,
                 act: 1,
-                type: 'mc',
-                q: "Mengapa sistem komputer disebut sebagai sistem digital?",
+                type: 'radio',
+                title: 'Soal 3: Mengapa Disebut Digital?',
+                question: 'Mengapa perangkat komputer dinamakan perangkat digital?',
                 options: [
-                    { text: "Karena hanya menggunakan 2 nilai diskrit: 0 dan 1", correct: true },
-                    { text: "Karena memiliki banyak angka acak", correct: false },
-                    { text: "Karena gambarnya berwarna-warni", correct: false },
-                    { text: "Karena diproses dengan sangat cepat", correct: false }
-                ]
+                    { key: 'A', text: 'Karena menggunakan banyak angka secara acak', correct: false },
+                    { key: 'B', text: 'Karena mengolah data berbasis 2 nilai diskrit: 0 dan 1', correct: true },
+                    { key: 'C', text: 'Karena tampilannya berwarna-warni', correct: false },
+                    { key: 'D', text: 'Karena memproses data dengan sangat cepat', correct: false }
+                ],
+                explanation: 'Istilah digital berasal dari "digit" (biner 0 dan 1) yang menjadi fondasi pengolahan logika komputer.'
             },
             {
                 id: 4,
                 act: 1,
-                type: 'lamps',
-                q: "Soal 4 — Nyalakan Lampu: Pilih lampu mana saja yang MENYALA berdasarkan logika biner di bawah ini! (Lampu 1: [0], Lampu 2: [1], Lampu 3: [0], Lampu 4: [1])",
+                type: 'lamp_toggle',
+                title: 'Soal 4: Nyalakan Lampu!',
+                question: 'Di bawah ini terdapat 4 lampu dengan sinyal input masing-masing: Lampu 1 (0), Lampu 2 (1), Lampu 3 (0), Lampu 4 (1). Pilih lampu manakah yang MENYALA!',
                 lamps: [
-                    { id: 1, val: 0 },
-                    { id: 2, val: 1 },
-                    { id: 3, val: 0 },
-                    { id: 4, val: 1 }
-                ]
+                    { id: 1, value: 0 },
+                    { id: 2, value: 1 },
+                    { id: 3, value: 0 },
+                    { id: 4, value: 1 }
+                ],
+                correctLamps: [2, 4],
+                explanation: 'Lampu menyala HANYA pada sinyal biner 1. Maka Lampu 2 dan Lampu 4 yang menyala.'
             },
             {
                 id: 5,
                 act: 1,
-                type: 'mc',
-                q: "Apakah yang dimaksud dengan Gerbang Logika (Logic Gate)?",
+                type: 'radio',
+                title: 'Soal 5: Pengertian Gerbang Logika',
+                question: 'Pengertian dari Gerbang Logika (Logic Gate) adalah...',
                 options: [
-                    { text: "Rangkaian digital yang mengolah satu atau lebih input menjadi output logika", correct: true },
-                    { text: "Pintu pagar fisik masuk ke ruang laboratorium", correct: false },
-                    { text: "Nama software pengolah kata di komputer", correct: false },
-                    { text: "Alat untuk mengukur suhu prosesor", correct: false }
-                ]
+                    { key: 'A', text: 'Pintu gerbang fisik di depan gedung sekolah', correct: false },
+                    { key: 'B', text: 'Rangkaian elektronik digital yang mengolah satu/lebih input menjadi output logika', correct: true },
+                    { key: 'C', text: 'Nama aplikasi pengolah kata di komputer', correct: false },
+                    { key: 'D', text: 'Alat pengukur suhu komponen prosesor', correct: false }
+                ],
+                explanation: 'Gerbang logika adalah blok bangunan dasar pemrosesan data biner pada perangkat komputer.'
             },
 
-            // AKTIVITAS 2: GERBANG AND & OR (Q6 - Q10)
+            // AKTIVITAS 2 — GERBANG AND & OR (SOAL 6 - 10)
             {
                 id: 6,
                 act: 2,
-                type: 'mc',
-                q: "Aturan dasar dari Gerbang Logika AND adalah...",
+                type: 'radio',
+                title: 'Soal 6: Aturan Gerbang AND',
+                question: 'Aturan utama operasional dari Gerbang Logika AND adalah...',
                 options: [
-                    { text: "Output bernilai 1 hanya jika SEMUA input bernilai 1", correct: true },
-                    { text: "Output bernilai 1 jika salah satu input bernilai 1", correct: false },
-                    { text: "Output selalu bernilai 1 dalam situasi apa pun", correct: false },
-                    { text: "Output selalu bernilai 0", correct: false }
-                ]
+                    { key: 'A', text: 'Output 1 jika salah satu input bernilai 1', correct: false },
+                    { key: 'B', text: 'Output 1 HANYA jika SEMUA input bernilai 1', correct: true },
+                    { key: 'C', text: 'Output selalu bernilai 1 tanpa memedulikan input', correct: false },
+                    { key: 'D', text: 'Output selalu bernilai 0', correct: false }
+                ],
+                explanation: 'Gerbang AND bersifat ketat: mensyaratkan SELURUH input bernilai 1 agar menghasilkan output 1.'
             },
             {
                 id: 7,
                 act: 2,
-                type: 'truth_table_and',
-                q: "Lengkapi Tabel Kebenaran untuk Gerbang AND di bawah ini dengan memilih angka 0 atau 1 pada kolom Output!",
-                tableRows: [
-                    { a: 0, b: 0, ans: 0 },
-                    { a: 0, b: 1, ans: 0 },
-                    { a: 1, b: 0, ans: 0 },
-                    { a: 1, b: 1, ans: 1 }
-                ]
+                type: 'truth_table_matrix',
+                title: 'Soal 7: Tabel Kebenaran AND',
+                question: 'Lengkapi tabel kebenaran untuk gerbang AND di bawah ini!',
+                gateType: 'AND',
+                rows: [
+                    { a: 0, b: 0, correct: 0 },
+                    { a: 0, b: 1, correct: 0 },
+                    { a: 1, b: 0, correct: 0 },
+                    { a: 1, b: 1, correct: 1 }
+                ],
+                explanation: 'Pada tabel AND, 1 AND 1 = 1. Sisanya menghasilkan output 0.'
             },
             {
                 id: 8,
                 act: 2,
-                type: 'mc',
-                q: "Aturan dasar dari Gerbang Logika OR adalah...",
+                type: 'radio',
+                title: 'Soal 8: Aturan Gerbang OR',
+                question: 'Aturan utama operasional dari Gerbang Logika OR adalah...',
                 options: [
-                    { text: "Output bernilai 1 jika SALAH SATU atau kedua input bernilai 1", correct: true },
-                    { text: "Output bernilai 1 hanya jika semua input bernilai 1", correct: false },
-                    { text: "Output selalu bernilai kebalikan dari input", correct: false },
-                    { text: "Output bernilai 0 jika salah satu input 1", correct: false }
-                ]
+                    { key: 'A', text: 'Output 1 jika SALAH SATU atau kedua input bernilai 1', correct: true },
+                    { key: 'B', text: 'Output 1 hanya jika semua input bernilai 1', correct: false },
+                    { key: 'C', text: 'Output selalu bernilai 0', correct: false },
+                    { key: 'D', text: 'Output selalu kebalikan dari input', correct: false }
+                ],
+                explanation: 'Gerbang OR bersifat pemurah: cukup setidaknya SATU input bernilai 1 untuk menghasilkan output 1.'
             },
             {
                 id: 9,
                 act: 2,
-                type: 'truth_table_or',
-                q: "Lengkapi Tabel Kebenaran untuk Gerbang OR di bawah ini!",
-                tableRows: [
-                    { a: 0, b: 0, ans: 0 },
-                    { a: 0, b: 1, ans: 1 },
-                    { a: 1, b: 0, ans: 1 },
-                    { a: 1, b: 1, ans: 1 }
-                ]
+                type: 'truth_table_matrix',
+                title: 'Soal 9: Tabel Kebenaran OR',
+                question: 'Lengkapi tabel kebenaran untuk gerbang OR di bawah ini!',
+                gateType: 'OR',
+                rows: [
+                    { a: 0, b: 0, correct: 0 },
+                    { a: 0, b: 1, correct: 1 },
+                    { a: 1, b: 0, correct: 1 },
+                    { a: 1, b: 1, correct: 1 }
+                ],
+                explanation: 'Pada tabel OR, output 0 HANYA saat kedua input bernilai 0. Sisanya bernilai 1.'
             },
             {
                 id: 10,
                 act: 2,
-                type: 'mc',
-                q: "Hitung Cepat: Jika Input A = 1 dan Input B = 0, maka hasil output A AND B adalah...",
+                type: 'radio',
+                title: 'Soal 10: Hitung Cepat AND',
+                question: 'Jika Saklar A = 1 dan Saklar B = 0, berapakah output dari (A AND B)?',
                 options: [
-                    { text: "0", correct: true },
-                    { text: "1", correct: false },
-                    { text: "2", correct: false },
-                    { text: "Tidak tentu", correct: false }
-                ]
+                    { key: 'A', text: '0', correct: true },
+                    { key: 'B', text: '1', correct: false },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak dapat ditentukan', correct: false }
+                ],
+                explanation: '1 AND 0 = 0, karena salah satu input (B) masih bernilai 0.'
             },
 
-            // AKTIVITAS 3: GERBANG NOT (Q11 - Q15)
+            // AKTIVITAS 3 — GERBANG NOT (SOAL 11 - 15)
             {
                 id: 11,
                 act: 3,
-                type: 'mc',
-                q: "Aturan dasar dari Gerbang Logika NOT (Inverter) adalah...",
+                type: 'radio',
+                title: 'Soal 11: Aturan Gerbang NOT',
+                question: 'Aturan operasional dari Gerbang Logika NOT (Inverter) adalah...',
                 options: [
-                    { text: "Output selalu merupakan KEBALIKAN dari nilai input", correct: true },
-                    { text: "Output bernilai 1 jika semua input 1", correct: false },
-                    { text: "Output bernilai 1 jika salah satu input 1", correct: false },
-                    { text: "Output bernilai sama persis dengan input", correct: false }
-                ]
+                    { key: 'A', text: 'Output 1 jika semua input bernilai 1', correct: false },
+                    { key: 'B', text: 'Output 1 jika salah satu input bernilai 1', correct: false },
+                    { key: 'C', text: 'Output selalu KEBALIKAN dari nilai inputnya', correct: true },
+                    { key: 'D', text: 'Output selalu bernilai 1', correct: false }
+                ],
+                explanation: 'Gerbang NOT membalikkan sinyal: 0 menjadi 1, dan 1 menjadi 0.'
             },
             {
                 id: 12,
                 act: 3,
                 type: 'truth_table_not',
-                q: "Lengkapi Tabel Kebenaran untuk Gerbang NOT di bawah ini!",
-                tableRows: [
-                    { a: 0, ans: 1 },
-                    { a: 1, ans: 0 }
-                ]
+                title: 'Soal 12: Tabel Kebenaran NOT',
+                question: 'Lengkapi tabel kebenaran untuk gerbang NOT berikut!',
+                rows: [
+                    { a: 0, correct: 1 },
+                    { a: 1, correct: 0 }
+                ],
+                explanation: 'NOT(0) = 1 dan NOT(1) = 0.'
             },
             {
                 id: 13,
                 act: 3,
-                type: 'mc',
-                q: "Hitung Cepat: Gerbang NOT dengan nilai Input = 0 akan menghasilkan Output...",
+                type: 'radio',
+                title: 'Soal 13: Hitung Cepat NOT (Input 0)',
+                question: 'Sebuah gerbang NOT menerima sinyal input = 0. Berapakah output yang dihasilkan?',
                 options: [
-                    { text: "1", correct: true },
-                    { text: "0", correct: false },
-                    { text: "2", correct: false },
-                    { text: "Error", correct: false }
-                ]
+                    { key: 'A', text: '0', correct: false },
+                    { key: 'B', text: '1', correct: true },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak tentu', correct: false }
+                ],
+                explanation: 'Kebalikan dari input 0 adalah 1.'
             },
             {
                 id: 14,
                 act: 3,
-                type: 'mc',
-                q: "Hitung Cepat: Gerbang NOT dengan nilai Input = 1 akan menghasilkan Output...",
+                type: 'radio',
+                title: 'Soal 14: Hitung Cepat NOT (Input 1)',
+                question: 'Sebuah gerbang NOT menerima sinyal input = 1. Berapakah output yang dihasilkan?',
                 options: [
-                    { text: "0", correct: true },
-                    { text: "1", correct: false },
-                    { text: "2", correct: false },
-                    { text: "Tidak tentu", correct: false }
-                ]
+                    { key: 'A', text: '0', correct: true },
+                    { key: 'B', text: '1', correct: false },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak tentu', correct: false }
+                ],
+                explanation: 'Kebalikan dari input 1 adalah 0.'
             },
             {
                 id: 15,
                 act: 3,
-                type: 'mc',
-                q: "Studi Kasus Saklar Otomatis: 'Jika saklar ON (1), lampu mati (0). Jika saklar OFF (0), lampu justru menyala (1).' Gerbang manakah ini?",
+                type: 'radio',
+                title: 'Soal 15: Studi Kasus Saklar Otomatis',
+                question: 'Skenario: Lampu penerangan jalan otomatis. Jika saklar sensor ON (terang), lampu MATI. Jika saklar sensor OFF (gelap), lampu NYALA. Jenis gerbang apakah ini?',
                 options: [
-                    { text: "NOT", correct: true },
-                    { text: "AND", correct: false },
-                    { text: "OR", correct: false },
-                    { text: "XOR", correct: false }
-                ]
+                    { key: 'A', text: 'AND', correct: false },
+                    { key: 'B', text: 'OR', correct: false },
+                    { key: 'C', text: 'NOT', correct: true },
+                    { key: 'D', text: 'XOR', correct: false }
+                ],
+                explanation: 'Fungsi yang membalikkan keadaan (ON -> MATI, OFF -> NYALA) adalah karakteristik Gerbang NOT.'
             },
 
-            // AKTIVITAS 4: GERBANG NAND, NOR & XOR (Q16 - Q22)
+            // AKTIVITAS 4 — GERBANG NAND, NOR & XOR (SOAL 16 - 22)
             {
                 id: 16,
                 act: 4,
-                type: 'mc',
-                q: "Gerbang NAND merupakan kombinasi dari NOT dan AND, yang berarti kebalikan dari gerbang...",
+                type: 'radio',
+                title: 'Soal 16: Konsep Gerbang NAND',
+                question: 'Gerbang NAND (NOT-AND) merupakan gabungan/kebalikan dari gerbang...',
                 options: [
-                    { text: "AND", correct: true },
-                    { text: "OR", correct: false },
-                    { text: "NOT", correct: false },
-                    { text: "XOR", correct: false }
-                ]
+                    { key: 'A', text: 'OR', correct: false },
+                    { key: 'B', text: 'NOT', correct: false },
+                    { key: 'C', text: 'AND', correct: true },
+                    { key: 'D', text: 'XOR', correct: false }
+                ],
+                explanation: 'NAND adalah gabungan AND + NOT (hasil AND yang dibalik).'
             },
             {
                 id: 17,
                 act: 4,
-                type: 'mc',
-                q: "Gerbang NOR merupakan kombinasi dari NOT dan OR, yang berarti kebalikan dari gerbang...",
+                type: 'radio',
+                title: 'Soal 17: Konsep Gerbang NOR',
+                question: 'Gerbang NOR (NOT-OR) merupakan gabungan/kebalikan dari gerbang...',
                 options: [
-                    { text: "OR", correct: true },
-                    { text: "AND", correct: false },
-                    { text: "NOT", correct: false },
-                    { text: "XOR", correct: false }
-                ]
+                    { key: 'A', text: 'AND', correct: false },
+                    { key: 'B', text: 'OR', correct: true },
+                    { key: 'C', text: 'NOT', correct: false },
+                    { key: 'D', text: 'XOR', correct: false }
+                ],
+                explanation: 'NOR adalah gabungan OR + NOT (hasil OR yang dibalik).'
             },
             {
                 id: 18,
                 act: 4,
-                type: 'mc',
-                q: "Aturan khusus dari Gerbang Logika XOR (Exclusive OR) adalah...",
+                type: 'radio',
+                title: 'Soal 18: Aturan Gerbang XOR',
+                question: 'Aturan operasional dari Gerbang Logika XOR (Exclusive OR) adalah...',
                 options: [
-                    { text: "Output bernilai 1 jika kedua input BERBEDA nilai", correct: true },
-                    { text: "Output bernilai 1 jika kedua input SAMA bernilai 1", correct: false },
-                    { text: "Output selalu 0 dalam semua kondisi", correct: false },
-                    { text: "Output bernilai 1 hanya jika kedua input 0", correct: false }
-                ]
+                    { key: 'A', text: 'Output 1 jika kedua input bernilai sama', correct: false },
+                    { key: 'B', text: 'Output 1 HANYA jika kedua nilai input BERBEDA', correct: true },
+                    { key: 'C', text: 'Output selalu bernilai 0', correct: false },
+                    { key: 'D', text: 'Output selalu bernilai 1', correct: false }
+                ],
+                explanation: 'XOR mensyaratkan input yang berbeda (0 & 1, atau 1 & 0) untuk menghasilkan output 1.'
             },
             {
                 id: 19,
                 act: 4,
-                type: 'mc',
-                q: "Hitung Cepat: Jika Input A = 1 dan Input B = 1, maka hasil output A NAND B adalah...",
+                type: 'radio',
+                title: 'Soal 19: Hitung Cepat NAND',
+                question: 'Jika A = 1 dan B = 1, berapakah output dari A NAND B?',
                 options: [
-                    { text: "0", correct: true },
-                    { text: "1", correct: false },
-                    { text: "2", correct: false },
-                    { text: "Tidak tentu", correct: false }
-                ]
+                    { key: 'A', text: '0', correct: true },
+                    { key: 'B', text: '1', correct: false },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak tentu', correct: false }
+                ],
+                explanation: '1 AND 1 = 1. Karena NOT-AND, maka dibalik menjadi 0.'
             },
             {
                 id: 20,
                 act: 4,
-                type: 'mc',
-                q: "Hitung Cepat: Jika Input A = 0 dan Input B = 0, maka hasil output A NOR B adalah...",
+                type: 'radio',
+                title: 'Soal 20: Hitung Cepat NOR',
+                question: 'Jika A = 0 dan B = 0, berapakah output dari A NOR B?',
                 options: [
-                    { text: "1", correct: true },
-                    { text: "0", correct: false },
-                    { text: "2", correct: false },
-                    { text: "Tidak tentu", correct: false }
-                ]
+                    { key: 'A', text: '0', correct: false },
+                    { key: 'B', text: '1', correct: true },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak tentu', correct: false }
+                ],
+                explanation: '0 OR 0 = 0. Karena NOT-OR, maka dibalik menjadi 1.'
             },
             {
                 id: 21,
                 act: 4,
-                type: 'mc',
-                q: "Hitung Cepat: Jika Input A = 1 dan Input B = 0, maka hasil output A XOR B adalah...",
+                type: 'radio',
+                title: 'Soal 21: Hitung Cepat XOR',
+                question: 'Jika A = 1 dan B = 0, berapakah output dari A XOR B?',
                 options: [
-                    { text: "1", correct: true },
-                    { text: "0", correct: false },
-                    { text: "2", correct: false },
-                    { text: "Tidak tentu", correct: false }
-                ]
+                    { key: 'A', text: '0', correct: false },
+                    { key: 'B', text: '1', correct: true },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak tentu', correct: false }
+                ],
+                explanation: 'Karena input A (1) dan B (0) BERBEDA, maka XOR menghasilkan output 1.'
             },
             {
                 id: 22,
                 act: 4,
-                type: 'matching',
-                q: "Soal 22 — Tebak Gerbang Logika: Pasangkan situasi aturan logika dengan jenis gerbang yang tepat!",
+                type: 'match_situations',
+                title: 'Soal 22: Tebak Gerbang yang Tepat',
+                question: 'Pasangkan setiap situasi karakteristik berikut dengan nama gerbang logika yang sesuai!',
                 pairs: [
-                    { id: 'p1', desc: "Output 1 hanya jika A=1 dan B=1", gate: "AND" },
-                    { id: 'p2', desc: "Output 1 jika salah satu input 1", gate: "OR" },
-                    { id: 'p3', desc: "Output selalu kebalikan dari input", gate: "NOT" },
-                    { id: 'p4', desc: "Output 0 hanya jika kedua input 1", gate: "NAND" },
-                    { id: 'p5', desc: "Output 1 hanya jika kedua input berbeda", gate: "XOR" }
-                ]
+                    { sit: 'Output 1 HANYA jika A=1 dan B=1', correct: 'AND' },
+                    { sit: 'Output 1 jika salah satu input bernilai 1', correct: 'OR' },
+                    { sit: 'Output selalu merupakan kebalikan dari input', correct: 'NOT' },
+                    { sit: 'Output 0 HANYA jika kedua input bernilai 1', correct: 'NAND' },
+                    { sit: 'Output 1 HANYA jika kedua input bernilai BERBEDA', correct: 'XOR' }
+                ],
+                explanation: 'Setiap gerbang memiliki karakteristik unik: AND (seragam 1), OR (salah satu 1), NOT (balik), NAND (kebalikan AND), XOR (beda).'
             },
 
-            // AKTIVITAS 5: RANGKAIAN LOGIKA & EVALUASI AKHIR (Q23 - Q25)
+            // AKTIVITAS 5 — RANGKAIAN LOGIKA & EVALUASI AKHIR (SOAL 23 - 25)
             {
                 id: 23,
                 act: 5,
-                type: 'mc',
-                q: "Analisis Rangkaian Kombinasi: A dan B terhubung ke gerbang AND, hasilnya di-OR-kan dengan C. Jika A=1, B=1, dan C=0, maka Output akhir Q adalah...",
+                type: 'circuit_radio',
+                title: 'Soal 23: Analisis Rangkaian Kombinasi',
+                question: 'Diberikan Rangkaian: Q = (A AND B) OR C. Jika nilai input A = 1, B = 1, dan C = 0, berapakah nilai akhir output Q?',
+                circuitDiagram: 'A (1) ──┐\n        ├── [ AND ] ── (1) ──┐\nB (1) ──┘                    ├── [ OR ] ── Q (?)\nC (0) ───────────────────────┘',
                 options: [
-                    { text: "1", correct: true },
-                    { text: "0", correct: false },
-                    { text: "2", correct: false },
-                    { text: "Tidak tentu", correct: false }
-                ]
+                    { key: 'A', text: '0', correct: false },
+                    { key: 'B', text: '1', correct: true },
+                    { key: 'C', text: '2', correct: false },
+                    { key: 'D', text: 'Tidak dapat diprediksi', correct: false }
+                ],
+                explanation: 'Tahap 1: A AND B = 1 AND 1 = 1. Tahap 2: Hasil (1) OR C (0) = 1 OR 0 = 1.'
             },
             {
                 id: 24,
                 act: 5,
-                type: 'mc',
-                q: "Studi Kasus Keamanan: 'Rani ingin membuat sistem brankas. Pintu terbuka HANYA JIKA kode A benar DAN kode B benar.' Gerbang apakah yang tepat?",
+                type: 'radio',
+                title: 'Soal 24: Studi Kasus Sistem Keamanan Rani',
+                question: 'Skenario: Rani merancang brankas rahasia. Pintu brankas hanya akan terbuka jika Kode Pin A BENAR (1) DAN Sensor Sidik Jari B BENAR (1). Gerbang logika manakah yang digunakan Rani?',
                 options: [
-                    { text: "AND", correct: true },
-                    { text: "OR", correct: false },
-                    { text: "NOT", correct: false },
-                    { text: "XOR", correct: false }
-                ]
+                    { key: 'A', text: 'OR', correct: false },
+                    { key: 'B', text: 'AND', correct: true },
+                    { key: 'C', text: 'NOT', correct: false },
+                    { key: 'D', text: 'XOR', correct: false }
+                ],
+                explanation: 'Syarat "DAN" (kedua syarat wajib terpenuhi bersamaan) mengacu pada prinsip Gerbang AND.'
             },
             {
                 id: 25,
                 act: 5,
-                type: 'mc',
-                q: "Studi Kasus Penerangan: 'Lampu koridor menyala JIKA salah satu dari dua saklar di lorong ditekan.' Gerbang apakah yang tepat?",
+                type: 'radio',
+                title: 'Soal 25: Studi Kasus Saklar Lampu Ruangan',
+                question: 'Skenario: Sebuah ruangan besar memiliki 2 saklar lampu (Saklar A dan Saklar B). Lampu akan menyala jika Saklar A ditekan ATAU Saklar B ditekan. Gerbang logika apakah ini?',
                 options: [
-                    { text: "OR", correct: true },
-                    { text: "AND", correct: false },
-                    { text: "NOT", correct: false },
-                    { text: "NAND", correct: false }
-                ]
+                    { key: 'A', text: 'AND', correct: false },
+                    { key: 'B', text: 'OR', correct: true },
+                    { key: 'C', text: 'NOT', correct: false },
+                    { key: 'D', text: 'NAND', correct: false }
+                ],
+                explanation: 'Syarat "ATAU" (salah satu cukup untuk menyalakan lampu) mengacu pada prinsip Gerbang OR.'
             }
         ];
 
-        let activeQuestions = [];
-
         window.onload = function() {
-            loadStoredHistory();
-            updateHeaderInfo();
-            renderSandbox();
+            loadStoredData();
+            updateNavHeader();
         };
 
-        function loadStoredHistory() {
+        function loadStoredData() {
             try {
-                const stored = localStorage.getItem('lkpd_logic_gate_history');
+                const stored = localStorage.getItem(STORAGE_KEY);
                 if (stored) {
-                    historyList = JSON.parse(stored);
-                    if (historyList.length > 0) {
-                        studentData.attemptCount = historyList.length + 1;
-                        studentData.bestScore = Math.max(...historyList.map(h => h.score));
-                    }
+                    appData = JSON.parse(stored);
                 }
             } catch (e) {
-                console.error("Local storage error:", e);
+                console.warn('Storage read error:', e);
             }
         }
 
-        function saveHistory(score, predicate) {
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
-            const record = {
-                attempt: studentData.attemptCount,
-                date: `${dateStr} ${timeStr}`,
-                name: studentData.name,
-                studentClass: studentData.studentClass,
-                absen: studentData.absen,
-                score: score,
-                predicate: predicate
-            };
-
-            historyList.push(record);
+        function saveStoredData() {
             try {
-                localStorage.setItem('lkpd_logic_gate_history', JSON.stringify(historyList));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
             } catch (e) {
-                console.error(e);
+                console.warn('Storage write error:', e);
             }
-
-            studentData.bestScore = Math.max(...historyList.map(h => h.score));
         }
 
+        function updateNavHeader() {
+            const navInfo = document.getElementById('headerUserInfo');
+            const btnHist = document.getElementById('btnNavHistory');
+
+            if (appData.student && appData.student.name) {
+                navInfo.classList.remove('hidden');
+                document.getElementById('navStudentName').textContent = appData.student.name;
+                document.getElementById('navStudentClass').textContent = `(${appData.student.studentClass})`;
+                document.getElementById('navAttemptBadge').textContent = `Ke-${appData.currentAttempt || 1}`;
+            } else {
+                navInfo.classList.add('hidden');
+            }
+
+            if (appData.history && appData.history.length > 0) {
+                btnHist.classList.remove('hidden');
+            } else {
+                btnHist.classList.add('hidden');
+            }
+        }
+
+        function showView(viewId) {
+            const views = ['viewWelcome', 'viewInstructions', 'viewQuiz', 'viewResult', 'viewCertificate'];
+            views.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(viewId);
+            if (target) target.classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goToDashboardOrWelcome() {
+            if (appData.student && appData.student.name) {
+                if (appData.history && appData.history.length > 0) {
+                    showView('viewResult');
+                } else {
+                    showView('viewInstructions');
+                }
+            } else {
+                showView('viewWelcome');
+            }
+        }
+
+        /* FORM IDENTITY SUBMIT HANDLER */
         function handleIdentitySubmit(e) {
             e.preventDefault();
-            studentData.name = document.getElementById('inputName').value.trim();
-            studentData.studentClass = document.getElementById('inputClass').value;
-            studentData.absen = document.getElementById('inputAbsen').value;
+            const name = document.getElementById('inputName').value.trim();
+            const studentClass = document.getElementById('inputClass').value;
+            const absen = document.getElementById('inputAbsen').value.trim();
 
-            if (!studentData.name || !studentData.studentClass || !studentData.absen) {
+            if (!name || !studentClass || !absen) {
+                alertModal('Mohon lengkapi seluruh data identitas terlebih dahulu!');
                 return;
             }
 
-            updateHeaderInfo();
-
-            // Switch to Instructions screen
-            document.getElementById('viewWelcome').classList.add('hidden');
-            document.getElementById('viewInstructions').classList.remove('hidden');
+            appData.student = { name, studentClass, absen };
+            saveStoredData();
+            updateNavHeader();
+            showView('viewInstructions');
         }
 
-        function updateHeaderInfo() {
-            document.getElementById('navStudentName').textContent = studentData.name || 'Siswa';
-            document.getElementById('navStudentClass').textContent = studentData.studentClass ? `(${studentData.studentClass})` : '';
-            document.getElementById('navAttemptCount').textContent = studentData.attemptCount;
-            document.getElementById('navBestScore').textContent = studentData.bestScore > 0 ? studentData.bestScore : '-';
+        /* START LKPD RUNNER & SHUFFLE OPTIONS */
+        function startLKPD() {
+            activeQuestions = prepareQuestionsData(true);
+            appData.userAnswers = {};
 
-            if (studentData.name) {
-                document.getElementById('headerUserInfo').classList.remove('hidden');
-            }
-        }
+            showView('viewQuiz');
 
-        function startActivityQuiz() {
-            document.getElementById('viewInstructions').classList.add('hidden');
-            document.getElementById('viewQuiz').classList.remove('hidden');
+            document.getElementById('quizStudentName').textContent = appData.student.name;
+            document.getElementById('quizStudentClass').textContent = appData.student.studentClass;
+            document.getElementById('quizAttemptNum').textContent = appData.currentAttempt || 1;
 
-            document.getElementById('dashStudentName').textContent = studentData.name;
-            document.getElementById('dashStudentClass').textContent = studentData.studentClass;
-            document.getElementById('dashAttemptCount').textContent = studentData.attemptCount;
-
-            prepareQuestionsForAttempt();
-            userAnswers = {};
+            activeTab = 1;
+            renderAllQuestions();
             switchActivityTab(1);
             updateProgressBar();
         }
 
-        function prepareQuestionsForAttempt() {
-            // Deep clone questions
-            activeQuestions = JSON.parse(JSON.stringify(baseQuestions));
-
-            // If attempt > 1, shuffle option choices for MC questions to encourage true understanding
-            if (studentData.attemptCount > 1) {
-                activeQuestions.forEach(q => {
-                    if (q.type === 'mc' && q.options) {
-                        q.options.sort(() => Math.random() - 0.5);
+        function prepareQuestionsData(shouldShuffle = true) {
+            let list = JSON.parse(JSON.stringify(rawMasterQuestions));
+            if (shouldShuffle) {
+                list.forEach(q => {
+                    if (q.type === 'radio' || q.type === 'circuit_radio') {
+                        q.options = shuffleArray(q.options);
                     }
                 });
             }
+            return list;
+        }
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
         }
 
         function switchActivityTab(tabNum) {
-            currentTab = tabNum;
+            activeTab = tabNum;
+
             for (let i = 1; i <= 5; i++) {
                 const btn = document.getElementById(`tabAct${i}`);
-                if (i === tabNum) {
-                    btn.className = "tab-btn active bg-amber-500/20 border border-amber-500/50 text-amber-300 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-2";
-                } else {
-                    btn.className = "tab-btn bg-slate-900 border border-slate-800 text-slate-400 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-2";
+                if (btn) {
+                    if (i === tabNum) {
+                        btn.className = "tab-act-btn whitespace-nowrap bg-indigo-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 border border-indigo-500 shadow-lg";
+                    } else {
+                        btn.className = "tab-act-btn whitespace-nowrap bg-slate-800 text-slate-400 hover:text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 border border-slate-700";
+                    }
                 }
             }
-            renderQuestionsForTab(tabNum);
+
+            activeQuestions.forEach(q => {
+                const card = document.getElementById(`cardQ_${q.id}`);
+                if (card) {
+                    if (q.act === tabNum) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+
+            window.scrollTo({ top: 120, behavior: 'smooth' });
         }
 
-        function renderQuestionsForTab(tabNum) {
-            const container = document.getElementById('questionsContainer');
+        function renderAllQuestions() {
+            const container = document.getElementById('questionsListContainer');
             container.innerHTML = '';
 
-            const tabQuestions = activeQuestions.filter(q => q.act === tabNum);
+            activeQuestions.forEach(q => {
+                const card = document.createElement('div');
+                card.id = `cardQ_${q.id}`;
+                card.className = "bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-7 space-y-4 backdrop-blur-xl shadow-xl transition-all duration-300";
 
-            tabQuestions.forEach(q => {
-                const qCard = document.createElement('div');
-                qCard.className = "bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4 backdrop-blur-md";
-
-                let bodyHtml = '';
-
-                if (q.type === 'mc') {
-                    bodyHtml = `
-                        <div class="space-y-2">
-                            ${q.options.map((opt, idx) => {
-                                const checked = userAnswers[q.id] === idx ? 'checked' : '';
-                                return `
-                                    <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-slate-700 cursor-pointer transition">
-                                        <input type="radio" name="q_${q.id}" value="${idx}" ${checked} onchange="saveMcAnswer(${q.id}, ${idx})" class="mt-0.5 text-indigo-600 focus:ring-indigo-500">
-                                        <span class="text-xs text-slate-200">${opt.text}</span>
-                                    </label>
-                                `;
-                            }).join('')}
-                        </div>
-                    `;
-                } else if (q.type === 'lamps') {
-                    const lampState = userAnswers[q.id] || [];
-                    bodyHtml = `
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950/80 p-4 rounded-xl border border-slate-800">
-                            ${q.lamps.map(l => {
-                                const isSelected = lampState.includes(l.id);
-                                return `
-                                    <button type="button" onclick="toggleLampAnswer(${q.id}, ${l.id})" class="p-4 rounded-xl border flex flex-col items-center justify-center gap-2 transition ${isSelected ? 'bg-amber-500/20 border-amber-400 text-amber-300' : 'bg-slate-900 border-slate-800 text-slate-500'}">
-                                        <div class="text-3xl ${isSelected ? 'glow-bulb text-amber-400' : 'grayscale opacity-40'}">💡</div>
-                                        <div class="text-xs font-bold">Lampu ${l.id} [Biner: ${l.val}]</div>
-                                        <div class="text-[10px] uppercase font-bold">${isSelected ? 'MENYALA' : 'MATI'}</div>
-                                    </button>
-                                `;
-                            }).join('')}
-                        </div>
-                    `;
-                } else if (q.type.startsWith('truth_table_')) {
-                    const savedTable = userAnswers[q.id] || {};
-                    bodyHtml = `
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-center text-xs border-collapse">
-                                <thead>
-                                    <tr class="bg-slate-800 text-slate-300">
-                                        <th class="p-2 border border-slate-700">Input A</th>
-                                        ${q.type !== 'truth_table_not' ? '<th class="p-2 border border-slate-700">Input B</th>' : ''}
-                                        <th class="p-2 border border-slate-700 bg-indigo-900/40 text-indigo-300">Pilih Output</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-800 bg-slate-950">
-                                    ${q.tableRows.map((row, idx) => {
-                                        const val = savedTable[idx] !== undefined ? savedTable[idx] : '';
-                                        return `
-                                            <tr>
-                                                <td class="p-2 border border-slate-800 font-bold text-amber-400">${row.a}</td>
-                                                ${q.type !== 'truth_table_not' ? `<td class="p-2 border border-slate-800 font-bold text-amber-400">${row.b}</td>` : ''}
-                                                <td class="p-2 border border-slate-800">
-                                                    <select onchange="saveTruthTableAnswer(${q.id}, ${idx}, this.value)" class="bg-slate-900 border border-slate-700 text-white text-xs font-bold rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-indigo-500">
-                                                        <option value="">-- Pilih --</option>
-                                                        <option value="0" ${val === '0' ? 'selected' : ''}>0 (MATI)</option>
-                                                        <option value="1" ${val === '1' ? 'selected' : ''}>1 (HIDUP)</option>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
-                } else if (q.type === 'matching') {
-                    const savedPairs = userAnswers[q.id] || {};
-                    const gateOptions = ["AND", "OR", "NOT", "NAND", "NOR", "XOR"];
-                    bodyHtml = `
-                        <div class="space-y-3 bg-slate-950/80 p-4 rounded-xl border border-slate-800">
-                            ${q.pairs.map(p => {
-                                const selected = savedPairs[p.id] || '';
-                                return `
-                                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-slate-900 border border-slate-800 rounded-xl">
-                                        <span class="text-xs text-slate-300 font-medium">${p.desc}</span>
-                                        <select onchange="saveMatchingAnswer(${q.id}, '${p.id}', this.value)" class="bg-slate-950 border border-slate-700 text-indigo-300 font-bold text-xs rounded-lg px-3 py-1.5">
-                                            <option value="">-- Pilih Gerbang --</option>
-                                            ${gateOptions.map(g => `<option value="${g}" ${selected === g ? 'selected' : ''}>Gerbang ${g}</option>`).join('')}
-                                        </select>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    `;
-                }
-
-                qCard.innerHTML = `
-                    <div class="flex items-start gap-3">
-                        <span class="bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 text-xs font-bold px-2.5 py-1 rounded-lg">
-                            Soal #${q.id}
+                let innerHTML = `
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <span class="text-xs font-bold text-indigo-400 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                            ${q.title}
                         </span>
-                        <p class="text-xs sm:text-sm font-semibold text-slate-100 flex-1 leading-relaxed">${q.q}</p>
+                        <span id="badgeAnswered_${q.id}" class="text-[10px] bg-slate-800 text-slate-500 border border-slate-700 px-2.5 py-0.5 rounded-full font-semibold">
+                            Belum diisi
+                        </span>
                     </div>
-                    ${bodyHtml}
+                    <p class="text-xs sm:text-sm text-slate-200 font-medium leading-relaxed">${q.question}</p>
                 `;
 
-                container.appendChild(qCard);
+                // Render based on type
+                if (q.type === 'radio') {
+                    innerHTML += renderRadioOptions(q);
+                } else if (q.type === 'circuit_radio') {
+                    innerHTML += `
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 font-mono text-[11px] text-cyan-300 whitespace-pre overflow-x-auto my-2">
+                            ${q.circuitDiagram}
+                        </div>
+                    ` + renderRadioOptions(q);
+                } else if (q.type === 'lamp_toggle') {
+                    innerHTML += renderLampToggle(q);
+                } else if (q.type === 'truth_table_matrix') {
+                    innerHTML += renderTruthTableMatrix(q);
+                } else if (q.type === 'truth_table_not') {
+                    innerHTML += renderTruthTableNOT(q);
+                } else if (q.type === 'match_situations') {
+                    innerHTML += renderMatchSituations(q);
+                }
+
+                card.innerHTML = innerHTML;
+                container.appendChild(card);
             });
         }
 
-        /* ANSWER SAVERS & PROGRESS UPDATERS */
-        function saveMcAnswer(qId, idx) {
-            userAnswers[qId] = idx;
+        function renderRadioOptions(q) {
+            let html = `<div class="grid grid-cols-1 gap-2.5 pt-2">`;
+            q.options.forEach((opt, idx) => {
+                html += `
+                    <label onclick="recordRadioAnswer(${q.id}, '${opt.text.replace(/'/g, "\\'")}', ${opt.correct})" 
+                        class="radio-label-${q.id} flex items-center gap-3 p-3.5 rounded-2xl bg-slate-950/80 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 cursor-pointer transition text-xs text-slate-300">
+                        <input type="radio" name="q_radio_${q.id}" value="${opt.key}" class="w-4 h-4 text-indigo-600 bg-slate-900 border-slate-700 focus:ring-indigo-500">
+                        <span>${opt.text}</span>
+                    </label>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function recordRadioAnswer(qId, selectedText, isCorrect) {
+            appData.userAnswers[qId] = {
+                val: selectedText,
+                isCorrect: isCorrect
+            };
+            markQuestionAnswered(qId, true);
             updateProgressBar();
         }
 
-        function toggleLampAnswer(qId, lampId) {
-            let current = userAnswers[qId] || [];
-            if (current.includes(lampId)) {
-                current = current.filter(id => id !== lampId);
-            } else {
-                current.push(lampId);
+        function renderLampToggle(q) {
+            let html = `<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">`;
+            q.lamps.forEach(l => {
+                html += `
+                    <div id="lampBox_${q.id}_${l.id}" onclick="toggleLampChoice(${q.id}, ${l.id})" 
+                        class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-center space-y-2 cursor-pointer transition hover:border-amber-500/50">
+                        <div id="lampIcon_${q.id}_${l.id}" class="text-4xl grayscale opacity-40 transition-all duration-300">💡</div>
+                        <div class="text-xs font-bold text-slate-300">Lampu ${l.id}</div>
+                        <div class="text-[10px] text-slate-500">Sinyal Input: <strong class="${l.value ? 'text-emerald-400' : 'text-slate-400'}">${l.value}</strong></div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function toggleLampChoice(qId, lampId) {
+            if (!appData.userAnswers[qId]) {
+                appData.userAnswers[qId] = { selectedLamps: [] };
             }
-            userAnswers[qId] = current;
-            renderQuestionsForTab(currentTab);
+            let list = appData.userAnswers[qId].selectedLamps || [];
+            const idx = list.indexOf(lampId);
+            if (idx > -1) {
+                list.splice(idx, 1);
+            } else {
+                list.push(lampId);
+            }
+            appData.userAnswers[qId].selectedLamps = list;
+
+            // Update UI Lamp Graphics
+            const box = document.getElementById(`lampBox_${qId}_${lampId}`);
+            const icon = document.getElementById(`lampIcon_${qId}_${lampId}`);
+            if (list.includes(lampId)) {
+                box.className = "bg-amber-500/10 p-4 rounded-2xl border-2 border-amber-400 text-center space-y-2 cursor-pointer shadow-lg shadow-amber-500/20";
+                icon.className = "text-4xl glow-bulb-on transition-all duration-300 scale-110";
+            } else {
+                box.className = "bg-slate-950 p-4 rounded-2xl border border-slate-800 text-center space-y-2 cursor-pointer transition hover:border-amber-500/50";
+                icon.className = "text-4xl grayscale opacity-40 transition-all duration-300";
+            }
+
+            // Evaluate correctness
+            const q = activeQuestions.find(x => x.id === qId);
+            const correctSet = q.correctLamps;
+            const isCorrect = list.length === correctSet.length && list.every(val => correctSet.includes(val));
+
+            appData.userAnswers[qId].val = list.length > 0 ? `Lampu ${list.sort().join(', ')}` : 'Belum memilih';
+            appData.userAnswers[qId].isCorrect = isCorrect;
+
+            markQuestionAnswered(qId, list.length > 0);
             updateProgressBar();
         }
 
-        function saveTruthTableAnswer(qId, rowIdx, val) {
-            if (!userAnswers[qId]) userAnswers[qId] = {};
-            userAnswers[qId][rowIdx] = val;
+        function renderTruthTableMatrix(q) {
+            let html = `
+                <div class="overflow-x-auto pt-2">
+                    <table class="w-full text-center text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                <th class="p-2.5">Input A</th>
+                                <th class="p-2.5">Input B</th>
+                                <th class="p-2.5 text-indigo-400 font-bold">Output (A ${q.gateType} B)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60">
+            `;
+
+            q.rows.forEach((r, idx) => {
+                html += `
+                    <tr>
+                        <td class="p-2.5 font-mono text-slate-300">${r.a}</td>
+                        <td class="p-2.5 font-mono text-slate-300">${r.b}</td>
+                        <td class="p-2.5">
+                            <select onchange="recordTruthMatrix(${q.id}, ${idx}, this.value)" 
+                                class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:ring-2 focus:ring-indigo-500">
+                                <option value="">- Pilih -</option>
+                                <option value="0">0 (MATI)</option>
+                                <option value="1">1 (NYALA)</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            return html;
+        }
+
+        function recordTruthMatrix(qId, rowIdx, selectedVal) {
+            if (!appData.userAnswers[qId]) {
+                appData.userAnswers[qId] = { answers: {} };
+            }
+            appData.userAnswers[qId].answers[rowIdx] = selectedVal;
+
+            const q = activeQuestions.find(x => x.id === qId);
+            const totalRows = q.rows.length;
+            const filledCount = Object.keys(appData.userAnswers[qId].answers).filter(k => appData.userAnswers[qId].answers[k] !== "").length;
+
+            let isAllCorrect = true;
+            q.rows.forEach((r, idx) => {
+                if (parseInt(appData.userAnswers[qId].answers[idx]) !== r.correct) {
+                    isAllCorrect = false;
+                }
+            });
+
+            appData.userAnswers[qId].val = `Tabel terisi (${filledCount}/${totalRows})`;
+            appData.userAnswers[qId].isCorrect = isAllCorrect;
+
+            markQuestionAnswered(qId, filledCount === totalRows);
             updateProgressBar();
         }
 
-        function saveMatchingAnswer(qId, pairId, val) {
-            if (!userAnswers[qId]) userAnswers[qId] = {};
-            userAnswers[qId][pairId] = val;
+        function renderTruthTableNOT(q) {
+            let html = `
+                <div class="overflow-x-auto pt-2">
+                    <table class="w-full text-center text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                <th class="p-2.5">Input A</th>
+                                <th class="p-2.5 text-rose-400 font-bold">Output (NOT A)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60">
+            `;
+
+            q.rows.forEach((r, idx) => {
+                html += `
+                    <tr>
+                        <td class="p-2.5 font-mono text-slate-300">${r.a}</td>
+                        <td class="p-2.5">
+                            <select onchange="recordTruthNOT(${q.id}, ${idx}, this.value)" 
+                                class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:ring-2 focus:ring-indigo-500">
+                                <option value="">- Pilih -</option>
+                                <option value="0">0 (MATI)</option>
+                                <option value="1">1 (NYALA)</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            return html;
+        }
+
+        function recordTruthNOT(qId, rowIdx, selectedVal) {
+            if (!appData.userAnswers[qId]) {
+                appData.userAnswers[qId] = { answers: {} };
+            }
+            appData.userAnswers[qId].answers[rowIdx] = selectedVal;
+
+            const q = activeQuestions.find(x => x.id === qId);
+            const totalRows = q.rows.length;
+            const filledCount = Object.keys(appData.userAnswers[qId].answers).filter(k => appData.userAnswers[qId].answers[k] !== "").length;
+
+            let isAllCorrect = true;
+            q.rows.forEach((r, idx) => {
+                if (parseInt(appData.userAnswers[qId].answers[idx]) !== r.correct) {
+                    isAllCorrect = false;
+                }
+            });
+
+            appData.userAnswers[qId].val = `Tabel terisi (${filledCount}/${totalRows})`;
+            appData.userAnswers[qId].isCorrect = isAllCorrect;
+
+            markQuestionAnswered(qId, filledCount === totalRows);
             updateProgressBar();
+        }
+
+        function renderMatchSituations(q) {
+            const gateOptions = ['AND', 'OR', 'NOT', 'NAND', 'NOR', 'XOR'];
+            let html = `<div class="space-y-2 pt-2">`;
+            q.pairs.forEach((p, idx) => {
+                html += `
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                        <span class="text-xs text-slate-300 font-medium">${idx + 1}. ${p.sit}</span>
+                        <select onchange="recordMatchPair(${q.id}, ${idx}, this.value)" 
+                            class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-amber-400 font-bold focus:ring-2 focus:ring-indigo-500 w-full sm:w-auto">
+                            <option value="">- Pilih Gerbang -</option>
+                            ${gateOptions.map(g => `<option value="${g}">${g}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function recordMatchPair(qId, pairIdx, selectedVal) {
+            if (!appData.userAnswers[qId]) {
+                appData.userAnswers[qId] = { matches: {} };
+            }
+            appData.userAnswers[qId].matches[pairIdx] = selectedVal;
+
+            const q = activeQuestions.find(x => x.id === qId);
+            const totalPairs = q.pairs.length;
+            const filledCount = Object.keys(appData.userAnswers[qId].matches).filter(k => appData.userAnswers[qId].matches[k] !== "").length;
+
+            let isAllCorrect = true;
+            q.pairs.forEach((p, idx) => {
+                if (appData.userAnswers[qId].matches[idx] !== p.correct) {
+                    isAllCorrect = false;
+                }
+            });
+
+            appData.userAnswers[qId].val = `Tebakan terisi (${filledCount}/${totalPairs})`;
+            appData.userAnswers[qId].isCorrect = isAllCorrect;
+
+            markQuestionAnswered(qId, filledCount === totalPairs);
+            updateProgressBar();
+        }
+
+        function markQuestionAnswered(qId, isDone) {
+            const badge = document.getElementById(`badgeAnswered_${qId}`);
+            if (badge) {
+                if (isDone) {
+                    badge.className = "text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-semibold";
+                    badge.textContent = "Sudah diisi ✓";
+                } else {
+                    badge.className = "text-[10px] bg-slate-800 text-slate-500 border border-slate-700 px-2.5 py-0.5 rounded-full font-semibold";
+                    badge.textContent = "Belum diisi";
+                }
+            }
         }
 
         function updateProgressBar() {
-            const answeredCount = Object.keys(userAnswers).length;
-            const pct = Math.round((answeredCount / 25) * 100);
-            document.getElementById('quizProgressPercent').textContent = `${pct}%`;
-            document.getElementById('quizProgressBar').style.width = `${pct}%`;
+            const answeredCount = Object.keys(appData.userAnswers).length;
+            const percent = Math.round((answeredCount / 25) * 100);
+
+            document.getElementById('quizProgressPercent').textContent = `${percent}%`;
+            document.getElementById('quizProgressBar').style.width = `${percent}%`;
         }
 
-        function finishQuizAndShowResult() {
+        function scrollToFinishButton() {
+            document.getElementById('finishActionBar').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function submitLKPD() {
+            const answeredCount = Object.keys(appData.userAnswers).length;
+            if (answeredCount < 25) {
+                alertModal(`Kamu baru mengisi ${answeredCount} dari 25 soal. Silakan periksa kembali semua tab aktivitas!`);
+                return;
+            }
+
             let correctCount = 0;
-
             activeQuestions.forEach(q => {
-                const userAns = userAnswers[q.id];
-
-                if (q.type === 'mc') {
-                    if (userAns !== undefined && q.options[userAns] && q.options[userAns].correct) {
-                        correctCount++;
-                    }
-                } else if (q.type === 'lamps') {
-                    const ansArr = userAns || [];
-                    // Correct lamps are 2 and 4
-                    const isCorrect = ansArr.length === 2 && ansArr.includes(2) && ansArr.includes(4);
-                    if (isCorrect) correctCount++;
-                } else if (q.type.startsWith('truth_table_')) {
-                    const tableAns = userAns || {};
-                    let allRowsCorrect = true;
-                    q.tableRows.forEach((row, idx) => {
-                        if (parseInt(tableAns[idx]) !== row.ans) {
-                            allRowsCorrect = false;
-                        }
-                    });
-                    if (allRowsCorrect && Object.keys(tableAns).length === q.tableRows.length) {
-                        correctCount++;
-                    }
-                } else if (q.type === 'matching') {
-                    const matchAns = userAns || {};
-                    let allMatched = true;
-                    q.pairs.forEach(p => {
-                        if (matchAns[p.id] !== p.gate) {
-                            allMatched = false;
-                        }
-                    });
-                    if (allMatched && Object.keys(matchAns).length === q.pairs.length) {
-                        correctCount++;
-                    }
+                const ans = appData.userAnswers[q.id];
+                if (ans && ans.isCorrect) {
+                    correctCount++;
                 }
             });
 
-            const finalScore = correctCount * 4; // 25 questions * 4 = 100 max
-
+            const score = correctCount * 4; // 25 x 4 = 100
             let predicate = '';
             let feedback = '';
-            let themeClass = '';
 
-            if (finalScore >= 90) {
+            if (score >= 90) {
                 predicate = '🏆 SANGAT BAIK';
-                feedback = 'Luar biasa! Kamu telah menguasai seluruh konsep gerbang logika dasar dan kombinasinya dengan sempurna!';
-                themeClass = 'gold';
-            } else if (finalScore >= 80) {
+                feedback = 'Luar biasa! Kamu telah menguasai seluruh konsep gerbang logika digital dengan sempurna!';
+            } else if (score >= 80) {
                 predicate = '🥇 BAIK';
-                feedback = 'Hebat! Pemahamanmu mengenai gerbang logika sudah sangat baik. Terus berlatih agar makin mahir.';
-                themeClass = 'blue';
-            } else if (finalScore >= 70) {
+                feedback = 'Hebat! Pemahamanmu sudah sangat baik. Terus berlatih agar semakin mahir.';
+            } else if (score >= 70) {
                 predicate = '🥈 CUKUP';
-                feedback = 'Cukup baik. Pelajari kembali tabel kebenaran dan aturan setiap gerbang logika untuk meningkatkan nilaimu.';
-                themeClass = 'orange';
+                feedback = 'Cukup baik. Pelajari kembali tabel kebenaran dan aturan setiap gerbang logika.';
             } else {
                 predicate = '🌱 PERLU BERLATIH';
-                feedback = 'Jangan menyerah! Pelajari kembali materi gerbang logika dan coba kerjakan LKPD sekali lagi!';
-                themeClass = 'grey';
+                feedback = 'Jangan menyerah! Pelajari kembali materi dan cobalah mengerjakan LKPD sekali lagi.';
             }
 
-            saveHistory(finalScore, predicate);
+            const attemptRecord = {
+                attempt: appData.currentAttempt || 1,
+                date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+                score: score,
+                correctCount: correctCount,
+                predicate: predicate,
+                feedback: feedback,
+                userAnswers: JSON.parse(JSON.stringify(appData.userAnswers))
+            };
 
-            // Populate Result Screen
-            document.getElementById('resAttemptNum').textContent = studentData.attemptCount;
-            document.getElementById('resScoreNum').textContent = finalScore;
+            appData.history.push(attemptRecord);
+            saveStoredData();
+            updateNavHeader();
+
+            // Render Results View
+            document.getElementById('resScoreNum').textContent = score;
             document.getElementById('resPredicateBadge').textContent = predicate;
-            document.getElementById('resFeedbackText').textContent = feedback;
+            document.getElementById('resFeedbackMsg').textContent = feedback;
             document.getElementById('resCorrectCount').textContent = correctCount;
-            document.getElementById('resBestScore').textContent = studentData.bestScore;
+            document.getElementById('resAttemptNum').textContent = `Ke-${attemptRecord.attempt}`;
 
-            // Populate Certificate
-            populateCertificate(finalScore, predicate, themeClass);
-
-            // Render History Table
-            renderHistoryTable();
-
-            // Switch Views
-            document.getElementById('viewQuiz').classList.add('hidden');
-            document.getElementById('viewResult').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderDetailedAnswerReview();
+            showView('viewResult');
         }
 
-        function populateCertificate(score, predicate, theme) {
-            document.getElementById('certStudentName').textContent = studentData.name.toUpperCase();
-            document.getElementById('certStudentMeta').textContent = `Kelas: ${studentData.studentClass} | No. Absen: ${studentData.absen}`;
-            document.getElementById('certAttemptBadge').textContent = `Percobaan ke-${studentData.attemptCount}`;
-            document.getElementById('certScore').textContent = `${score} / 100`;
-            document.getElementById('certPredicate').textContent = predicate;
+        function renderDetailedAnswerReview() {
+            const container = document.getElementById('answerReviewList');
+            container.innerHTML = '';
 
-            const now = new Date();
-            document.getElementById('certDate').textContent = now.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'Long',
-                year: 'numeric'
-            });
+            activeQuestions.forEach(q => {
+                const ans = appData.userAnswers[q.id];
+                const isCorrect = ans && ans.isCorrect;
 
-            // Adjust colors based on theme grade
-            const frame = document.getElementById('certFrame');
-            const inner = document.getElementById('certContentInner');
+                const item = document.createElement('div');
+                item.className = `p-4 sm:p-5 rounded-2xl border transition-all ${
+                    isCorrect 
+                        ? 'bg-emerald-950/20 border-emerald-500/30' 
+                        : 'bg-rose-950/20 border-rose-500/30'
+                }`;
 
-            if (theme === 'gold') {
-                frame.className = "max-w-4xl mx-auto bg-slate-900 border-8 border-amber-500 rounded-3xl p-6 sm:p-10 text-slate-900 relative shadow-2xl";
-                inner.className = "w-full h-full border-4 border-amber-400 p-6 sm:p-8 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-amber-50 via-white to-amber-100/80";
-            } else if (theme === 'blue') {
-                frame.className = "max-w-4xl mx-auto bg-slate-900 border-8 border-blue-500 rounded-3xl p-6 sm:p-10 text-slate-900 relative shadow-2xl";
-                inner.className = "w-full h-full border-4 border-blue-400 p-6 sm:p-8 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-blue-50 via-white to-blue-100/80";
-            } else if (theme === 'orange') {
-                frame.className = "max-w-4xl mx-auto bg-slate-900 border-8 border-orange-500 rounded-3xl p-6 sm:p-10 text-slate-900 relative shadow-2xl";
-                inner.className = "w-full h-full border-4 border-orange-400 p-6 sm:p-8 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-orange-50 via-white to-orange-100/80";
-            } else {
-                frame.className = "max-w-4xl mx-auto bg-slate-900 border-8 border-slate-500 rounded-3xl p-6 sm:p-10 text-slate-900 relative shadow-2xl";
-                inner.className = "w-full h-full border-4 border-slate-400 p-6 sm:p-8 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-slate-50 via-white to-emerald-50";
-            }
-        }
+                item.innerHTML = `
+                    <div class="flex items-start justify-between gap-3 mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-lg ${isCorrect ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'} flex items-center justify-center text-xs font-bold">
+                                ${isCorrect ? '✓' : '✗'}
+                            </span>
+                            <span class="text-xs font-bold text-white">${q.title}</span>
+                        </div>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${isCorrect ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'}">
+                            ${isCorrect ? '+4 Poin' : '0 Poin'}
+                        </span>
+                    </div>
 
-        function renderHistoryTable() {
-            const tbody = document.getElementById('historyTableBody');
-            tbody.innerHTML = '';
+                    <p class="text-xs text-slate-300 mb-3">${q.question}</p>
 
-            historyList.slice().reverse().forEach(h => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-amber-400">Ke-${h.attempt}</td>
-                    <td class="p-3 text-slate-400">${h.date}</td>
-                    <td class="p-3 font-bold ${h.score >= 80 ? 'text-emerald-400' : 'text-amber-400'}">${h.score}/100</td>
-                    <td class="p-3 font-medium text-slate-300">${h.predicate}</td>
-                    <td class="p-3 text-right">
-                        <button onclick="scrollToCertificate()" class="text-indigo-400 hover:text-indigo-300 font-bold underline text-[10px]">
-                            🏆 Sertifikat
-                        </button>
-                    </td>
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-1">
+                        <div>
+                            <span class="text-slate-500">Jawaban Kamu:</span> 
+                            <strong class="${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">${ans ? ans.val : 'Tidak diisi'}</strong>
+                        </div>
+                        <div class="pt-1 text-[11px] text-slate-400 border-t border-slate-800/80">
+                            <span class="text-indigo-400 font-semibold">💡 Pembahasan Guru:</span> ${q.explanation}
+                        </div>
+                    </div>
                 `;
-                tbody.appendChild(tr);
+
+                container.appendChild(item);
             });
         }
 
-        function retryQuiz() {
-            studentData.attemptCount++;
-            updateHeaderInfo();
+        function showCertificateFromCurrent() {
+            const latest = appData.history[appData.history.length - 1];
+            if (!latest) return;
 
-            document.getElementById('viewResult').classList.add('hidden');
-            document.getElementById('viewQuiz').classList.remove('hidden');
+            document.getElementById('certStudentName').textContent = appData.student.name.toUpperCase();
+            document.getElementById('certStudentMeta').textContent = `Kelas: ${appData.student.studentClass} | No. Absen: ${appData.student.absen}`;
+            document.getElementById('certScore').textContent = `${latest.score} / 100`;
+            document.getElementById('certPredicate').textContent = latest.predicate;
+            document.getElementById('certAttemptHeader').textContent = `PERCOBAAN KE-${latest.attempt}`;
+            document.getElementById('certDate').textContent = latest.date;
+            document.getElementById('certCode').textContent = `ID: CERT-LKPD-VIII-${Math.floor(10000 + Math.random() * 90000)}`;
 
-            prepareQuestionsForAttempt();
-            userAnswers = {};
-            switchActivityTab(1);
-            updateProgressBar();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const frame = document.getElementById('certFrame');
+            const scoreBox = document.getElementById('certScoreBox');
+
+            if (latest.score >= 90) {
+                frame.className = "w-full max-w-md bg-slate-950 border-4 border-emerald-500 rounded-3xl p-5 sm:p-6 text-slate-100 relative shadow-2xl overflow-hidden aspect-[4/9] flex flex-col justify-between";
+                scoreBox.className = "bg-slate-950/90 border border-emerald-500/40 rounded-2xl p-3 my-2 shadow-inner";
+            } else if (latest.score >= 80) {
+                frame.className = "w-full max-w-md bg-slate-950 border-4 border-blue-500 rounded-3xl p-5 sm:p-6 text-slate-100 relative shadow-2xl overflow-hidden aspect-[4/9] flex flex-col justify-between";
+                scoreBox.className = "bg-slate-950/90 border border-blue-500/40 rounded-2xl p-3 my-2 shadow-inner";
+            } else if (latest.score >= 70) {
+                frame.className = "w-full max-w-md bg-slate-950 border-4 border-amber-500 rounded-3xl p-5 sm:p-6 text-slate-100 relative shadow-2xl overflow-hidden aspect-[4/9] flex flex-col justify-between";
+                scoreBox.className = "bg-slate-950/90 border border-amber-500/40 rounded-2xl p-3 my-2 shadow-inner";
+            } else {
+                frame.className = "w-full max-w-md bg-slate-950 border-4 border-slate-600 rounded-3xl p-5 sm:p-6 text-slate-100 relative shadow-2xl overflow-hidden aspect-[4/9] flex flex-col justify-between";
+                scoreBox.className = "bg-slate-950/90 border border-slate-600/40 rounded-2xl p-3 my-2 shadow-inner";
+            }
+
+            showView('viewCertificate');
         }
 
-        function scrollToCertificate() {
-            document.getElementById('printableCertificateArea').scrollIntoView({ behavior: 'smooth' });
+        function downloadCertificateImage() {
+            const certElement = document.getElementById('certFrame');
+            const btn = document.getElementById('btnDownloadCert');
+            const originalText = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Membuat Gambar...</span>';
+            btn.disabled = true;
+
+            html2canvas(certElement, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#020617'
+            }).then(canvas => {
+                const image = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                const cleanName = (appData.student.name || 'Siswa').replace(/[^a-zA-Z0-9]/g, '_');
+                link.download = `Sertifikat_LKPD_${cleanName}.png`;
+                link.href = image;
+                link.click();
+
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error("Gagal mengunduh sertifikat:", err);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                alertModal("Gagal mengunduh gambar sertifikat. Silakan coba kembali.");
+            });
         }
 
-        function printCertificate() {
-            window.print();
+        function retryLKPD() {
+            appData.currentAttempt = (appData.currentAttempt || 1) + 1;
+            saveStoredData();
+            updateNavHeader();
+            startLKPD();
         }
+
+        let simState = {
+            gate: 'AND',
+            a: 0,
+            b: 0
+        };
+
+        const gateCharacters = {
+            AND: { title: 'Gerbang AND — "Si Ketat"', desc: 'Analogi: Membutuhkan 2 kunci sekaligus untuk membuka peti harta. Output 1 HANYA jika SEMUA input bernilai 1.', icon: '🔒', color: 'blue' },
+            OR: { title: 'Gerbang OR — "Si Pemurah"', desc: 'Analogi: Memiliki 2 pintu masuk. Cukup melewati salah satu pintu untuk masuk. Output 1 jika SALAH SATU input 1.', icon: '🚪', color: 'emerald' },
+            NOT: { title: 'Gerbang NOT — "Si Pembalik"', desc: 'Analogi: Saklar pembalik arus otomatis. Membalikkan sinyal: 0 menjadi 1, dan 1 menjadi 0.', icon: '🔄', color: 'rose' },
+            NAND: { title: 'Gerbang NAND — "Kebalikan AND"', desc: 'Analogi: Gabungan AND diikuti NOT. Output bernilai 0 HANYA saat seluruh input bernilai 1.', icon: '🟣', color: 'purple' },
+            NOR: { title: 'Gerbang NOR — "Kebalikan OR"', desc: 'Analogi: Gabungan OR diikuti NOT. Output bernilai 1 HANYA saat seluruh input bernilai 0.', icon: '🟠', color: 'orange' },
+            XOR: { title: 'Gerbang XOR — "Si Beda"', desc: 'Analogi: Saklar lampu dua arah di tangga. Output bernilai 1 HANYA saat nilai kedua input BERBEDA.', icon: '⚡', color: 'amber' }
+        };
 
         function showSandboxModal() {
             document.getElementById('sandboxModal').classList.remove('hidden');
+            selectSimGate('AND');
         }
 
         function closeSandboxModal() {
             document.getElementById('sandboxModal').classList.add('hidden');
         }
 
-        function selectSimGate(gateName) {
-            simState.gate = gateName;
-            
+        function selectSimGate(gateType) {
+            simState.gate = gateType;
+
             document.querySelectorAll('.sim-gate-btn').forEach(btn => {
-                btn.className = "sim-gate-btn bg-slate-800 border border-slate-700 text-slate-400 px-3 py-2 rounded-xl text-xs font-bold text-center";
+                btn.className = "sim-gate-btn bg-slate-800 border border-slate-700 text-slate-400 px-3 py-2 rounded-xl text-xs font-bold text-center cursor-pointer";
             });
-            document.getElementById(`simGate${gateName}`).className = "sim-gate-btn bg-indigo-600/30 border border-indigo-500 text-indigo-300 px-3 py-2 rounded-xl text-xs font-bold text-center";
-
-            renderSandbox();
-        }
-
-        function toggleSimInput(inputKey) {
-            if (inputKey === 'A') simState.inputA = simState.inputA === 0 ? 1 : 0;
-            if (inputKey === 'B') simState.inputB = simState.inputB === 0 ? 1 : 0;
-            renderSandbox();
-        }
-
-        function renderSandbox() {
-            const btnA = document.getElementById('btnSimA');
-            const btnB = document.getElementById('btnSimB');
-            const rowB = document.getElementById('simInputBRow');
-
-            if (simState.inputA === 1) {
-                btnA.className = "px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
-                btnA.textContent = "ON (1)";
-            } else {
-                btnA.className = "px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700";
-                btnA.textContent = "OFF (0)";
+            const activeBtn = document.getElementById(`simGate${gateType}`);
+            if (activeBtn) {
+                activeBtn.className = "sim-gate-btn bg-indigo-600 border border-indigo-500 text-white px-3 py-2 rounded-xl text-xs font-bold text-center cursor-pointer shadow-lg";
             }
 
-            if (simState.gate === 'NOT') {
+            const info = gateCharacters[gateType];
+            document.getElementById('simCharTitle').textContent = info.title;
+            document.getElementById('simCharDesc').textContent = info.desc;
+            document.getElementById('simCharIcon').textContent = info.icon;
+            document.getElementById('simGateBadgeText').textContent = gateType;
+
+            const rowB = document.getElementById('simInputBRow');
+            if (gateType === 'NOT') {
                 rowB.classList.add('hidden');
             } else {
                 rowB.classList.remove('hidden');
-                if (simState.inputB === 1) {
-                    btnB.className = "px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
-                    btnB.textContent = "ON (1)";
-                } else {
-                    btnB.className = "px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700";
-                    btnB.textContent = "OFF (0)";
-                }
             }
 
-            // Calculate output logic
-            let output = 0;
-            const a = simState.inputA;
-            const b = simState.inputB;
+            updateSimOutput();
+        }
+
+        function toggleSimInput(inputKey) {
+            if (inputKey === 'A') {
+                simState.a = simState.a === 1 ? 0 : 1;
+                const btnA = document.getElementById('btnSimA');
+                btnA.textContent = simState.a ? 'ON (1)' : 'OFF (0)';
+                btnA.className = simState.a 
+                    ? "px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-lg cursor-pointer"
+                    : "px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 cursor-pointer";
+            } else {
+                simState.b = simState.b === 1 ? 0 : 1;
+                const btnB = document.getElementById('btnSimB');
+                btnB.textContent = simState.b ? 'ON (1)' : 'OFF (0)';
+                btnB.className = simState.b 
+                    ? "px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-lg cursor-pointer"
+                    : "px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 cursor-pointer";
+            }
+
+            updateSimOutput();
+        }
+
+        function updateSimOutput() {
+            const a = simState.a;
+            const b = simState.b;
+            let out = 0;
 
             switch (simState.gate) {
-                case 'AND': output = (a === 1 && b === 1) ? 1 : 0; break;
-                case 'OR': output = (a === 1 || b === 1) ? 1 : 0; break;
-                case 'NOT': output = (a === 0) ? 1 : 0; break;
-                case 'NAND': output = !(a === 1 && b === 1) ? 1 : 0; break;
-                case 'NOR': output = !(a === 1 || b === 1) ? 1 : 0; break;
-                case 'XOR': output = (a !== b) ? 1 : 0; break;
+                case 'AND': out = (a === 1 && b === 1) ? 1 : 0; break;
+                case 'OR': out = (a === 1 || b === 1) ? 1 : 0; break;
+                case 'NOT': out = (a === 0) ? 1 : 0; break;
+                case 'NAND': out = !(a === 1 && b === 1) ? 1 : 0; break;
+                case 'NOR': out = !(a === 1 || b === 1) ? 1 : 0; break;
+                case 'XOR': out = (a !== b) ? 1 : 0; break;
             }
 
-            document.getElementById('simGateBadgeText').textContent = simState.gate;
-
-            // Character details & Analogy
-            const charTitle = document.getElementById('simCharTitle');
-            const charDesc = document.getElementById('simCharDesc');
-            const charIcon = document.getElementById('simCharIcon');
-
-            if (simState.gate === 'AND') {
-                charTitle.textContent = 'Gerbang AND — "Si Ketat" 🔒';
-                charDesc.textContent = 'Analogi: Membutuhkan 2 kunci sekaligus untuk membuka peti harta. Output 1 hanya jika SEMUA input bernilai 1.';
-                charIcon.textContent = '🔒';
-            } else if (simState.gate === 'OR') {
-                charTitle.textContent = 'Gerbang OR — "Si Pemurah" 🚪';
-                charDesc.textContent = 'Analogi: Memiliki 2 jalur pintu alternatif. Cukup membuka salah satu pintu untuk bisa masuk. Output 1 jika SALAH SATU input 1.';
-                charIcon.textContent = '🚪';
-            } else if (simState.gate === 'NOT') {
-                charTitle.textContent = 'Gerbang NOT — "Si Pembalik" 🔄';
-                charDesc.textContent = 'Analogi: Saklar otomatis pembalik. Input 0 menjadi 1, dan input 1 menjadi 0.';
-                charIcon.textContent = '🔄';
-            } else if (simState.gate === 'NAND') {
-                charTitle.textContent = 'Gerbang NAND — "Si Kebalikan AND" 🛑';
-                charDesc.textContent = 'Analogi: NOT + AND. Harta karun terkunci HANYA JIKA kedua kunci dimasukkan bersamaan.';
-                charIcon.textContent = '🛑';
-            } else if (simState.gate === 'NOR') {
-                charTitle.textContent = 'Gerbang NOR — "Si Kebalikan OR" 🛡️';
-                charDesc.textContent = 'Analogi: NOT + OR. Sistem keamanan yang menyala hanya saat kedua saklar benar-benar tenang (0).';
-                charIcon.textContent = '🛡️';
-            } else if (simState.gate === 'XOR') {
-                charTitle.textContent = 'Gerbang XOR — "Si Beda" ⚖️';
-                charDesc.textContent = 'Analogi: Saklar ganda lampu tangga. Lampu menyala hanya jika kedua saklar dalam posisi BERBEDA.';
-                charIcon.textContent = '⚖️';
-            }
-
-            // Output bulb state
             const bulb = document.getElementById('simBulbIcon');
-            const outText = document.getElementById('simOutputText');
+            const text = document.getElementById('simOutputText');
 
-            if (output === 1) {
-                bulb.className = "text-5xl transition-all duration-300 glow-bulb text-amber-400";
-                outText.className = "text-xs font-bold text-amber-400";
-                outText.textContent = "Output: 1 (MENYALA)";
+            if (out === 1) {
+                bulb.className = "text-5xl glow-bulb-on transition-all duration-300 scale-110";
+                text.className = "text-xs font-bold text-amber-400";
+                text.textContent = "Output: 1 (NYALA 💡)";
             } else {
                 bulb.className = "text-5xl transition-all duration-300 grayscale opacity-40";
-                outText.className = "text-xs font-bold text-rose-400";
-                outText.textContent = "Output: 0 (MATI)";
+                text.className = "text-xs font-bold text-rose-400";
+                text.textContent = "Output: 0 (MATI ⭕)";
             }
         }
 
-        /* RESET MODAL LOGIC */
+        /* HISTORY MODAL HANDLERS */
+        function showHistoryModal() {
+            const container = document.getElementById('histListContainer');
+            container.innerHTML = '';
+
+            let maxScore = 0;
+            let bestAttemptStr = 'Belum ada';
+
+            if (appData.history && appData.history.length > 0) {
+                appData.history.forEach((h) => {
+                    if (h.score >= maxScore) {
+                        maxScore = h.score;
+                        bestAttemptStr = `Percobaan Ke-${h.attempt}`;
+                    }
+
+                    const row = document.createElement('div');
+                    row.className = "bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between";
+                    row.innerHTML = `
+                        <div>
+                            <div class="font-bold text-slate-200">Percobaan ke-${h.attempt} • <span class="text-amber-400">${h.score} Poin</span></div>
+                            <div class="text-[10px] text-slate-500">${h.date} — Predikat: ${h.predicate}</div>
+                        </div>
+                        <button onclick="closeHistoryModal(); showCertificateFromCurrent();" class="bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 px-3 py-1.5 rounded-lg text-[10px] font-bold transition cursor-pointer">
+                            Sertifikat
+                        </button>
+                    `;
+                    container.appendChild(row);
+                });
+            } else {
+                container.innerHTML = '<p class="text-slate-500 text-center py-4">Belum ada riwayat pengerjaan.</p>';
+            }
+
+            document.getElementById('histBestScore').textContent = `${maxScore} / 100`;
+            document.getElementById('histBestAttempt').textContent = bestAttemptStr;
+
+            document.getElementById('historyModal').classList.remove('hidden');
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('historyModal').classList.add('hidden');
+        }
+
+        /* CUSTOM ALERT MODAL */
+        function alertModal(msg, title = "Pemberitahuan") {
+            document.getElementById('customAlertTitle').textContent = title;
+            document.getElementById('customAlertMsg').textContent = msg;
+            document.getElementById('customAlertModal').classList.remove('hidden');
+        }
+
+        function closeAlertModal() {
+            document.getElementById('customAlertModal').classList.add('hidden');
+        }
+
+        /* RESET CONFIRMATION MODAL */
         function confirmResetApp() {
             document.getElementById('resetModal').classList.remove('hidden');
         }
@@ -1491,8 +1851,16 @@
         }
 
         function executeResetApp() {
-            localStorage.removeItem('lkpd_logic_gate_history');
-            location.reload();
+            localStorage.removeItem(STORAGE_KEY);
+            appData = {
+                student: { name: '', studentClass: '', absen: '' },
+                history: [],
+                currentAttempt: 1,
+                userAnswers: {}
+            };
+            closeResetModal();
+            updateNavHeader();
+            showView('viewWelcome');
         }
     </script>
 </body>
