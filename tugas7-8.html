@@ -7,6 +7,8 @@
     <title>Tugas Interaktif Informatika - Tantangan Gerbang Logika</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2canvas for downloading certificate as image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -27,9 +29,6 @@
                         gateNand: '#8B5CF6',
                         gateNor: '#F97316',
                         gateXor: '#EAB308',
-                        levelEasy: '#10B981',
-                        levelNormal: '#3B82F6',
-                        levelHard: '#EF4444'
                     }
                 }
             }
@@ -40,54 +39,23 @@
         .glow-bulb {
             filter: drop-shadow(0px 0px 15px rgba(234, 179, 8, 0.9));
         }
-        .glow-gate-green {
-            filter: drop-shadow(0px 4px 12px rgba(16, 185, 129, 0.4));
-        }
-        .glow-gate-blue {
-            filter: drop-shadow(0px 4px 12px rgba(59, 130, 246, 0.4));
-        }
-        .glow-gate-red {
-            filter: drop-shadow(0px 4px 12px rgba(239, 68, 68, 0.4));
-        }
         .bg-grid-pattern {
-            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
             background-size: 24px 24px;
         }
 
-        /* Printable Certificate Styling for Browser Print */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #printableCertificateArea, #printableCertificateArea * {
-                visibility: visible;
-            }
-            #printableCertificateArea {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100vw;
-                height: 100vh;
-                margin: 0;
-                padding: 0;
-                background: white !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-            .no-print {
-                display: none !important;
-            }
-            @page {
-                size: A4 landscape;
-                margin: 0;
-            }
+        /* 4x8 Ratio Image Certificate Preview Styling */
+        .cert-4x8-container {
+            aspect-ratio: 4 / 8;
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white bg-grid-pattern relative">
 
-    <!-- TOP NAVIGATION / APP HEADER -->
-    <header class="no-print sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 shadow-lg">
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 shadow-lg">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-cyan-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/30">
@@ -96,13 +64,13 @@
                 <div>
                     <h1 class="font-heading font-bold text-lg leading-tight text-white flex items-center gap-2">
                         <span>Informatika Kelas VIII</span>
-                        <span class="text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-sans">Level 3-Tier</span>
+                        <span class="text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-sans">Tantangan Logika</span>
                     </h1>
                     <p class="text-xs text-slate-400">SMPN 1 Tinggimoncong • Guru: Syarifuddin, S.Pd., M.Si.</p>
                 </div>
             </div>
 
-            <!-- Header Badge Info (Visible after identity set) -->
+            <!-- Header Badge Info (Visible after student identity is saved) -->
             <div id="headerUserInfo" class="hidden flex items-center gap-4 bg-slate-800/80 px-4 py-1.5 rounded-full border border-slate-700 text-xs">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-user-circle text-indigo-400 text-sm"></i>
@@ -111,16 +79,16 @@
                 </div>
                 <div class="h-4 w-px bg-slate-700"></div>
                 <button onclick="goToLevelSelect()" class="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1">
-                    <i class="fa-solid fa-layer-group text-xs"></i> Level Menu
+                    <i class="fa-solid fa-layer-group text-xs"></i> Menu Level
                 </button>
             </div>
 
             <div class="flex items-center gap-2">
-                <button onclick="showSandboxModal()" class="no-print bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-400 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition">
+                <button onclick="showSandboxModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-400 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-microchip"></i>
                     <span class="hidden sm:inline">Simulator Gate</span>
                 </button>
-                <button onclick="confirmResetApp()" class="no-print bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition" title="Reset Semua Progress">
+                <button onclick="confirmResetApp()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition" title="Reset Semua Progress">
                     <i class="fa-solid fa-rotate-left"></i>
                     <span class="hidden sm:inline">Reset Data</span>
                 </button>
@@ -128,13 +96,11 @@
         </div>
     </header>
 
-    <!-- MAIN CONTAINER -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-        <!-- VIEW 1: IDENTITY ENTRY SCREEN -->
-        <section id="viewWelcome" class="max-w-3xl mx-auto py-6">
+        <!-- VIEW 1: STUDENT IDENTITY FORM -->
+        <section id="viewWelcome" class="max-w-3xl mx-auto py-4 sm:py-8">
             <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden backdrop-blur-xl">
-                <!-- Decorative Glows -->
                 <div class="absolute -top-24 -right-24 w-60 h-60 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="absolute -bottom-24 -left-24 w-60 h-60 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -151,12 +117,9 @@
                     <p class="text-slate-400 text-xs sm:text-sm max-w-lg mx-auto">
                         SMPN 1 Tinggimoncong • Guru: Syarifuddin, S. Pd., M. Si.
                     </p>
-                    <p class="text-amber-400 text-xs font-semibold mt-2">
-                        ⏱️ Alokasi Waktu Pembelajaran: ±80 Menit
-                    </p>
                 </div>
 
-                <!-- Logic Gates Palette -->
+                <!-- Logic Gate Palette Showcase -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
                     <div class="bg-slate-800/60 border border-blue-500/30 rounded-2xl p-3 flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-lg">🔵</div>
@@ -202,7 +165,7 @@
                     </div>
                 </div>
 
-                <!-- FORM IDENTITAS SISWA -->
+                <!-- Form Identitas -->
                 <form id="formIdentity" onsubmit="handleIdentitySubmit(event)" class="space-y-4 bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
                     <h3 class="text-base font-bold text-slate-200 flex items-center gap-2">
                         <i class="fa-solid fa-id-card text-indigo-400"></i>
@@ -243,10 +206,10 @@
             </div>
         </section>
 
-        <!-- VIEW 2: LEVEL SELECTION / DASHBOARD -->
+        <!-- VIEW 2: LEVEL SELECTION DASHBOARD -->
         <section id="viewLevelSelect" class="hidden space-y-8">
             
-            <!-- STUDENT BANNER & OVERALL PROGRESS -->
+            <!-- Student Header Banner -->
             <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-xl backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-400 flex items-center justify-center text-2xl text-white shadow-lg shadow-indigo-500/30">
@@ -263,11 +226,10 @@
                     </div>
                 </div>
 
-                <!-- Progress overview summary -->
-                <div class="w-full md:w-auto bg-slate-950/80 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-6">
+                <div class="w-full md:w-auto bg-slate-950/80 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4">
                     <div>
-                        <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1">Status Tantangan Logika</div>
-                        <div class="flex items-center gap-3">
+                        <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1">Status Pengerjaan Level</div>
+                        <div class="flex items-center gap-2">
                             <span id="progEasyBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">🟢 Mudah: -</span>
                             <span id="progNormalBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">🔵 Normal: -</span>
                             <span id="progHardBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">🔴 Sulit: -</span>
@@ -276,7 +238,7 @@
                 </div>
             </div>
 
-            <!-- LEVEL CARDS GRID -->
+            <!-- Level Cards Grid -->
             <div class="text-center space-y-2">
                 <h3 class="text-2xl font-heading font-extrabold text-white flex items-center justify-center gap-2">
                     <span>🎮</span> PILIH TINGKAT TANTANGAN
@@ -313,9 +275,7 @@
                         </div>
                     </div>
 
-                    <div id="actionContainerEasy">
-                        <!-- Rendered dynamically -->
-                    </div>
+                    <div id="actionContainerEasy"></div>
                 </div>
 
                 <!-- CARD 2: LEVEL NORMAL (BLUE) -->
@@ -345,9 +305,7 @@
                         </div>
                     </div>
 
-                    <div id="actionContainerNormal">
-                        <!-- Rendered dynamically -->
-                    </div>
+                    <div id="actionContainerNormal"></div>
                 </div>
 
                 <!-- CARD 3: LEVEL SULIT (RED) -->
@@ -377,9 +335,7 @@
                         </div>
                     </div>
 
-                    <div id="actionContainerHard">
-                        <!-- Rendered dynamically -->
-                    </div>
+                    <div id="actionContainerHard"></div>
                 </div>
 
             </div>
@@ -388,7 +344,7 @@
         <!-- VIEW 3: QUIZ RUNNER SCREEN -->
         <section id="viewQuiz" class="hidden space-y-6 max-w-4xl mx-auto">
             
-            <!-- QUIZ HEADER BAR -->
+            <!-- Quiz Header Bar -->
             <div id="quizHeaderBar" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 backdrop-blur-md">
                 <div class="flex items-center gap-3">
                     <div id="quizLevelBadgeIcon" class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
@@ -400,7 +356,7 @@
                     </div>
                 </div>
 
-                <!-- Question Progress Bar -->
+                <!-- Progress Bar -->
                 <div class="flex-1 max-w-xs">
                     <div class="flex justify-between items-center text-xs mb-1">
                         <span class="text-slate-400 font-medium">Progres Soal</span>
@@ -412,7 +368,7 @@
                 </div>
             </div>
 
-            <!-- QUESTION CARD -->
+            <!-- Question Card -->
             <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 backdrop-blur-xl relative">
                 
                 <div class="flex items-start gap-3">
@@ -424,24 +380,18 @@
                     </h3>
                 </div>
 
-                <!-- DIAGRAM CONTAINER (For circuit questions) -->
-                <div id="diagramContainer" class="hidden bg-slate-950 p-4 sm:p-6 rounded-2xl border border-slate-800 flex justify-center items-center">
-                    <!-- Diagram SVG/ASCII injected dynamically -->
-                </div>
+                <!-- Circuit Diagram Container (For circuit questions) -->
+                <div id="diagramContainer" class="hidden bg-slate-950 p-4 sm:p-6 rounded-2xl border border-slate-800 flex justify-center items-center"></div>
 
-                <!-- OPTIONS LIST -->
-                <div id="optionsContainer" class="space-y-3 pt-2">
-                    <!-- Rendered dynamically -->
-                </div>
+                <!-- Options List (Shuffled Dynamically) -->
+                <div id="optionsContainer" class="space-y-3 pt-2"></div>
 
-                <!-- FEEDBACK BOX -->
-                <div id="feedbackBox" class="hidden p-4 rounded-2xl border text-xs font-semibold leading-relaxed transition">
-                    <!-- Feedback text -->
-                </div>
+                <!-- Instant Feedback Box -->
+                <div id="feedbackBox" class="hidden p-4 rounded-2xl border text-xs font-semibold leading-relaxed transition"></div>
 
-                <!-- NEXT BUTTON -->
+                <!-- Next Button -->
                 <div class="flex justify-end pt-2">
-                    <button id="btnNextQuestion" onclick="nextQuestion()" disabled class="bg-indigo-600/40 text-slate-400 cursor-not-allowed font-bold px-6 py-3 rounded-xl transition flex items-center gap-2">
+                    <button id="btnNextQuestion" onclick="nextQuestion()" disabled class="bg-indigo-600/40 text-slate-400 cursor-not-allowed font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 text-xs">
                         <span>Lanjut ke Soal Berikutnya</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
@@ -479,7 +429,7 @@
                     </div>
                 </div>
 
-                <!-- ACTION BUTTONS -->
+                <!-- Action Buttons -->
                 <div class="flex flex-wrap items-center justify-center gap-3 mt-8">
                     <button onclick="showCertificateFromCurrentResult()" class="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 text-xs font-extrabold px-6 py-3.5 rounded-xl shadow-lg transition flex items-center gap-2">
                         <i class="fa-solid fa-certificate"></i>
@@ -493,96 +443,87 @@
             </div>
         </section>
 
-        <!-- VIEW 5: CERTIFICATE VIEW (PRINTABLE A4 LANDSCAPE) -->
+        <!-- VIEW 5: DIGITAL IMAGE CERTIFICATE (4x8 FORMAT) -->
         <section id="viewCertificate" class="hidden space-y-6 py-4">
             
-            <div class="max-w-4xl mx-auto flex items-center justify-between no-print bg-slate-900 p-4 rounded-2xl border border-slate-800">
-                <button onclick="goToLevelSelect()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+            <div class="max-w-md mx-auto flex items-center justify-between bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                <button onclick="goToLevelSelect()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-2">
                     <i class="fa-solid fa-arrow-left"></i>
-                    <span>Kembali ke Menu Level</span>
+                    <span>Menu Level</span>
                 </button>
-                <div class="flex items-center gap-2">
-                    <button onclick="printCertificate()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2">
-                        <i class="fa-solid fa-print"></i>
-                        <span>🖨️ Cetak Sertifikat / PDF</span>
-                    </button>
-                </div>
+                <button onclick="downloadCertificate()" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 text-xs font-extrabold px-4 py-2 rounded-xl shadow-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Download Sertifikat (PNG)</span>
+                </button>
             </div>
 
-            <!-- PRINTABLE CERTIFICATE FRAME -->
-            <div id="printableCertificateArea" class="pt-2">
-                <div id="certFrame" class="max-w-4xl mx-auto bg-slate-900 border-8 border-emerald-500 rounded-3xl p-6 sm:p-10 text-slate-900 relative shadow-2xl overflow-hidden" style="aspect-ratio: 1.414 / 1;">
+            <!-- 4x8 DIGITAL CERTIFICATE IMAGE CONTAINER -->
+            <div id="printableCertificateArea" class="pt-2 flex justify-center">
+                <div id="certFrame" class="cert-4x8-container bg-slate-900 border-4 border-emerald-500 rounded-3xl p-4 text-slate-900 relative shadow-2xl overflow-hidden flex flex-col justify-between">
                     
-                    <!-- DYNAMIC CERTIFICATE CONTENT INNER -->
-                    <div id="certContentInner" class="w-full h-full border-4 border-emerald-400 p-6 sm:p-8 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-emerald-50 via-white to-emerald-100/80">
+                    <div id="certContentInner" class="w-full h-full border-2 border-emerald-400 p-4 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-emerald-50 via-white to-emerald-100/90 shadow-inner">
                         
-                        <!-- Watermark Background -->
+                        <!-- Watermark -->
                         <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-                            <i class="fa-solid fa-microchip text-[260px] text-slate-900"></i>
+                            <i class="fa-solid fa-microchip text-[180px] text-slate-900"></i>
                         </div>
 
-                        <!-- Certificate Header -->
-                        <div>
-                            <div class="flex items-center justify-between border-b-2 border-slate-300 pb-3 mb-3">
-                                <div class="text-left">
-                                    <div class="text-xs font-bold tracking-widest text-slate-800 uppercase">SMPN 1 TINGGIMONCONG</div>
-                                    <div class="text-[10px] text-slate-600">Mata Pelajaran: Informatika (Kelas VIII)</div>
+                        <!-- Top Header -->
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                <span class="text-xl">🎓</span>
+                                <div class="text-center">
+                                    <div class="text-[10px] font-extrabold tracking-widest text-slate-800 uppercase leading-none">SMPN 1 TINGGIMONCONG</div>
+                                    <div class="text-[8px] text-slate-600 font-semibold mt-0.5">Informatika Kelas VIII</div>
                                 </div>
-                                <div class="text-3xl">🎓</div>
-                                <div class="text-right">
-                                    <div id="certLevelHeaderBadge" class="text-xs font-bold text-emerald-800 uppercase">LEVEL MUDAH</div>
-                                    <div class="text-[10px] text-slate-600">Tahun Ajaran 2026/2027</div>
-                                </div>
+                                <span class="text-xl">⚡</span>
                             </div>
 
-                            <h2 id="certMainTitle" class="text-2xl sm:text-3xl font-heading font-extrabold text-slate-900 tracking-wide uppercase">
-                                SERTIFIKAT TANTANGAN INFORMATIKA
-                            </h2>
-                            <p id="certSubTitle" class="text-xs sm:text-sm text-slate-700 font-semibold mt-1">
-                                Tantangan Gerbang Logika Level Mudah — "Pemula Logika"
-                            </p>
+                            <div class="pt-2">
+                                <div id="certLevelHeaderBadge" class="inline-block px-3 py-0.5 rounded-full text-[9px] font-black tracking-wider text-emerald-800 bg-emerald-200/80 uppercase mb-1">
+                                    LEVEL MUDAH
+                                </div>
+                                <h2 class="text-base font-heading font-black text-slate-900 tracking-wide uppercase leading-tight">
+                                    SERTIFIKAT HASIL
+                                </h2>
+                                <p id="certSubTitle" class="text-[10px] text-slate-700 font-bold mt-0.5 italic">
+                                    Tantangan Gerbang Logika
+                                </p>
+                            </div>
                         </div>
 
-                        <!-- Recipient Body -->
-                        <div class="my-2 space-y-1.5">
-                            <p class="text-xs text-slate-500 uppercase tracking-widest">Diberikan Kepada Siswa:</p>
-                            <h3 id="certStudentName" class="text-2xl sm:text-4xl font-heading font-black text-slate-950 underline decoration-amber-400 decoration-2">
+                        <!-- Recipient Section -->
+                        <div class="my-2 py-3 border-y border-dashed border-slate-300 space-y-1">
+                            <p class="text-[9px] text-slate-500 uppercase tracking-widest font-semibold">Diberikan Kepada:</p>
+                            <h3 id="certStudentName" class="text-base sm:text-lg font-heading font-black text-slate-950 underline decoration-amber-400 decoration-2 leading-snug">
                                 NAMA SISWA LENGKAP
                             </h3>
-                            <p id="certStudentMeta" class="text-xs sm:text-sm text-slate-700 font-semibold">
+                            <p id="certStudentMeta" class="text-[10px] text-slate-700 font-bold">
                                 Kelas: VIII A | Absen: 12
                             </p>
-                            <p class="text-xs text-slate-600 max-w-xl mx-auto pt-1">
-                                Telah berhasil menyelesaikan 10 soal tantangan gerbang logika biner, tabel kebenaran, dan rangkaian logika digital dengan hasil sebagai berikut:
-                            </p>
                         </div>
 
-                        <!-- Score & Predicate Badge -->
-                        <div id="certScoreBox" class="flex items-center justify-center gap-6 my-1 bg-emerald-100/80 border border-emerald-300 rounded-xl p-2.5 max-w-md mx-auto">
-                            <div>
-                                <div class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">NILAI AKHIR</div>
-                                <div id="certScore" class="text-2xl sm:text-3xl font-black text-emerald-800">100 / 100</div>
-                            </div>
-                            <div class="h-8 w-px bg-emerald-300"></div>
-                            <div>
-                                <div class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">PREDIKAT</div>
-                                <div id="certPredicate" class="text-sm sm:text-base font-bold text-emerald-900">🏆 Sangat Baik</div>
-                            </div>
+                        <!-- Score & Predicate Pill -->
+                        <div id="certScoreBox" class="bg-emerald-100/90 border border-emerald-300 rounded-xl p-3 my-1 flex flex-col items-center justify-center gap-1 shadow-sm">
+                            <div class="text-[8px] text-slate-500 uppercase tracking-wider font-extrabold">NILAI AKHIR</div>
+                            <div id="certScore" class="text-2xl font-black text-emerald-800 leading-none">100 / 100</div>
+                            <div class="w-full h-px bg-emerald-300/60 my-0.5"></div>
+                            <div id="certPredicate" class="text-xs font-bold text-emerald-900">🏆 Sangat Baik</div>
                         </div>
 
-                        <!-- Certificate Footer Signatures -->
-                        <div class="pt-3 grid grid-cols-2 gap-4 border-t border-slate-300 text-xs text-slate-700">
-                            <div class="text-left">
-                                <p class="text-[10px] text-slate-500">Tanggal Penyelesaian:</p>
-                                <p id="certDate" class="font-bold text-slate-800">8 Oktober 2026</p>
-                                <p id="certCode" class="text-[9px] text-slate-400 mt-3">Verifikasi: CERT-INF-VIII-EASY</p>
+                        <!-- Certificate Footer -->
+                        <div class="pt-2 space-y-2 border-t border-slate-300 text-[9px] text-slate-700">
+                            <div class="flex items-center justify-between">
+                                <div class="text-left">
+                                    <p class="text-[8px] text-slate-500">Tanggal:</p>
+                                    <p id="certDate" class="font-bold text-slate-800">8 Okt 2026</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[8px] text-slate-500">Guru Informatika,</p>
+                                    <p class="font-bold text-slate-900 underline mt-2">Syarifuddin, S.Pd., M.Si.</p>
+                                </div>
                             </div>
-                            <div class="text-right">
-                                <p class="text-[10px] text-slate-500">Guru Mata Pelajaran Informatika,</p>
-                                <div class="h-6"></div>
-                                <p class="font-bold text-slate-900 underline">Syarifuddin, S. Pd., M. Si.</p>
-                                <p class="text-[10px] text-slate-600">NIP. SMPN 1 Tinggimoncong</p>
-                            </div>
+                            <div id="certCode" class="text-[8px] text-slate-400 font-mono text-center">CERT-INF-VIII-EASY</div>
                         </div>
 
                     </div>
@@ -592,7 +533,7 @@
 
     </main>
 
-    <!-- MODAL: CONFIRM START LEVEL -->
+    <!-- MODAL 1: CONFIRM START LEVEL -->
     <div id="confirmStartModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
             <div id="confirmModalIcon" class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mx-auto font-bold">
@@ -630,7 +571,7 @@
         </div>
     </div>
 
-    <!-- MODAL: COMPLETED LEVEL PREVIEW -->
+    <!-- MODAL 2: COMPLETED LEVEL PREVIEW -->
     <div id="completedInfoModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
             <div class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl mx-auto">
@@ -655,14 +596,14 @@
                 <button onclick="closeCompletedModal()" class="flex-1 bg-slate-800 text-slate-300 font-bold py-3 rounded-xl text-xs">
                     Tutup
                 </button>
-                <button id="btnViewCertFromModal" onclick="viewCertFromCompletedModal()" class="flex-1 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 font-bold py-3 rounded-xl text-xs shadow-lg">
+                <button onclick="viewCertFromCompletedModal()" class="flex-1 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 font-bold py-3 rounded-xl text-xs shadow-lg">
                     🎓 LIHAT SERTIFIKAT
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: SIMULATOR LOGIKA SANDBOX -->
+    <!-- MODAL 3: LOGIC GATE SIMULATOR SANDBOX -->
     <div id="sandboxModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 space-y-6 relative shadow-2xl">
             <button onclick="closeSandboxModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
@@ -689,7 +630,7 @@
                 <button onclick="selectSimGate('XOR')" id="simGateXOR" class="sim-gate-btn bg-slate-800 border border-slate-700 text-slate-400 px-3 py-2 rounded-xl text-xs font-bold text-center">XOR</button>
             </div>
 
-            <!-- Character Card -->
+            <!-- Character Info Card -->
             <div id="simCharacterCard" class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800 flex items-center gap-4">
                 <div id="simCharIcon" class="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl font-bold">🔒</div>
                 <div>
@@ -698,9 +639,8 @@
                 </div>
             </div>
 
-            <!-- Interactive Circuit Board -->
+            <!-- Circuit Display -->
             <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-around gap-6">
-                <!-- Switches Input -->
                 <div class="space-y-3">
                     <div class="flex items-center gap-3">
                         <span class="text-xs font-bold text-slate-400 w-16">Input A:</span>
@@ -716,14 +656,12 @@
                     </div>
                 </div>
 
-                <!-- Gate Graphic Display -->
                 <div class="text-center">
                     <div id="simGateBadge" class="w-20 h-20 rounded-2xl bg-blue-600/20 border-2 border-blue-500 flex flex-col items-center justify-center text-blue-400 font-bold text-xl shadow-lg">
                         <span id="simGateBadgeText">AND</span>
                     </div>
                 </div>
 
-                <!-- Output Bulb Display -->
                 <div class="text-center space-y-1">
                     <div id="simBulbIcon" class="text-5xl transition-all duration-300 grayscale opacity-40">💡</div>
                     <div id="simOutputText" class="text-xs font-bold text-rose-400">Output: 0 (MATI)</div>
@@ -736,7 +674,7 @@
         </div>
     </div>
 
-    <!-- MODAL CONFIRM RESET -->
+    <!-- MODAL 4: CONFIRM RESET -->
     <div id="resetModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
             <div class="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl mx-auto">
@@ -756,9 +694,172 @@
     </div>
 
     <script>
-        /* STATE & LOCALSTORAGE MANAGEMENT */
-        const STORAGE_KEY = 'logic_gate_challenge_v2';
+        const STORAGE_KEY = 'LOGIC_GATES_TASK_APP_V3';
 
+        // Full Questions Database (Exact 10 per level = 30 total)
+        const questionsData = {
+            easy: [
+                {
+                    q: "Komputer hanya mengenal dua keadaan, yaitu...",
+                    options: ["0 (mati) dan 1 (hidup)", "2 dan 3", "Merah dan biru", "Besar dan kecil"],
+                    correct: 0
+                },
+                {
+                    q: "Angka 1 dalam logika digital berarti...",
+                    options: ["Tidak ada arus listrik", "Ada arus listrik", "Komputer rusak", "Layar mati"],
+                    correct: 1
+                },
+                {
+                    q: "Gerbang AND menghasilkan output 1 jika...",
+                    options: ["Salah satu input 1", "Kedua input 1", "Kedua input 0", "Input berbeda"],
+                    correct: 1
+                },
+                {
+                    q: "Gerbang OR menghasilkan output 0 jika...",
+                    options: ["Salah satu input 1", "Kedua input 0", "Kedua input 1", "Input berbeda"],
+                    correct: 1
+                },
+                {
+                    q: "Gerbang NOT dengan input 0 menghasilkan output...",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 1
+                },
+                {
+                    q: "Gerbang logika adalah...",
+                    options: ["Pintu masuk sekolah", "Rangkaian digital yang mengolah input menjadi output logika", "Nama software", "Alat pengukur suhu"],
+                    correct: 1
+                },
+                {
+                    q: "Aturan gerbang NOT adalah...",
+                    options: ["Output 1 jika semua input 1", "Output 1 jika salah satu input 1", "Output selalu kebalikan dari input", "Output selalu 1"],
+                    correct: 2
+                },
+                {
+                    q: "Jika A = 1 dan B = 0, maka output A AND B adalah...",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 0
+                },
+                {
+                    q: "Jika A = 0 dan B = 1, maka output A OR B adalah...",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 1
+                },
+                {
+                    q: "Saklar otomatis yang membalik keadaan (ON → lampu mati) adalah contoh gerbang...",
+                    options: ["AND", "OR", "NOT", "XOR"],
+                    correct: 2
+                }
+            ],
+            normal: [
+                {
+                    q: "Tabel kebenaran AND: jika A = 0 dan B = 1, outputnya adalah...",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 0
+                },
+                {
+                    q: "Tabel kebenaran OR: jika A = 1 dan B = 0, outputnya adalah...",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 1
+                },
+                {
+                    q: "Tabel kebenaran NOT: jika A = 1, outputnya adalah...",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 0
+                },
+                {
+                    q: "Gerbang NAND adalah kebalikan dari gerbang...",
+                    options: ["OR", "NOT", "AND", "XOR"],
+                    correct: 2
+                },
+                {
+                    q: "Gerbang NOR adalah kebalikan dari gerbang...",
+                    options: ["AND", "OR", "NOT", "XOR"],
+                    correct: 1
+                },
+                {
+                    q: "Jika A = 1 dan B = 1, maka output A NAND B adalah...",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 0
+                },
+                {
+                    q: "Jika A = 0 dan B = 0, maka output A NOR B adalah...",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 1
+                },
+                {
+                    q: "Aturan gerbang XOR adalah...",
+                    options: ["Output 1 jika semua input 1", "Output 1 jika kedua input BERBEDA", "Output selalu kebalikan", "Output selalu 0"],
+                    correct: 1
+                },
+                {
+                    q: "Lampu ruangan menyala jika SAKLAR UTAMA ON DAN SAKLAR CADANGAN ON. Gerbang yang tepat adalah...",
+                    options: ["OR", "AND", "NOT", "XOR"],
+                    correct: 1
+                },
+                {
+                    q: "Lampu menyala jika salah satu dari dua saklar ditekan. Gerbang yang tepat adalah...",
+                    options: ["AND", "OR", "NOT", "NAND"],
+                    correct: 1
+                }
+            ],
+            hard: [
+                {
+                    q: "Jika A = 1 dan B = 0, maka output A XOR B adalah...",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 1
+                },
+                {
+                    q: "Jika A = 1 dan B = 1, maka output A XOR B adalah...",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 0
+                },
+                {
+                    q: "Perhatikan rangkaian: (A AND B) OR C. Jika A = 1, B = 1, C = 0, berapa output Q?",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 1,
+                    diagram: "A ──┐\n    │ AND ├──┐\nB ──┘        │ OR ├── Q\n             │\nC ───────────┘"
+                },
+                {
+                    q: "Perhatikan rangkaian: NOT(A) AND B. Jika A = 0, B = 1, berapa output Q?",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 1,
+                    diagram: "A ──[ NOT ]──┐\n             │ AND ├── Q\nB ───────────┘"
+                },
+                {
+                    q: "Rani ingin membuat sistem keamanan: Pintu terbuka jika KODE A benar DAN KODE B benar. Gerbang yang tepat adalah...",
+                    options: ["OR", "AND", "NOT", "XOR"],
+                    correct: 1
+                },
+                {
+                    q: "Alarm berbunyi jika SENSOR A aktif ATAU SENSOR B aktif. Gerbang yang tepat adalah...",
+                    options: ["AND", "OR", "NOT", "NAND"],
+                    correct: 1
+                },
+                {
+                    q: "Lampu taman menyala jika SAKLAR A dan SAKLAR B BERBEDA KEADAAN. Gerbang yang tepat adalah...",
+                    options: ["AND", "OR", "NOT", "XOR"],
+                    correct: 3
+                },
+                {
+                    q: "Perhatikan rangkaian: (A NAND B) AND C. Jika A = 1, B = 1, C = 1, berapa output Q?",
+                    options: ["0", "1", "2", "Tidak tentu"],
+                    correct: 0,
+                    diagram: "A ──┐\n    │ NAND ├──┐\nB ──┘         │ AND ├── Q\n              │\nC ────────────┘"
+                },
+                {
+                    q: "Pintu otomatis terbuka jika (A DAN B) ATAU C. Jika A = 1, B = 1, C = 0, bagaimana status pintu?",
+                    options: ["Terbuka", "Tertutup", "Error", "Tidak tentu"],
+                    correct: 0
+                },
+                {
+                    q: "Rudi ingin lampu LED menyala HANYA JIKA kedua saklar A dan B TIDAK ditekan (A=0, B=0). Gerbang yang tepat adalah...",
+                    options: ["AND", "OR", "NOR", "XOR"],
+                    correct: 2
+                }
+            ]
+        };
+
+        // State object
         let appData = {
             student: {
                 name: '',
@@ -772,252 +873,37 @@
             }
         };
 
-        let currentActiveLevel = null; // 'easy', 'normal', 'hard'
-        let currentQuestionIdx = 0;
+        let currentActiveLevel = null;
         let activeQuestionsList = [];
-        let currentSelectedAnswer = null;
+        let currentQuestionIdx = 0;
         let currentLevelScore = 0;
+        let currentSelectedAnswer = null;
 
-        /* ALL 30 QUESTIONS DEFINITION (10 PER LEVEL) */
-        const questionsData = {
-            easy: [
-                {
-                    id: 1,
-                    q: "Komputer hanya mengenal dua keadaan dasar digital, yaitu...",
-                    options: ["0 (mati) dan 1 (hidup)", "2 dan 3", "Merah dan biru", "Besar dan kecil"],
-                    correct: 0
-                },
-                {
-                    id: 2,
-                    q: "Angka 1 dalam logika digital merepresentasikan...",
-                    options: ["Tidak ada arus listrik", "Ada arus listrik", "Komputer rusak", "Layar mati"],
-                    correct: 1
-                },
-                {
-                    id: 3,
-                    q: "Gerbang AND ('Si Ketat') menghasilkan output 1 HANYA jika...",
-                    options: ["Salah satu input 1", "Kedua input 1", "Kedua input 0", "Input berbeda"],
-                    correct: 1
-                },
-                {
-                    id: 4,
-                    q: "Gerbang OR ('Si Pemurah') menghasilkan output 0 jika...",
-                    options: ["Salah satu input 1", "Kedua input 0", "Kedua input 1", "Input berbeda"],
-                    correct: 1
-                },
-                {
-                    id: 5,
-                    q: "Gerbang NOT (Pembalik) dengan input 0 akan menghasilkan output...",
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 1
-                },
-                {
-                    id: 6,
-                    q: "Apakah yang dimaksud dengan Gerbang Logika (Logic Gate)?",
-                    options: ["Pintu masuk sekolah", "Rangkaian digital yang mengolah input menjadi output logika", "Nama software pengolah kata", "Alat pengukur suhu"],
-                    correct: 1
-                },
-                {
-                    id: 7,
-                    q: "Aturan utama dari gerbang NOT adalah...",
-                    options: ["Output 1 jika semua input 1", "Output 1 jika salah satu input 1", "Output selalu kebalikan dari input", "Output selalu 1"],
-                    correct: 2
-                },
-                {
-                    id: 8,
-                    q: "Jika Input A = 1 dan Input B = 0, maka hasil output A AND B adalah...",
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 0
-                },
-                {
-                    id: 9,
-                    q: "Jika Input A = 0 dan Input B = 1, maka hasil output A OR B adalah...",
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 1
-                },
-                {
-                    id: 10,
-                    q: "Saklar otomatis yang membalik keadaan (ON -> lampu justru mati) adalah contoh penerapan gerbang...",
-                    options: ["AND", "OR", "NOT", "XOR"],
-                    correct: 2
-                }
-            ],
-            normal: [
-                {
-                    id: 1,
-                    q: "Berdasarkan Tabel Kebenaran AND: Jika A = 0 dan B = 1, maka outputnya adalah...",
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 0
-                },
-                {
-                    id: 2,
-                    q: "Berdasarkan Tabel Kebenaran OR: Jika A = 1 dan B = 0, maka outputnya adalah...",
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 1
-                },
-                {
-                    id: 3,
-                    q: "Berdasarkan Tabel Kebenaran NOT: Jika Input A = 1, maka outputnya adalah...",
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 0
-                },
-                {
-                    id: 4,
-                    q: "Gerbang Logika NAND merupakan gabungan NOT + AND, yang artinya kebalikan dari gerbang...",
-                    options: ["OR", "NOT", "AND", "XOR"],
-                    correct: 2
-                },
-                {
-                    id: 5,
-                    q: "Gerbang Logika NOR merupakan gabungan NOT + OR, yang artinya kebalikan dari gerbang...",
-                    options: ["AND", "OR", "NOT", "XOR"],
-                    correct: 1
-                },
-                {
-                    id: 6,
-                    q: "Hitung Cepat: Jika A = 1 dan B = 1, maka hasil output dari A NAND B adalah...",
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 0
-                },
-                {
-                    id: 7,
-                    q: "Hitung Cepat: Jika A = 0 dan B = 0, maka hasil output dari A NOR B adalah...",
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 1
-                },
-                {
-                    id: 8,
-                    q: "Aturan khusus dari Gerbang Logika XOR (Exclusive OR) adalah...",
-                    options: ["Output 1 jika semua input 1", "Output 1 jika kedua input BERBEDA nilai", "Output selalu kebalikan", "Output selalu 0"],
-                    correct: 1
-                },
-                {
-                    id: 9,
-                    q: "Studi Kasus Lampu: Lampu ruangan menyala HANYA JIKA Saklar Utama ON DAN Saklar Cadangan ON. Gerbang yang tepat adalah...",
-                    options: ["OR", "AND", "NOT", "XOR"],
-                    correct: 1
-                },
-                {
-                    id: 10,
-                    q: "Studi Kasus Lorong: Lampu menyala jika salah satu dari dua saklar ditekan. Gerbang yang tepat adalah...",
-                    options: ["AND", "OR", "NOT", "NAND"],
-                    correct: 1
-                }
-            ],
-            hard: [
-                {
-                    id: 1,
-                    q: "Hitung Cepat XOR: Jika Input A = 1 dan Input B = 0, maka hasil output A XOR B adalah...",
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 1
-                },
-                {
-                    id: 2,
-                    q: "Hitung Cepat XOR: Jika Input A = 1 dan Input B = 1, maka hasil output A XOR B adalah...",
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 0
-                },
-                {
-                    id: 3,
-                    q: "Analisis Rangkaian: A=1 dan B=1 masuk ke gerbang AND, lalu hasilnya di-OR-kan dengan C=0. Berapakah output Q akhir?",
-                    diagram: `
-                        <div class="font-mono text-xs text-indigo-300 text-center space-y-1">
-                            <div>A(1) ──┐</div>
-                            <div>     ├── [ AND ] ──(1) ──┐</div>
-                            <div>B(1) ──┘                 ├── [ OR ] ──► Q = ?</div>
-                            <div>C(0) ───────────────────┘</div>
-                        </div>
-                    `,
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 1
-                },
-                {
-                    id: 4,
-                    q: "Analisis Rangkaian: Input A=0 di-NOT-kan (menjadi 1), kemudian di-AND-kan dengan B=1. Berapakah output Q?",
-                    diagram: `
-                        <div class="font-mono text-xs text-indigo-300 text-center space-y-1">
-                            <div>A(0) ── [ NOT ] ──(1) ──┐</div>
-                            <div>                       ├── [ AND ] ──► Q = ?</div>
-                            <div>B(1) ──────────────────┘</div>
-                        </div>
-                    `,
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 1
-                },
-                {
-                    id: 5,
-                    q: "Studi Kasus Keamanan: Rani ingin membuat sistem brankas. Pintu terbuka HANYA JIKA Kode A benar DAN Kode B benar. Gerbang yang tepat adalah...",
-                    options: ["OR", "AND", "NOT", "XOR"],
-                    correct: 1
-                },
-                {
-                    id: 6,
-                    q: "Studi Kasus Alarm: Alarm rumah berbunyi jika Sensor A aktif ATAU Sensor B aktif. Gerbang yang tepat adalah...",
-                    options: ["AND", "OR", "NOT", "NAND"],
-                    correct: 1
-                },
-                {
-                    id: 7,
-                    q: "Studi Kasus Lampu Tangga: Lampu menyala HANYA JIKA Saklar A dan Saklar B dalam posisi BERBEDA. Gerbang yang tepat adalah...",
-                    options: ["AND", "OR", "NOT", "XOR"],
-                    correct: 3
-                },
-                {
-                    id: 8,
-                    q: "Analisis Rangkaian Kombinasi: A=1 dan B=1 masuk ke NAND (hasil 0), lalu di-AND-kan dengan C=1. Berapakah output Q akhir?",
-                    diagram: `
-                        <div class="font-mono text-xs text-rose-300 text-center space-y-1">
-                            <div>A(1) ──┐</div>
-                            <div>     ├── [ NAND ] ──(0) ──┐</div>
-                            <div>B(1) ──┘                  ├── [ AND ] ──► Q = ?</div>
-                            <div>C(1) ────────────────────┘</div>
-                        </div>
-                    `,
-                    options: ["0", "1", "2", "Tidak tentu"],
-                    correct: 0
-                },
-                {
-                    id: 9,
-                    q: "Sistem Pintu Otomatis: Pintu terbuka jika (A DAN B) ATAU C. Jika A=1, B=1, dan C=0, maka keadaan pintu adalah...",
-                    options: ["Terbuka", "Tertutup", "Error / Rusak", "Tidak tentu"],
-                    correct: 0
-                },
-                {
-                    id: 10,
-                    q: "Skenario Industri: Rudi ingin membuat indikator LED menyala HANYA jika kedua saklar A dan B TIDAK ditekan (keduanya 0). Gerbang yang tepat adalah...",
-                    options: ["AND", "OR", "NOR", "XOR"],
-                    correct: 2
-                }
-            ]
-        };
-
-        // Simulator sandbox state
         let simState = {
             gate: 'AND',
             inputA: 0,
             inputB: 0
         };
 
-        /* ON LOAD INITIALIZATION */
+        // INITIALIZATION
         window.onload = function() {
             loadStoredData();
             if (appData.student.name) {
-                updateHeaderInfo();
-                goToLevelSelect();
+                updateUI();
+                showView('viewLevelSelect');
             } else {
                 showView('viewWelcome');
             }
-            renderSandbox();
         };
 
         function loadStoredData() {
             try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) {
-                    appData = JSON.parse(raw);
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    appData = JSON.parse(saved);
                 }
             } catch (e) {
-                console.error("Error reading localStorage:", e);
+                console.error("Failed loading local storage", e);
             }
         }
 
@@ -1025,8 +911,9 @@
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
             } catch (e) {
-                console.error("Error saving localStorage:", e);
+                console.error("Failed saving to local storage", e);
             }
+            updateUI();
         }
 
         function showView(viewId) {
@@ -1035,16 +922,16 @@
                 const el = document.getElementById(v);
                 if (el) el.classList.add('hidden');
             });
-            document.getElementById(viewId).classList.remove('hidden');
+            const target = document.getElementById(viewId);
+            if (target) target.classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        /* IDENTITY FORM HANDLER */
         function handleIdentitySubmit(e) {
             e.preventDefault();
             const name = document.getElementById('inputName').value.trim();
             const studentClass = document.getElementById('inputClass').value;
-            const absen = document.getElementById('inputAbsen').value;
+            const absen = document.getElementById('inputAbsen').value.trim();
 
             if (!name || !studentClass || !absen) return;
 
@@ -1053,91 +940,103 @@
             appData.student.absen = absen;
 
             saveStoredData();
-            updateHeaderInfo();
-            goToLevelSelect();
-        }
-
-        function updateHeaderInfo() {
-            document.getElementById('navStudentName').textContent = appData.student.name || 'Siswa';
-            document.getElementById('navStudentClass').textContent = appData.student.studentClass ? `(${appData.student.studentClass})` : '';
-            if (appData.student.name) {
-                document.getElementById('headerUserInfo').classList.remove('hidden');
-            }
-        }
-
-        /* DASHBOARD / LEVEL SELECTION RENDERER */
-        function goToLevelSelect() {
             showView('viewLevelSelect');
+        }
 
-            // Set student banner details
+        function updateUI() {
+            if (!appData.student.name) return;
+
+            // Nav user info
+            document.getElementById('headerUserInfo').classList.remove('hidden');
+            document.getElementById('navStudentName').textContent = appData.student.name;
+            document.getElementById('navStudentClass').textContent = `(${appData.student.studentClass})`;
+
+            // Dashboard info
             document.getElementById('dashStudentName').textContent = appData.student.name;
             document.getElementById('dashStudentClass').textContent = appData.student.studentClass;
             document.getElementById('dashStudentAbsen').textContent = appData.student.absen;
 
-            // Render Level Cards
-            renderLevelCard('easy', 'Easy');
-            renderLevelCard('normal', 'Normal');
-            renderLevelCard('hard', 'Hard');
-
-            // Render Overall Progress Badges
-            updateOverallProgressBadges();
+            // Update Progress Badges
+            updateLevelBadge('easy', 'progEasyBadge', 'badgeStatusEasy', 'actionContainerEasy');
+            updateLevelBadge('normal', 'progNormalBadge', 'badgeStatusNormal', 'actionContainerNormal');
+            updateLevelBadge('hard', 'progHardBadge', 'badgeStatusHard', 'actionContainerHard');
         }
 
-        function renderLevelCard(levelKey, capitalKey) {
-            const levelObj = appData.levels[levelKey];
-            const badgeEl = document.getElementById(`badgeStatus${capitalKey}`);
-            const actionContainer = document.getElementById(`actionContainer${capitalKey}`);
+        function updateLevelBadge(levelKey, summaryBadgeId, cardBadgeId, actionContainerId) {
+            const lvl = appData.levels[levelKey];
+            const summaryBadge = document.getElementById(summaryBadgeId);
+            const cardBadge = document.getElementById(cardBadgeId);
+            const actionContainer = document.getElementById(actionContainerId);
 
-            if (levelObj.completed) {
-                badgeEl.className = "text-[10px] font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
-                badgeEl.innerHTML = `🔒 SUDAH SELESAI (Nilai: ${levelObj.score})`;
+            const levelNames = { easy: 'Mudah', normal: 'Normal', hard: 'Sulit' };
+            const levelColors = { easy: 'emerald', normal: 'blue', hard: 'rose' };
+            const c = levelColors[levelKey];
 
-                actionContainer.innerHTML = `
-                    <button onclick="handleCompletedLevelClick('${levelKey}')" class="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-extrabold py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
-                        <i class="fa-solid fa-certificate"></i>
-                        <span>🏆 LIHAT SERTIFIKAT</span>
-                    </button>
-                `;
+            if (lvl.completed) {
+                if (summaryBadge) {
+                    summaryBadge.className = `text-xs px-2.5 py-1 rounded-full bg-${c}-500/20 text-${c}-400 border border-${c}-500/40 font-bold`;
+                    summaryBadge.textContent = `${levelNames[levelKey]}: ${lvl.score} Pts`;
+                }
+                if (cardBadge) {
+                    cardBadge.className = `text-[10px] font-bold px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center gap-1`;
+                    cardBadge.innerHTML = `<i class="fa-solid fa-lock text-[9px]"></i> SUDAH SELESAI`;
+                }
+                if (actionContainer) {
+                    actionContainer.innerHTML = `
+                        <button onclick="showCompletedModal('${levelKey}')" class="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-certificate"></i>
+                            <span>LIHAT SERTIFIKAT (${lvl.score} Pts)</span>
+                        </button>
+                    `;
+                }
             } else {
-                badgeEl.className = "text-[10px] font-bold px-3 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700";
-                badgeEl.innerHTML = "🟢 BELUM DIKERJAKAN";
-
-                let btnColor = "from-emerald-600 to-teal-600";
-                if (levelKey === 'normal') btnColor = "from-blue-600 to-cyan-600";
-                if (levelKey === 'hard') btnColor = "from-rose-600 to-orange-600";
-
-                actionContainer.innerHTML = `
-                    <button onclick="promptStartLevel('${levelKey}')" class="w-full bg-gradient-to-r ${btnColor} hover:opacity-95 text-white font-bold py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
-                        <span>▶️ MULAI LEVEL ${levelKey.toUpperCase()}</span>
-                    </button>
-                `;
+                if (summaryBadge) {
+                    summaryBadge.className = `text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700`;
+                    summaryBadge.textContent = `${levelNames[levelKey]}: Belum`;
+                }
+                if (cardBadge) {
+                    cardBadge.className = `text-[10px] font-bold px-3 py-1 rounded-full bg-${c}-500/10 text-${c}-400 border border-${c}-500/30`;
+                    cardBadge.textContent = `BELUM DIKERJAKAN`;
+                }
+                if (actionContainer) {
+                    actionContainer.innerHTML = `
+                        <button onclick="confirmStartLevel('${levelKey}')" class="w-full bg-${c}-600 hover:bg-${c}-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-play text-xs"></i>
+                            <span>MULAI LEVEL ${levelNames[levelKey].toUpperCase()}</span>
+                        </button>
+                    `;
+                }
             }
         }
 
-        function updateOverallProgressBadges() {
-            const e = appData.levels.easy;
-            const n = appData.levels.normal;
-            const h = appData.levels.hard;
-
-            document.getElementById('progEasyBadge').innerHTML = e.completed ? `🟢 Mudah: ✅ ${e.score} Pts` : `🟢 Mudah: 🔒 Belum`;
-            document.getElementById('progNormalBadge').innerHTML = n.completed ? `🔵 Normal: ✅ ${n.score} Pts` : `🔵 Normal: 🔒 Belum`;
-            document.getElementById('progHardBadge').innerHTML = h.completed ? `🔴 Sulit: ✅ ${h.score} Pts` : `🔴 Sulit: 🔒 Belum`;
+        function goToLevelSelect() {
+            showView('viewLevelSelect');
         }
 
-        /* START LEVEL CONFIRMATION MODAL */
-        function promptStartLevel(levelKey) {
-            if (appData.levels[levelKey].completed) {
-                handleCompletedLevelClick(levelKey);
+        /* MODAL CONFIRMATION LOGIC */
+        function confirmStartLevel(levelKey) {
+            currentActiveLevel = levelKey;
+            const lvl = appData.levels[levelKey];
+
+            if (lvl.completed) {
+                showCompletedModal(levelKey);
                 return;
             }
 
-            currentActiveLevel = levelKey;
             const modal = document.getElementById('confirmStartModal');
-            const titleEl = document.getElementById('confirmModalTitle');
+            const icon = document.getElementById('confirmModalIcon');
+            const title = document.getElementById('confirmModalTitle');
 
-            if (levelKey === 'easy') titleEl.textContent = "KONFIRMASI: LEVEL MUDAH";
-            if (levelKey === 'normal') titleEl.textContent = "KONFIRMASI: LEVEL NORMAL";
-            if (levelKey === 'hard') titleEl.textContent = "KONFIRMASI: LEVEL SULIT";
+            if (levelKey === 'easy') {
+                icon.className = "w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mx-auto font-bold";
+                title.textContent = "KONFIRMASI: LEVEL MUDAH";
+            } else if (levelKey === 'normal') {
+                icon.className = "w-14 h-14 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl mx-auto font-bold";
+                title.textContent = "KONFIRMASI: LEVEL NORMAL";
+            } else {
+                icon.className = "w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl mx-auto font-bold";
+                title.textContent = "KONFIRMASI: LEVEL SULIT";
+            }
 
             modal.classList.remove('hidden');
         }
@@ -1151,16 +1050,14 @@
             startQuizRunner(currentActiveLevel);
         }
 
-        function handleCompletedLevelClick(levelKey) {
-            const levelObj = appData.levels[levelKey];
-            document.getElementById('completedLevelTitle').textContent = `LEVEL ${levelKey.toUpperCase()} SUDAH SELESAI`;
-            document.getElementById('completedLevelScore').textContent = `${levelObj.score} / 100`;
-            document.getElementById('completedLevelPredicate').textContent = levelObj.predicate;
-            
-            document.getElementById('btnViewCertFromModal').onclick = function() {
-                closeCompletedModal();
-                showCertificateForLevel(levelKey);
-            };
+        function showCompletedModal(levelKey) {
+            currentActiveLevel = levelKey;
+            const lvl = appData.levels[levelKey];
+
+            const levelNames = { easy: 'LEVEL MUDAH', normal: 'LEVEL NORMAL', hard: 'LEVEL SULIT' };
+            document.getElementById('completedLevelTitle').textContent = `${levelNames[levelKey]} SUDAH SELESAI`;
+            document.getElementById('completedLevelScore').textContent = `${lvl.score} / 100`;
+            document.getElementById('completedLevelPredicate').textContent = lvl.predicate;
 
             document.getElementById('completedInfoModal').classList.remove('hidden');
         }
@@ -1171,20 +1068,42 @@
 
         function viewCertFromCompletedModal() {
             closeCompletedModal();
+            showCertificateForLevel(currentActiveLevel);
         }
 
-        /* QUIZ RUNNER ENGINE */
+        /* QUIZ ENGINE & OPTION SHUFFLING */
+        function shuffleOptionsAndQuestions(questions) {
+            return questions.map(q => {
+                const optionsWithIdx = q.options.map((opt, i) => ({ opt, originalIndex: i }));
+                
+                // Fisher-Yates Shuffle algorithm for options
+                for (let i = optionsWithIdx.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [optionsWithIdx[i], optionsWithIdx[j]] = [optionsWithIdx[j], optionsWithIdx[i]];
+                }
+                
+                const newCorrectIndex = optionsWithIdx.findIndex(item => item.originalIndex === q.correct);
+                
+                return {
+                    ...q,
+                    options: optionsWithIdx.map(item => item.opt),
+                    correct: newCorrectIndex
+                };
+            });
+        }
+
         function startQuizRunner(levelKey) {
             currentActiveLevel = levelKey;
             currentQuestionIdx = 0;
             currentLevelScore = 0;
             currentSelectedAnswer = null;
 
-            activeQuestionsList = JSON.parse(JSON.stringify(questionsData[levelKey]));
+            // Deep clone raw questions and shuffle options
+            const rawQuestions = JSON.parse(JSON.stringify(questionsData[levelKey]));
+            activeQuestionsList = shuffleOptionsAndQuestions(rawQuestions);
 
             showView('viewQuiz');
 
-            // Setup Header Bar
             const headerBadgeIcon = document.getElementById('quizLevelBadgeIcon');
             const levelTitle = document.getElementById('quizLevelTitle');
 
@@ -1206,31 +1125,30 @@
         }
 
         function renderCurrentQuestion() {
-            const q = activeQuestionsList[currentQuestionIdx];
             currentSelectedAnswer = null;
+            const q = activeQuestionsList[currentQuestionIdx];
 
             document.getElementById('currentQNum').textContent = currentQuestionIdx + 1;
+            document.getElementById('qBadgeNum').textContent = `Soal #${currentQuestionIdx + 1}`;
             document.getElementById('quizProgressText').textContent = `${currentQuestionIdx + 1}/10`;
             document.getElementById('quizProgressBar').style.width = `${((currentQuestionIdx + 1) / 10) * 100}%`;
 
-            document.getElementById('qBadgeNum').textContent = `Soal #${currentQuestionIdx + 1}`;
             document.getElementById('qText').textContent = q.q;
 
-            // Render diagram if available
-            const diagContainer = document.getElementById('diagramContainer');
+            // Render Circuit Diagram if present
+            const diagramContainer = document.getElementById('diagramContainer');
             if (q.diagram) {
-                diagContainer.innerHTML = q.diagram;
-                diagContainer.classList.remove('hidden');
+                diagramContainer.classList.remove('hidden');
+                diagramContainer.innerHTML = `<pre class="font-mono text-xs sm:text-sm text-cyan-300 font-bold leading-tight">${q.diagram}</pre>`;
             } else {
-                diagContainer.innerHTML = '';
-                diagContainer.classList.add('hidden');
+                diagramContainer.classList.add('hidden');
             }
 
-            // Hide feedback box
+            // Hide feedback
             const feedbackBox = document.getElementById('feedbackBox');
             feedbackBox.classList.add('hidden');
 
-            // Render option buttons
+            // Render Shuffled Options
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
 
@@ -1239,7 +1157,7 @@
             q.options.forEach((optText, idx) => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = "w-full text-left p-4 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-indigo-500/50 flex items-center gap-3 transition group";
+                btn.className = "w-full text-left p-4 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-indigo-500/50 flex items-center gap-3 transition group cursor-pointer";
                 btn.onclick = () => selectOption(idx);
                 btn.id = `optBtn_${idx}`;
 
@@ -1252,14 +1170,14 @@
                 optionsContainer.appendChild(btn);
             });
 
-            // Reset Next button
+            // Disable next button until option selected
             const btnNext = document.getElementById('btnNextQuestion');
             btnNext.disabled = true;
             btnNext.className = "bg-indigo-600/40 text-slate-400 cursor-not-allowed font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 text-xs";
         }
 
         function selectOption(optIdx) {
-            if (currentSelectedAnswer !== null) return; // Locks after 1 selection for immediate feedback
+            if (currentSelectedAnswer !== null) return;
 
             currentSelectedAnswer = optIdx;
             const q = activeQuestionsList[currentQuestionIdx];
@@ -1269,7 +1187,7 @@
                 currentLevelScore += 10;
             }
 
-            // Update UI styles for buttons
+            // Button Styles
             q.options.forEach((_, idx) => {
                 const btn = document.getElementById(`optBtn_${idx}`);
                 const label = document.getElementById(`optLabel_${idx}`);
@@ -1285,7 +1203,7 @@
                 }
             });
 
-            // Show Feedback Box
+            // Feedback Box
             const feedbackBox = document.getElementById('feedbackBox');
             feedbackBox.classList.remove('hidden');
 
@@ -1297,10 +1215,9 @@
                 feedbackBox.innerHTML = `❌ <strong>Kurang Tepat.</strong> Jawaban yang benar adalah pilihan <strong>${['A', 'B', 'C', 'D'][q.correct]}</strong>.`;
             }
 
-            // Enable Next Button
             const btnNext = document.getElementById('btnNextQuestion');
             btnNext.disabled = false;
-            btnNext.className = "bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg flex items-center gap-2 text-xs";
+            btnNext.className = "bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg flex items-center gap-2 text-xs cursor-pointer";
         }
 
         function nextQuestion() {
@@ -1312,9 +1229,8 @@
             }
         }
 
-        /* LEVEL FINISH & CERTIFICATE GENERATION */
         function finishActiveLevel() {
-            const finalScore = currentLevelScore; // Max 100
+            const finalScore = currentLevelScore;
             let predicate = '';
 
             if (finalScore >= 90) predicate = '🏆 Sangat Baik';
@@ -1323,9 +1239,8 @@
             else predicate = '🌱 Perlu Belajar Lagi';
 
             const now = new Date();
-            const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
-            // Save to appState
             appData.levels[currentActiveLevel] = {
                 completed: true,
                 score: finalScore,
@@ -1335,7 +1250,7 @@
 
             saveStoredData();
 
-            // Populate Result Screen
+            // Populate Result View
             const resHeader = document.getElementById('resLevelBadgeHeader');
             if (currentActiveLevel === 'easy') {
                 resHeader.className = "inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold mb-4";
@@ -1352,14 +1267,6 @@
             document.getElementById('resPredicateBadge').textContent = predicate;
             document.getElementById('resCorrectCount').textContent = finalScore / 10;
 
-            let feedbackText = '';
-            if (finalScore >= 90) feedbackText = 'Luar biasa! Pemahamanmu mengenai gerbang logika dasar & kombinasinya sudah sangat sempurna!';
-            else if (finalScore >= 80) feedbackText = 'Hebat! Pemahamanmu sudah sangat baik. Terus pertahankan prestasi ini!';
-            else if (finalScore >= 70) feedbackText = 'Cukup baik. Pelajari kembali tabel kebenaran dan alur rangkaian logika untuk lebih mahir!';
-            else feedbackText = 'Tetap semangat! Pelajari kembali materi gerbang logika untuk memperkuat pemahamanmu!';
-
-            document.getElementById('resFeedbackText').textContent = feedbackText;
-
             showView('viewResult');
         }
 
@@ -1367,19 +1274,18 @@
             showCertificateForLevel(currentActiveLevel);
         }
 
+        /* DIGITAL IMAGE CERTIFICATE RENDER (4x8 RATIO) */
         function showCertificateForLevel(levelKey) {
             const levelObj = appData.levels[levelKey];
-            if (!levelObj.completed) return;
+            if (!levelObj || !levelObj.completed) return;
 
-            // Fill recipient text
             document.getElementById('certStudentName').textContent = appData.student.name.toUpperCase();
             document.getElementById('certStudentMeta').textContent = `Kelas: ${appData.student.studentClass} | No. Absen: ${appData.student.absen}`;
             document.getElementById('certScore').textContent = `${levelObj.score} / 100`;
             document.getElementById('certPredicate').textContent = levelObj.predicate;
-            document.getElementById('certDate').textContent = levelObj.date || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            document.getElementById('certCode').textContent = `Verifikasi: CERT-INF-VIII-${levelKey.toUpperCase()}`;
+            document.getElementById('certDate').textContent = levelObj.date || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+            document.getElementById('certCode').textContent = `CERT-INF-VIII-${levelKey.toUpperCase()}`;
 
-            // Adjust Color Palette & Themes according to Level
             const frame = document.getElementById('certFrame');
             const inner = document.getElementById('certContentInner');
             const scoreBox = document.getElementById('certScoreBox');
@@ -1387,38 +1293,55 @@
             const certSubTitle = document.getElementById('certSubTitle');
 
             if (levelKey === 'easy') {
-                frame.className = "max-w-4xl mx-auto bg-slate-900 border-8 border-emerald-500 rounded-3xl p-6 sm:p-10 text-slate-900 relative shadow-2xl";
-                inner.className = "w-full h-full border-4 border-emerald-400 p-6 sm:p-8 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-emerald-50 via-white to-emerald-100/80";
-                scoreBox.className = "flex items-center justify-center gap-6 my-1 bg-emerald-100/80 border border-emerald-300 rounded-xl p-2.5 max-w-md mx-auto";
-                certLevelBadge.className = "text-xs font-bold text-emerald-800 uppercase";
+                frame.className = "cert-4x8-container bg-slate-900 border-4 border-emerald-500 rounded-3xl p-4 text-slate-900 relative shadow-2xl overflow-hidden flex flex-col justify-between";
+                inner.className = "w-full h-full border-2 border-emerald-400 p-4 sm:p-5 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-emerald-50 via-white to-emerald-100/90 shadow-inner";
+                scoreBox.className = "bg-emerald-100/90 border border-emerald-300 rounded-xl p-3 my-1 flex flex-col items-center justify-center gap-1 shadow-sm";
+                certLevelBadge.className = "inline-block px-3 py-0.5 rounded-full text-[9px] font-black tracking-wider text-emerald-800 bg-emerald-200/80 uppercase mb-1";
                 certLevelBadge.textContent = "LEVEL MUDAH";
-                certSubTitle.textContent = 'Tantangan Gerbang Logika Level Mudah — "Pemula Logika"';
+                certSubTitle.textContent = 'Tantangan Gerbang Logika — Pemula Logika';
             } else if (levelKey === 'normal') {
-                frame.className = "max-w-4xl mx-auto bg-slate-900 border-8 border-blue-500 rounded-3xl p-6 sm:p-10 text-slate-900 relative shadow-2xl";
-                inner.className = "w-full h-full border-4 border-blue-400 p-6 sm:p-8 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-blue-50 via-white to-blue-100/80";
-                scoreBox.className = "flex items-center justify-center gap-6 my-1 bg-blue-100/80 border border-blue-300 rounded-xl p-2.5 max-w-md mx-auto";
-                certLevelBadge.className = "text-xs font-bold text-blue-800 uppercase";
+                frame.className = "cert-4x8-container bg-slate-900 border-4 border-blue-500 rounded-3xl p-4 text-slate-900 relative shadow-2xl overflow-hidden flex flex-col justify-between";
+                inner.className = "w-full h-full border-2 border-blue-400 p-4 sm:p-5 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-blue-50 via-white to-blue-100/90 shadow-inner";
+                scoreBox.className = "bg-blue-100/90 border border-blue-300 rounded-xl p-3 my-1 flex flex-col items-center justify-center gap-1 shadow-sm";
+                certLevelBadge.className = "inline-block px-3 py-0.5 rounded-full text-[9px] font-black tracking-wider text-blue-800 bg-blue-200/80 uppercase mb-1";
                 certLevelBadge.textContent = "LEVEL NORMAL";
-                certSubTitle.textContent = 'Tantangan Gerbang Logika Level Normal — "Jago Logika"';
+                certSubTitle.textContent = 'Tantangan Gerbang Logika — Jago Logika';
             } else {
-                frame.className = "max-w-4xl mx-auto bg-slate-900 border-8 border-rose-500 rounded-3xl p-6 sm:p-10 text-slate-900 relative shadow-2xl";
-                inner.className = "w-full h-full border-4 border-rose-400 p-6 sm:p-8 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-rose-50 via-white to-rose-100/80";
-                scoreBox.className = "flex items-center justify-center gap-6 my-1 bg-rose-100/80 border border-rose-300 rounded-xl p-2.5 max-w-md mx-auto";
-                certLevelBadge.className = "text-xs font-bold text-rose-800 uppercase";
+                frame.className = "cert-4x8-container bg-slate-900 border-4 border-rose-500 rounded-3xl p-4 text-slate-900 relative shadow-2xl overflow-hidden flex flex-col justify-between";
+                inner.className = "w-full h-full border-2 border-rose-400 p-4 sm:p-5 rounded-2xl flex flex-col justify-between text-center relative z-10 bg-gradient-to-b from-rose-50 via-white to-rose-100/90 shadow-inner";
+                scoreBox.className = "bg-rose-100/90 border border-rose-300 rounded-xl p-3 my-1 flex flex-col items-center justify-center gap-1 shadow-sm";
+                certLevelBadge.className = "inline-block px-3 py-0.5 rounded-full text-[9px] font-black tracking-wider text-rose-800 bg-rose-200/80 uppercase mb-1";
                 certLevelBadge.textContent = "LEVEL SULIT";
-                certSubTitle.textContent = 'Tantangan Gerbang Logika Level Sulit — "Master Logika"';
+                certSubTitle.textContent = 'Tantangan Gerbang Logika — Master Logika';
             }
 
             showView('viewCertificate');
         }
 
-        function printCertificate() {
-            window.print();
+        function downloadCertificate() {
+            const certElement = document.getElementById('certFrame');
+            if (!certElement) return;
+
+            html2canvas(certElement, {
+                scale: 3,
+                useCORS: true,
+                backgroundColor: null
+            }).then(canvas => {
+                const link = document.createElement('a');
+                const studentName = appData.student.name ? appData.student.name.replace(/\s+/g, '_') : 'Siswa';
+                const levelName = currentActiveLevel ? currentActiveLevel.toUpperCase() : 'LEVEL';
+                link.download = `Sertifikat_${studentName}_Level_${levelName}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                console.error("Error generating image certificate:", err);
+            });
         }
 
         /* SIMULATOR SANDBOX LOGIC */
         function showSandboxModal() {
             document.getElementById('sandboxModal').classList.remove('hidden');
+            renderSandbox();
         }
 
         function closeSandboxModal() {
@@ -1466,7 +1389,6 @@
                 }
             }
 
-            // Calculate output
             let output = 0;
             const a = simState.inputA;
             const b = simState.inputB;
@@ -1488,11 +1410,11 @@
 
             if (simState.gate === 'AND') {
                 charTitle.textContent = 'Gerbang AND — "Si Ketat" 🔒';
-                charDesc.textContent = 'Analogi: Membutuhkan 2 kunci sekaligus untuk membuka peti harta. Output 1 hanya jika SEMUA input bernilai 1.';
+                charDesc.textContent = 'Analogi: Membutuhkan 2 kunci sekaligus untuk membuka peti. Output 1 HANYA JIKA kedua input 1.';
                 charIcon.textContent = '🔒';
             } else if (simState.gate === 'OR') {
                 charTitle.textContent = 'Gerbang OR — "Si Pemurah" 🚪';
-                charDesc.textContent = 'Analogi: Memiliki 2 jalur alternatif. Cukup membuka salah satu pintu untuk masuk. Output 1 jika SALAH SATU input 1.';
+                charDesc.textContent = 'Analogi: Cukup membuka 1 dari 2 pintu. Output 1 jika SALAH SATU input bernilai 1.';
                 charIcon.textContent = '🚪';
             } else if (simState.gate === 'NOT') {
                 charTitle.textContent = 'Gerbang NOT — "Si Pembalik" 🔄';
@@ -1500,15 +1422,15 @@
                 charIcon.textContent = '🔄';
             } else if (simState.gate === 'NAND') {
                 charTitle.textContent = 'Gerbang NAND — "Kebalikan AND" 🛑';
-                charDesc.textContent = 'Analogi: NOT + AND. Peti terkunci HANYA JIKA kedua kunci dimasukkan bersamaan.';
+                charDesc.textContent = 'Analogi: NOT + AND. Output 0 HANYA JIKA kedua kunci dimasukkan bersamaan.';
                 charIcon.textContent = '🛑';
             } else if (simState.gate === 'NOR') {
                 charTitle.textContent = 'Gerbang NOR — "Kebalikan OR" 🛡️';
-                charDesc.textContent = 'Analogi: NOT + OR. Sistem keamanan yang menyala hanya saat kedua saklar benar-benar tenang (0).';
+                charDesc.textContent = 'Analogi: NOT + OR. Output 1 HANYA JIKA kedua saklar dalam keadaan tenang (0).';
                 charIcon.textContent = '🛡️';
             } else if (simState.gate === 'XOR') {
                 charTitle.textContent = 'Gerbang XOR — "Si Beda" ⚖️';
-                charDesc.textContent = 'Analogi: Saklar ganda lampu tangga. Lampu menyala hanya jika kedua saklar dalam posisi BERBEDA.';
+                charDesc.textContent = 'Analogi: Saklar ganda. Output 1 HANYA JIKA kedua input berada pada posisi BERBEDA.';
                 charIcon.textContent = '⚖️';
             }
 
@@ -1526,7 +1448,7 @@
             }
         }
 
-        /* RESET DATA LOGIC */
+        /* RESET APP STATE */
         function confirmResetApp() {
             document.getElementById('resetModal').classList.remove('hidden');
         }
