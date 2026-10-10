@@ -1,1 +1,1985 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Interaktif Informatika VII - SMPN 1 Tinggimoncong</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            user-select: none;
+        }
+        .font-outfit { font-family: 'Outfit', sans-serif; }
 
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+        }
+
+        /* Certificate Print CSS Optimization for Single Page (A5 Landscape & A4) */
+        @media print {
+            html, body {
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                background: white !important;
+            }
+            body * {
+                visibility: hidden;
+            }
+            header, footer, nav, .no-print {
+                display: none !important;
+            }
+            #certificate-print-area, #certificate-print-area * {
+                visibility: visible;
+            }
+            #certificate-print-area {
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                margin: 0 !important;
+                padding: 8mm !important;
+                box-sizing: border-box !important;
+                background: white !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            #cert-inner-frame {
+                height: 100% !important;
+                padding: 12px 20px !important;
+                box-sizing: border-box !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                min-height: auto !important;
+            }
+            @page {
+                size: A5 landscape;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-800 antialiased bg-slate-100">
+
+    <header class="no-print bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold font-outfit shadow-md text-xl">
+                    7
+                </div>
+                <div>
+                    <h1 class="font-outfit font-extrabold text-slate-900 text-base md:text-lg leading-tight">LKPD INTERAKTIF INFORMATIKA</h1>
+                    <p class="text-xs text-slate-500 font-medium">SMPN 1 Tinggimoncong • Kelas VII</p>
+                </div>
+            </div>
+            
+            <div id="header-student-info" class="hidden flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200 text-xs font-semibold text-slate-700">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span id="nav-student-name">Siswa</span>
+                <span class="text-slate-300">|</span>
+                <span id="nav-student-class" class="text-sky-600 font-bold">VII A</span>
+                <span class="text-slate-300">|</span>
+                <span id="nav-student-attempt" class="text-purple-600 font-bold">Ke-1</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto w-full px-4 py-6 flex-grow">
+
+        <!-- VIEW 1: STUDENT IDENTITY FORM -->
+        <section id="view-identity" class="block space-y-6">
+            <div class="glass-card rounded-3xl p-6 md:p-10 shadow-xl border border-sky-100 bg-gradient-to-br from-white via-sky-50/30 to-indigo-50/40 text-center relative overflow-hidden">
+                
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-extrabold uppercase tracking-wider mb-4">
+                    📚 Lembar Kerja Peserta Didik Digital
+                </div>
+
+                <h1 class="font-outfit text-3xl md:text-5xl font-black text-slate-900 mb-2 tracking-tight">
+                    LKPD INTERAKTIF INFORMATIKA
+                </h1>
+                <p class="text-lg md:text-xl font-bold text-sky-600 mb-6">
+                    "Jago Menggunakan Perangkat TIK & Internet" — Kelas VII
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-3 text-xs md:text-sm font-semibold text-slate-700 mb-8">
+                    <span class="bg-white border border-slate-200 shadow-sm px-4 py-2 rounded-xl">🏫 SMPN 1 Tinggimoncong</span>
+                    <span class="bg-white border border-slate-200 shadow-sm px-4 py-2 rounded-xl">👨‍🏫 Guru: Syarifuddin, S. Pd., M. Si.</span>
+                    <span class="bg-white border border-slate-200 shadow-sm px-4 py-2 rounded-xl">⏱️ Waktu: ±80 Menit</span>
+                </div>
+
+                <!-- Icons showcase -->
+                <div class="grid grid-cols-7 gap-2 max-w-lg mx-auto mb-8 p-3 bg-white/80 rounded-2xl shadow-inner border border-slate-200 text-2xl">
+                    <div title="Komputer">💻</div>
+                    <div title="Smartphone">📱</div>
+                    <div title="Tablet">📱</div>
+                    <div title="Folder">📁</div>
+                    <div title="File">📄</div>
+                    <div title="Peramban">🌐</div>
+                    <div title="E-mail">📧</div>
+                </div>
+
+                <!-- Registration Box -->
+                <div class="max-w-md mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200 text-left space-y-4">
+                    <h3 class="font-outfit font-bold text-slate-800 text-lg border-b pb-2 flex items-center gap-2">
+                        👤 Isi Identitas Siswa
+                    </h3>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">Nama Lengkap *</label>
+                        <input type="text" id="input-nama" placeholder="Contoh: Andi Muhammad Rizky" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-slate-800 outline-none transition font-medium">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">Kelas *</label>
+                            <select id="input-kelas" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-slate-800 outline-none transition font-medium bg-white">
+                                <option value="VII A">VII A</option>
+                                <option value="VII B">VII B</option>
+                                <option value="VII C">VII C</option>
+                                <option value="VII D">VII D</option>
+                                <option value="VII E">VII E</option>
+                                <option value="VII F">VII F</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">No. Absen *</label>
+                            <input type="number" id="input-absen" min="1" max="50" placeholder="Contoh: 05" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-slate-800 outline-none transition font-medium">
+                        </div>
+                    </div>
+
+                    <p id="identity-error" class="text-rose-500 text-xs font-semibold hidden animate-bounce">
+                        ⚠️ Harap isi Nama Lengkap dan Nomor Absen terlebih dahulu!
+                    </p>
+
+                    <button onclick="submitIdentity()" class="w-full py-4 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-sky-200 transition duration-200 flex items-center justify-center gap-2 text-base active:scale-95">
+                        🚀 MULAI LKPD
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: INSTRUCTIONS VIEW -->
+        <section id="view-instructions" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-xl space-y-6">
+                <div class="flex items-center gap-3 border-b pb-4">
+                    <span class="text-3xl">📌</span>
+                    <div>
+                        <h2 class="font-outfit font-extrabold text-2xl text-slate-900">PETUNJUK PENGERJAAN LKPD</h2>
+                        <p class="text-xs text-slate-500">Bacalah petunjuk di bawah ini sebelum memulai aktivitas.</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 text-sm text-slate-700">
+                    <div class="bg-sky-50/70 p-4 rounded-2xl border border-sky-100 space-y-2">
+                        <p class="font-bold text-sky-900 flex items-center gap-2">🎯 Aturan Umum:</p>
+                        <ol class="list-decimal list-inside space-y-1 text-xs leading-relaxed text-slate-700">
+                            <li>Bacalah setiap pertanyaan dan petunjuk aktivitas dengan teliti.</li>
+                            <li>Kerjakan seluruh <strong>6 Aktivitas (45 Soal)</strong> secara runtut.</li>
+                            <li>Aktivitas berupa Pilihan Ganda, Isian Isian, Drag-and-Drop, dan Simulasi.</li>
+                            <li>Nilai langsung dihitung secara otomatis setelah pengerjaan selesai.</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100 space-y-2">
+                        <p class="font-bold text-amber-900 flex items-center gap-2">🔄 Fitur Pengulangan & Pembahasan:</p>
+                        <ol class="list-decimal list-inside space-y-1 text-xs leading-relaxed text-slate-700">
+                            <li>Kamu diperbolehkan mengerjakan LKPD ini <strong>berulang kali</strong>.</li>
+                            <li>Setiap kali mengulang, nomor percobaan akan bertambah & soal diacak.</li>
+                            <li>Setelah kumpul, kamu dapat melihat <strong>Pembahasan Jawaban Lengkap</strong>.</li>
+                            <li>Gunakan pembahasan untuk mempelajari kesalahan dan meraih nilai sempurna!</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="pt-2 text-center">
+                    <button onclick="startLKPDWork()" class="px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-200 transition text-lg active:scale-95 flex items-center gap-2 mx-auto">
+                        ▶️ MULAI MENGERJAKAN
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: LKPD DASHBOARD & ACTIVITY SELECTOR -->
+        <section id="view-dashboard" class="hidden space-y-6">
+            <!-- Student Header Stats Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-800">
+                <div class="space-y-1 text-center md:text-left">
+                    <span class="inline-block px-3 py-1 bg-sky-500/30 text-sky-300 rounded-full text-xs font-semibold uppercase tracking-wider mb-1">Status Peserta LKPD</span>
+                    <h2 id="dash-student-name" class="font-outfit text-2xl md:text-3xl font-bold">Nama Siswa</h2>
+                    <p id="dash-student-info" class="text-slate-300 text-sm">Kelas VII A • No. Absen: 05</p>
+                </div>
+                
+                <div class="flex items-center gap-6 bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10 w-full md:w-auto justify-around">
+                    <div class="text-center">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Percobaan</p>
+                        <p id="dash-attempt-count" class="text-2xl font-black text-sky-400">Ke-1</p>
+                    </div>
+                    <div class="h-8 w-[1px] bg-white/20"></div>
+                    <div class="text-center">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Nilai Terbaik</p>
+                        <p id="dash-best-score" class="text-2xl font-black text-amber-400">0/100</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total LKPD Progress Bar -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <div class="flex justify-between items-center text-xs font-extrabold text-slate-700">
+                    <span>📊 TOTAL PROGRESS LKPD</span>
+                    <span id="dash-progress-percent" class="text-sky-600 font-black">0% (0/45 Soal)</span>
+                </div>
+                <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="dash-progress-bar" class="h-full bg-gradient-to-r from-sky-500 to-indigo-600 w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <!-- Activity Modules List -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                
+                <div onclick="openActivityModule(1)" class="bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-sky-500 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-3xl">🖥️</span>
+                            <span id="act1-badge" class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">5 Soal</span>
+                        </div>
+                        <h3 class="font-outfit font-extrabold text-slate-900 group-hover:text-sky-600 transition">Aktivitas 1</h3>
+                        <p class="text-xs font-bold text-slate-500">Perangkat TIK</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs font-semibold text-slate-600">
+                        <span>Status: <span id="act1-status" class="text-slate-400">Belum</span></span>
+                        <span class="text-sky-600 group-hover:translate-x-1 transition">Buka ➔</span>
+                    </div>
+                </div>
+
+                <div onclick="openActivityModule(2)" class="bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-sky-500 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-3xl">🖱️</span>
+                            <span id="act2-badge" class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">5 Soal</span>
+                        </div>
+                        <h3 class="font-outfit font-extrabold text-slate-900 group-hover:text-sky-600 transition">Aktivitas 2</h3>
+                        <p class="text-xs font-bold text-slate-500">Antarmuka Pengguna</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs font-semibold text-slate-600">
+                        <span>Status: <span id="act2-status" class="text-slate-400">Belum</span></span>
+                        <span class="text-sky-600 group-hover:translate-x-1 transition">Buka ➔</span>
+                    </div>
+                </div>
+
+                <div onclick="openActivityModule(3)" class="bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-sky-500 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-3xl">📁</span>
+                            <span id="act3-badge" class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">10 Soal</span>
+                        </div>
+                        <h3 class="font-outfit font-extrabold text-slate-900 group-hover:text-sky-600 transition">Aktivitas 3</h3>
+                        <p class="text-xs font-bold text-slate-500">Manajemen File & Folder</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs font-semibold text-slate-600">
+                        <span>Status: <span id="act3-status" class="text-slate-400">Belum</span></span>
+                        <span class="text-sky-600 group-hover:translate-x-1 transition">Buka ➔</span>
+                    </div>
+                </div>
+
+                <div onclick="openActivityModule(4)" class="bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-sky-500 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-3xl">🌐</span>
+                            <span id="act4-badge" class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">7 Soal</span>
+                        </div>
+                        <h3 class="font-outfit font-extrabold text-slate-900 group-hover:text-sky-600 transition">Aktivitas 4</h3>
+                        <p class="text-xs font-bold text-slate-500">Peramban (Browser)</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs font-semibold text-slate-600">
+                        <span>Status: <span id="act4-status" class="text-slate-400">Belum</span></span>
+                        <span class="text-sky-600 group-hover:translate-x-1 transition">Buka ➔</span>
+                    </div>
+                </div>
+
+                <div onclick="openActivityModule(5)" class="bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-sky-500 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-3xl">📧</span>
+                            <span id="act5-badge" class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">8 Soal</span>
+                        </div>
+                        <h3 class="font-outfit font-extrabold text-slate-900 group-hover:text-sky-600 transition">Aktivitas 5</h3>
+                        <p class="text-xs font-bold text-slate-500">Komunikasi E-mail</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs font-semibold text-slate-600">
+                        <span>Status: <span id="act5-status" class="text-slate-400">Belum</span></span>
+                        <span class="text-sky-600 group-hover:translate-x-1 transition">Buka ➔</span>
+                    </div>
+                </div>
+
+                <div onclick="openActivityModule(6)" class="bg-white p-5 rounded-2xl border-2 border-purple-200 bg-gradient-to-br from-white to-purple-50/50 hover:border-purple-500 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-3xl">🎯</span>
+                            <span id="act6-badge" class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-purple-100 text-purple-800">10 Soal</span>
+                        </div>
+                        <h3 class="font-outfit font-extrabold text-slate-900 group-hover:text-purple-600 transition">Aktivitas 6</h3>
+                        <p class="text-xs font-bold text-purple-700">Evaluasi Akhir</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs font-semibold text-slate-600">
+                        <span>Status: <span id="act6-status" class="text-slate-400">Belum</span></span>
+                        <span class="text-purple-600 group-hover:translate-x-1 transition">Buka ➔</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Finish LKPD Main Action Button -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-md text-center space-y-3">
+                <h3 class="font-outfit font-bold text-slate-800 text-lg">Siap Kirim Pengerjaan LKPD?</h3>
+                <p class="text-xs text-slate-500">Pastikan kamu telah menjawab pertanyaan sejauh ini. Kamu bisa memeriksa nilai & sertifikatmu.</p>
+                <button onclick="submitLKPDAttempt()" class="px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold rounded-xl shadow-lg transition text-sm active:scale-95">
+                    🎯 KUMPULKAN LKPD & LIHAT HASIL
+                </button>
+            </div>
+
+            <!-- Attempt History Section -->
+            <div id="section-history" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-outfit font-extrabold text-slate-900 text-base flex items-center gap-2">
+                    📊 RIWAYAT PENGERJAAN SISWA
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase border-b border-slate-200">
+                                <th class="p-3 rounded-l-lg">Percobaan</th>
+                                <th class="p-3">Tanggal</th>
+                                <th class="p-3">Jawaban Benar</th>
+                                <th class="p-3">Nilai</th>
+                                <th class="p-3">Predikat</th>
+                                <th class="p-3 text-right rounded-r-lg">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body" class="divide-y divide-slate-100 font-medium">
+                            <!-- Injected via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reset Data Control -->
+            <div class="text-center pt-2">
+                <button onclick="confirmResetAllData()" class="text-xs text-slate-400 hover:text-rose-600 font-semibold underline transition">
+                    🔄 Mulai dari Awal (Hapus Seluruh Riwayat Pengerjaan)
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 4: QUESTION RUNNER INTERFACE -->
+        <section id="view-question-runner" class="hidden space-y-6">
+            <!-- Question Top Header -->
+            <div class="flex items-center justify-between p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                <button onclick="returnToDashboard()" class="text-xs font-bold text-slate-600 hover:text-sky-600 transition flex items-center gap-1">
+                    ⬅️ Dashboard LKPD
+                </button>
+                <div class="text-right">
+                    <span id="runner-module-title" class="text-xs font-black uppercase text-sky-600 block">AKTIVITAS 1</span>
+                    <span id="runner-question-counter" class="text-sm font-extrabold text-slate-800">Soal 1 dari 45</span>
+                </div>
+            </div>
+
+            <!-- Dynamic Question Box -->
+            <div id="runner-question-container" class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-xl space-y-6">
+                <!-- Injected dynamically by JS -->
+            </div>
+
+            <!-- Runner Footer Controls -->
+            <div class="flex items-center justify-between pt-2">
+                <button id="btn-runner-prev" onclick="navigateRunner(-1)" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs md:text-sm transition">
+                    ⬅️ Soal Sebelumnya
+                </button>
+                <button id="btn-runner-next" onclick="navigateRunner(1)" class="px-5 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs md:text-sm shadow-md transition">
+                    Soal Berikutnya ➡️
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 5: AUTOMATIC CERTIFICATE & RESULTS SCREEN + EXPLANATION -->
+        <section id="view-certificate" class="hidden space-y-6">
+            <!-- Controls Banner (Non-Printable) -->
+            <div class="no-print bg-white rounded-3xl p-6 border border-slate-200 shadow-lg text-center space-y-4">
+                <span class="text-4xl animate-bounce inline-block">🎉</span>
+                <h2 class="font-outfit text-2xl md:text-3xl font-extrabold text-slate-900">PENGERJAAN LKPD SELESAI!</h2>
+                
+                <!-- Detailed Score Breakdown Box -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto my-2 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                    <div class="p-2 bg-white rounded-xl shadow-sm border border-slate-100">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase block">Jawaban Benar</span>
+                        <span id="res-correct-count" class="text-xl md:text-2xl font-black text-emerald-600">0 / 45</span>
+                    </div>
+                    <div class="p-2 bg-white rounded-xl shadow-sm border border-slate-100">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase block">Jawaban Salah</span>
+                        <span id="res-wrong-count" class="text-xl md:text-2xl font-black text-rose-500">0 / 45</span>
+                    </div>
+                    <div class="p-2 bg-white rounded-xl shadow-sm border border-slate-100">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase block">Nilai Akhir</span>
+                        <span id="res-total-score" class="text-xl md:text-2xl font-black text-sky-600">0 / 100</span>
+                    </div>
+                    <div class="p-2 bg-white rounded-xl shadow-sm border border-slate-100">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase block">Predikat</span>
+                        <span id="res-predicate" class="text-xs md:text-sm font-black text-amber-600 block mt-1">SANGAT BAIK</span>
+                    </div>
+                </div>
+
+                <p id="cert-feedback-message" class="text-slate-600 text-xs md:text-sm max-w-xl mx-auto font-medium leading-relaxed">
+                    Pesan apresiasi...
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-2.5 pt-1">
+                    <button onclick="retakeLKPD()" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-xs md:text-sm">
+                        🔄 COBA LAGI (PERCOBAAN BARU)
+                    </button>
+                    <button onclick="window.print()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-xs md:text-sm">
+                        🖨️ CETAK SERTIFIKAT A5 / PDF
+                    </button>
+                    <button onclick="returnToDashboard()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-xl transition flex items-center gap-2 text-xs md:text-sm">
+                        🏠 KEMBALI KE DASHBOARD
+                    </button>
+                </div>
+            </div>
+
+            <!-- DYNAMIC PRINTABLE CERTIFICATE CONTAINER (OPTIMIZED FOR A5 LANDSCAPE COMPACT RATIO) -->
+            <div id="certificate-print-area" class="bg-gradient-to-r from-pink-500 via-purple-500 via-indigo-500 via-cyan-500 to-emerald-500 p-1.5 md:p-2 rounded-2xl shadow-xl relative overflow-hidden font-sans max-w-2xl mx-auto my-2 transition-all">
+                
+                <div id="cert-inner-frame" class="bg-white/95 backdrop-blur-md p-4 md:p-6 rounded-[16px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner min-h-[360px] md:min-h-[400px]">
+                    
+                    <!-- Decorative Colorful Glow Accent Blobs -->
+                    <div class="absolute -top-10 -left-10 w-28 h-28 bg-pink-400/20 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -bottom-10 -right-10 w-28 h-28 bg-cyan-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <!-- Header -->
+                    <div class="space-y-0.5 relative z-10">
+                        <div class="flex items-center justify-center gap-1.5">
+                            <span class="text-lg animate-bounce">🌟</span>
+                            <h2 class="font-outfit text-[11px] md:text-xs tracking-widest font-black uppercase bg-clip-text text-transparent bg-gradient-to-r from-purple-700 via-indigo-700 to-sky-700">
+                                SMP NEGERI 1 TINGGIMONCONG
+                            </h2>
+                            <span class="text-lg animate-bounce">🌟</span>
+                        </div>
+                        <h1 class="font-outfit text-xl md:text-2xl font-black tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-pink-600 via-purple-600 via-indigo-600 to-sky-600 drop-shadow-sm">
+                            SERTIFIKAT PENYELESAIAN LKPD
+                        </h1>
+                        <p class="text-[9px] md:text-[10px] font-black tracking-wider uppercase text-slate-700 bg-gradient-to-r from-amber-100 via-pink-100 to-sky-100 py-0.5 px-3 rounded-full inline-block border border-slate-200/80 shadow-sm">
+                            INFORMATIKA KELAS VII — "JAGO MENGGUNAKAN PERANGKAT TIK & INTERNET"
+                        </p>
+                    </div>
+
+                    <!-- Awardee Info -->
+                    <div class="my-1.5 space-y-1 relative z-10">
+                        <p class="text-[9px] uppercase text-purple-700 tracking-widest font-extrabold">Diberikan Kepada Siswa Bestari:</p>
+                        <h3 id="cert-student-name" class="font-outfit text-xl md:text-2xl font-black text-slate-900 bg-clip-text text-transparent bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900">
+                            ANDI MUHAMMAD RIZKY
+                        </h3>
+                        <p id="cert-student-class" class="text-slate-800 font-extrabold text-[11px] bg-slate-100/90 inline-block px-2.5 py-0.5 rounded-full border border-slate-200">
+                            Kelas: VII A • Nomor Absen: 05
+                        </p>
+                        <p class="text-[10px] md:text-[11px] text-slate-600 max-w-lg mx-auto leading-tight font-medium pt-0.5">
+                            Telah menyelesaikan Lembar Kerja Peserta Didik (LKPD) Interaktif mencakup Perangkat TIK, Antarmuka Pengguna, Manajemen File & Folder, Peramban (Browser), dan E-mail.
+                        </p>
+                    </div>
+
+                    <!-- Colorful Score Badges Summary -->
+                    <div class="grid grid-cols-3 gap-2 max-w-sm mx-auto my-1 p-2 rounded-xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-sky-500/10 border border-purple-200/80 shadow-sm relative z-10 backdrop-blur-sm">
+                        <div class="text-center border-r border-slate-200/80 pr-1">
+                            <span class="text-[8px] text-purple-700 font-extrabold uppercase block">Nilai LKPD</span>
+                            <span id="cert-score-display" class="text-lg md:text-xl font-black text-slate-900">92/100</span>
+                        </div>
+                        <div class="text-center border-r border-slate-200/80 pr-1">
+                            <span class="text-[8px] text-amber-700 font-extrabold uppercase block">Predikat</span>
+                            <span id="cert-predicate-display" class="text-[9px] md:text-[10px] font-black text-amber-600 block truncate">🏆 SANGAT BAIK</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-[8px] text-indigo-700 font-extrabold uppercase block">Percobaan</span>
+                            <span id="cert-attempt-display" class="text-xs md:text-sm font-black text-indigo-700">Ke-1</span>
+                        </div>
+                    </div>
+
+                    <!-- Signatures & Date Footer -->
+                    <div class="flex justify-between items-end pt-2 text-left border-t border-purple-200/60 mt-1 relative z-10">
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-bold">Tanggal Penyelesaian:</p>
+                            <p id="cert-date-display" class="text-[11px] font-bold text-slate-800">18 Oktober 2026</p>
+                            <p class="text-[8px] text-slate-400 mt-0.5">ID LKPD: <span id="cert-id-code">INF-LKPD-8291</span></p>
+                        </div>
+
+                        <div class="text-center space-y-0.5">
+                            <p class="text-[8px] font-bold text-slate-600">Guru Mata Pelajaran Informatika,</p>
+                            <div class="h-6 flex items-center justify-center italic text-[10px] text-slate-400 font-serif">
+                                (Tanda Tangan Guru)
+                            </div>
+                            <p class="text-[11px] font-extrabold text-slate-900 border-b border-slate-400 pb-0.5">Syarifuddin, S. Pd., M. Si.</p>
+                            <p class="text-[8px] text-slate-500">NIP. SMPN 1 Tinggimoncong</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- EXPLANATION & ANSWER REVIEW SECTION (NON-PRINTABLE) -->
+            <div class="no-print bg-white rounded-3xl p-6 border border-slate-200 shadow-xl space-y-6">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b pb-4">
+                    <div>
+                        <h3 class="font-outfit font-extrabold text-xl text-slate-900 flex items-center gap-2">
+                            📋 PEMBAHASAN & EVALUASI JAWABAN
+                        </h3>
+                        <p class="text-xs text-slate-500">Pelajari kunci jawaban dan pembahasan untuk seluruh 45 soal di bawah ini.</p>
+                    </div>
+
+                    <!-- Review Filter Buttons -->
+                    <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+                        <button id="filter-btn-all" onclick="filterReviewList('all')" class="px-3 py-1.5 rounded-lg bg-white shadow-sm text-slate-800">Semua Soal (45)</button>
+                        <button id="filter-btn-wrong" onclick="filterReviewList('wrong')" class="px-3 py-1.5 rounded-lg text-rose-600 hover:bg-white/50">❌ Jawaban Salah</button>
+                        <button id="filter-btn-correct" onclick="filterReviewList('correct')" class="px-3 py-1.5 rounded-lg text-emerald-600 hover:bg-white/50">✅ Jawaban Benar</button>
+                    </div>
+                </div>
+
+                <!-- Explanation Container -->
+                <div id="review-questions-list" class="space-y-4">
+                    <!-- Injected dynamically by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="no-print bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-8">
+        <p>© 2026 SMPN 1 Tinggimoncong • LKPD Interaktif Informatika VII • Guru: Syarifuddin, S. Pd., M. Si.</p>
+    </footer>
+
+    <script>
+        /* Web Audio API Synthesizer for Interactive Audio Feedback */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(type) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'select') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.1);
+                }
+            } catch(e) {}
+        }
+
+        /* STORAGE STATE DEFINITIONS */
+        const STORAGE_KEY = 'lkpd_informatika_smpn1_tinggimoncong_v3';
+
+        let appData = {
+            student: { nama: '', kelas: 'VII A', absen: '' },
+            currentAttempt: 1,
+            history: [] // array of { attempt, date, score, predicate, correctCount, wrongCount }
+        };
+
+        let currentQuestionIdx = 0;
+        let studentAnswers = {}; // { questionId: answerVal }
+        let currentReviewFilter = 'all';
+
+        const questionsDatabase = [
+            /* AKTIVITAS 1: PERANGKAT TIK (Q1 - Q5) */
+            {
+                id: 1,
+                module: 1,
+                moduleTitle: 'Aktivitas 1 — Perangkat TIK',
+                type: 'multiselect',
+                q: 'Manakah yang termasuk perangkat TIK yang dapat digunakan untuk mengolah informasi? (Pilih semua yang benar)',
+                options: [
+                    { id: 'laptop', text: '💻 Laptop', correct: true },
+                    { id: 'smartphone', text: '📱 Smartphone', correct: true },
+                    { id: 'tablet', text: '📱 Tablet', correct: true },
+                    { id: 'printer', text: '🖨️ Printer' }
+                ],
+                explanation: 'Laptop, Smartphone, dan Tablet adalah perangkat pemroses data dan pengolah informasi. Printer hanya berfungsi sebagai perangkat output untuk mencetak dokumen.'
+            },
+            {
+                id: 2,
+                module: 1,
+                moduleTitle: 'Aktivitas 1 — Perangkat TIK',
+                type: 'mcq',
+                q: 'Perangkat apakah ini? (Papan tombol ketik)',
+                illustration: '⌨️',
+                options: [
+                    { id: 'A', text: 'A. Monitor' },
+                    { id: 'B', text: 'B. Keyboard', correct: true },
+                    { id: 'C', text: 'C. Mouse' },
+                    { id: 'D', text: 'D. Speaker' }
+                ],
+                explanation: 'Keyboard (papan ketik) adalah perangkat masukan (input) utama yang digunakan untuk memasukkan teks, angka, dan perintah ke komputer.'
+            },
+            {
+                id: 3,
+                module: 1,
+                moduleTitle: 'Aktivitas 1 — Perangkat TIK',
+                type: 'mcq',
+                q: 'Pada smartphone, bagian utama yang digunakan untuk berinteraksi dengan sentuhan jari adalah...',
+                illustration: '📱',
+                options: [
+                    { id: 'A', text: 'A. Touchscreen', correct: true },
+                    { id: 'B', text: 'B. Speaker' },
+                    { id: 'C', text: 'C. Kamera' },
+                    { id: 'D', text: 'D. Baterai' }
+                ],
+                explanation: 'Touchscreen (layar sentuh) berfungsi ganda sebagai layar penampil sekaligus antarmuka utama penginput instruksi melalui sentuhan jari.'
+            },
+            {
+                id: 4,
+                module: 1,
+                moduleTitle: 'Aktivitas 1 — Perangkat TIK',
+                type: 'mcq',
+                q: 'Rina ingin mengetik laporan yang cukup panjang. Perangkat yang paling nyaman digunakan adalah...',
+                options: [
+                    { id: 'A', text: 'A. Laptop / Komputer', correct: true },
+                    { id: 'B', text: 'B. Smartphone' },
+                    { id: 'C', text: 'C. Smartwatch' },
+                    { id: 'D', text: 'D. Kamera' }
+                ],
+                explanation: 'Laptop/Komputer memiliki layar yang luas dan keyboard fisik berukuran penuh yang sangat ergonomis untuk mengetik teks panjang.'
+            },
+            {
+                id: 5,
+                module: 1,
+                moduleTitle: 'Aktivitas 1 — Perangkat TIK',
+                type: 'matching_drag',
+                q: 'Cocokkan perangkat TIK dengan alat antarmuka utamanya:',
+                pairs: [
+                    { item: 'Komputer / Laptop', match: 'Keyboard & Mouse' },
+                    { item: 'Smartphone', match: 'Touchscreen' },
+                    { item: 'Tablet', match: 'Touchscreen' }
+                ],
+                explanation: 'Komputer menggunakan kombinasi Keyboard & Mouse, sedangkan Smartphone dan Tablet menggunakan antarmuka Touchscreen (Layar Sentuh).'
+            },
+
+            /* AKTIVITAS 2: ANTARMUKA PENGGUNA (Q6 - Q10) */
+            {
+                id: 6,
+                module: 2,
+                moduleTitle: 'Aktivitas 2 — Antarmuka Pengguna',
+                type: 'mcq',
+                q: 'Antarmuka pengguna (User Interface) digunakan untuk...',
+                options: [
+                    { id: 'A', text: 'A. Membuat perangkat lebih berat' },
+                    { id: 'B', text: 'B. Memungkinkan manusia berinteraksi dengan perangkat', correct: true },
+                    { id: 'C', text: 'C. Menghapus semua file' },
+                    { id: 'D', text: 'D. Mematikan komputer' }
+                ],
+                explanation: 'Antarmuka Pengguna (UI) adalah jembatan penghubung yang memungkinkan pengguna memberikan instruksi dan berinteraksi dengan sistem komputer.'
+            },
+            {
+                id: 7,
+                module: 2,
+                moduleTitle: 'Aktivitas 2 — Antarmuka Pengguna',
+                type: 'mcq',
+                q: 'Apa fungsi utama klik kiri pada mouse?',
+                illustration: '🖱️',
+                options: [
+                    { id: 'A', text: 'A. Memilih atau mengklik objek', correct: true },
+                    { id: 'B', text: 'B. Menghapus komputer' },
+                    { id: 'C', text: 'C. Mematikan arus listrik' },
+                    { id: 'D', text: 'D. Mengubah kecerahan layar' }
+                ],
+                explanation: 'Klik kiri mouse berfungsi untuk memilih item, menekan tombol, atau membuka aplikasi pada antarmuka layar.'
+            },
+            {
+                id: 8,
+                module: 2,
+                moduleTitle: 'Aktivitas 2 — Antarmuka Pengguna',
+                type: 'mcq',
+                q: 'Shortcut keyboard untuk menyalin (copy) file atau teks adalah...',
+                options: [
+                    { id: 'A', text: 'A. Ctrl + V' },
+                    { id: 'B', text: 'B. Ctrl + X' },
+                    { id: 'C', text: 'C. Ctrl + C', correct: true },
+                    { id: 'D', text: 'D. Ctrl + Z' }
+                ],
+                explanation: 'Ctrl + C digunakan untuk Copy (Salin), Ctrl + V untuk Paste (Tempel), Ctrl + X untuk Cut (Potong), dan Ctrl + Z untuk Undo (Batal).'
+            },
+            {
+                id: 9,
+                module: 2,
+                moduleTitle: 'Aktivitas 2 — Antarmuka Pengguna',
+                type: 'mcq',
+                q: 'Gestur layar sentuh untuk menggulir halaman ke atas/bawah pada smartphone adalah...',
+                options: [
+                    { id: 'A', text: 'A. Swipe / Usap', correct: true },
+                    { id: 'B', text: 'B. Pinch' },
+                    { id: 'C', text: 'C. Long Press' },
+                    { id: 'D', text: 'D. Double Tap' }
+                ],
+                explanation: 'Swipe (mengusap layar) digunakan untuk menggulir halaman web atau dokumen ke atas, bawah, maupun samping.'
+            },
+            {
+                id: 10,
+                module: 2,
+                moduleTitle: 'Aktivitas 2 — Antarmuka Pengguna',
+                type: 'mcq',
+                q: 'Gestur menggunakan dua jari untuk memperbesar atau memperkecil tampilan dinamakan...',
+                options: [
+                    { id: 'A', text: 'A. Swipe' },
+                    { id: 'B', text: 'B. Tap' },
+                    { id: 'C', text: 'C. Pinch', correct: true },
+                    { id: 'D', text: 'D. Long Press' }
+                ],
+                explanation: 'Pinch (mencubit layar dengan 2 jari) digunakan untuk melakukan zoom in (memperbesar) atau zoom out (memperkecil) tampilan foto/peta.'
+            },
+
+            /* AKTIVITAS 3: MANAJEMEN FILE & FOLDER (Q11 - Q20) */
+            {
+                id: 11,
+                module: 3,
+                moduleTitle: 'Aktivitas 3 — Manajemen File & Folder',
+                type: 'mcq',
+                q: 'Objek bertuliskan "📄 Tugas_Informatika.docx" merupakan contoh dari...',
+                options: [
+                    { id: 'A', text: 'A. Folder' },
+                    { id: 'B', text: 'B. File', correct: true },
+                    { id: 'C', text: 'C. Aplikasi' },
+                    { id: 'D', text: 'D. Perangkat Keras' }
+                ],
+                explanation: 'Objek yang memiliki nama dan ekstensi penanda format (seperti .docx) adalah sebuah File dokumen.'
+            },
+            {
+                id: 12,
+                module: 3,
+                moduleTitle: 'Aktivitas 3 — Manajemen File & Folder',
+                type: 'mcq',
+                q: 'Objek bertuliskan "📁 Informatika" merupakan contoh dari...',
+                options: [
+                    { id: 'A', text: 'A. File' },
+                    { id: 'B', text: 'B. Folder', correct: true },
+                    { id: 'C', text: 'C. Video' },
+                    { id: 'D', text: 'D. Gambar' }
+                ],
+                explanation: 'Objek berupa wadah berbintang/map (📁) tanpa ekstensi format adalah Folder yang berfungsi menampung kumpulan file.'
+            },
+            {
+                id: 13,
+                module: 3,
+                moduleTitle: 'Aktivitas 3 — Manajemen File & Folder',
+                type: 'matching_drag',
+                q: 'Cocokkan ekstensi file dengan jenis datanya:',
+                pairs: [
+                    { item: '.jpg', match: 'Foto/Gambar' },
+                    { item: '.docx', match: 'Dokumen Teks' },
+                    { item: '.xlsx', match: 'Data Spreadsheet' },
+                    { item: '.pptx', match: 'Presentasi' },
+                    { item: '.mp4', match: 'Video' }
+                ],
+                explanation: 'Ekstensi file menentukan format isi data: .jpg (Gambar), .docx (Word), .xlsx (Excel), .pptx (PowerPoint), dan .mp4 (Video).'
+            },
+            {
+                id: 14,
+                module: 3,
+                moduleTitle: 'Aktivitas 3 — Manajemen File & Folder',
+                type: 'classify_files',
+                q: 'Kelompokkan objek berikut ke dalam kategori yang tepat (FILE atau FOLDER):',
+                items: [
+                    { name: '📄 Tugas.docx', type: 'FILE' },
+                    { name: '📁 Tugas', type: 'FOLDER' },
+                    { name: '📷 Foto.jpg', type: 'FILE' },
+                    { name: '📁 Foto', type: 'FOLDER' },
+                    { name: '🎬 Video.mp4', type: 'FILE' },
+                    { name: '📁 Video', type: 'FOLDER' }
+                ],
+                explanation: 'Setiap objek dengan ekstensi (.docx, .jpg, .mp4) adalah FILE, sedangkan objek wadah map (📁) tanpa ekstensi adalah FOLDER.'
+            },
+            {
+                id: 15,
+                module: 3,
+                moduleTitle: 'Aktivitas 3 — Manajemen File & Folder',
+                type: 'mcq',
+                q: 'Tujuan utama membuat folder di dalam komputer adalah...',
+                options: [
+                    { id: 'A', text: 'A. Membuat file hilang' },
+                    { id: 'B', text: 'B. Mengelompokkan dan mengatur file agar rapi', correct: true },
+                    { id: 'C', text: 'C. Menghapus file otomatis' },
+                    { id: 'D', text: 'D. Mematikan sistem' }
+                ],
+                explanation: 'Folder digunakan untuk menstrukturkan dan mengelompokkan file berdasarkan topik/jenis agar teratur dan mudah dicari kembali.'
+            },
+            {
+                id: 16,
+                module: 3,
+                moduleTitle: 'Aktivitas 3 — Manajemen File & Folder',
+                type: 'text_input',
+                q: 'File bernama "Document1.docx" kurang jelas. Tuliskan nama baru file agar lebih rapi mencantumkan kata "Tugas"!',
+                hint: 'Contoh nama file terstruktur: Tugas_Informatika_NamaSiswa.docx',
+                validPattern: 'tugas',
+                explanation: 'Penamaan file yang baik harus memuat kata kunci spesifik seperti kata "Tugas", topik pelajaran, dan nama pemilik file.'
+            },
+            {
+                id: 17,
+                module: 3,
+                moduleTitle: 'Aktivitas 3 — Manajemen File & Folder',
+                type: 'mcq',
+                q: 'Situasi: Saya ingin membuat salinan file baru dan tetap mempertahankan file asli di tempat semula. Pilihan perintahnya adalah...',
+                options: [
+                    { id: 'A', text: 'A. Move' },
+                    { id: 'B', text: 'B. Copy', correct: true },
+                    { id: 'C', text: 'C. Delete' },
+                    { id: 'D', text: 'D. Rename' }
+                ],
+                explanation: 'Copy (Menyalin) membuat gandaan file baru di lokasi lain tanpa menghapus file yang ada di direktori asal.'
+            },
+            {
+                id: 18,
+                module: 3,
+                moduleTitle: 'Aktivitas 3 — Manajemen File & Folder',
+                type: 'mcq',
+                q: 'Situasi: Saya ingin memindahkan file dari folder "Tugas" ke "Arsip" tanpa meninggalkan file di folder Tugas. Pilihan perintahnya adalah...',
+                options: [
+                    { id: 'A', text: 'A. Copy' },
+                    { id: 'B', text: 'B. Move', correct: true },
+                    { id: 'C', text: 'C. Delete' },
+                    { id: 'D', text: 'D. Rename' }
+                ],
+                explanation: 'Move (Memindahkan / Cut-Paste) memindahkan fisik file ke lokasi tujuan baru sehingga file tidak lagi tersimpan di folder asal.'
+            },
+            {
+                id: 19,
+                module: 3,
+                moduleTitle: 'Aktivitas 3 — Manajemen File & Folder',
+                type: 'matching_drag',
+                q: 'Cocokkan kombinasi shortcut keyboard dengan fungsinya:',
+                pairs: [
+                    { item: 'Ctrl + C', match: 'Copy (Salin)' },
+                    { item: 'Ctrl + V', match: 'Paste (Tempel)' },
+                    { item: 'Ctrl + X', match: 'Cut (Potong)' },
+                    { item: 'Ctrl + Z', match: 'Undo (Batal)' },
+                    { item: 'Ctrl + S', match: 'Save (Simpan)' }
+                ],
+                explanation: 'Shortcut penting: Ctrl+C (Copy), Ctrl+V (Paste), Ctrl+X (Cut), Ctrl+Z (Undo), dan Ctrl+S (Save/Simpan).'
+            },
+            {
+                id: 20,
+                module: 3,
+                moduleTitle: 'Aktivitas 3 — Manajemen File & Folder',
+                type: 'virtual_file_manager',
+                q: 'Simulasi File Manager: Pindahkan setiap file ke dalam folder tujuan yang sesuai!',
+                files: [
+                    { id: 'f1', name: '📄 Tugas_Informatika.docx', targetFolder: '📁 Tugas' },
+                    { id: 'f2', name: '📷 Foto_Kegiatan.jpg', targetFolder: '📁 Foto' },
+                    { id: 'f3', name: '📊 Nilai.xlsx', targetFolder: '📁 Data' },
+                    { id: 'f4', name: '📽️ Presentasi.pptx', targetFolder: '📁 Presentasi' },
+                    { id: 'f5', name: '🎬 Video.mp4', targetFolder: '📁 Video' }
+                ],
+                folders: ['📁 Tugas', '📁 Foto', '📁 Data', '📁 Presentasi', '📁 Video'],
+                explanation: 'Pengelompokkan file ke folder sejenis: Dokumen teks ke 📁Tugas, Gambar ke 📁Foto, Spreadsheet ke 📁Data, Presentasi ke 📁Presentasi, dan Video ke 📁Video.'
+            },
+
+            /* AKTIVITAS 4: PERAMBAN / BROWSER (Q21 - Q27) */
+            {
+                id: 21,
+                module: 4,
+                moduleTitle: 'Aktivitas 4 — Peramban (Browser)',
+                type: 'mcq',
+                q: 'Peramban (web browser) adalah aplikasi komputer/HP yang berfungsi untuk...',
+                options: [
+                    { id: 'A', text: 'A. Memutar musik MP3' },
+                    { id: 'B', text: 'B. Mengakses dan menampilkan halaman web di internet', correct: true },
+                    { id: 'C', text: 'C. Mengedit foto' },
+                    { id: 'D', text: 'D. Mencetak dokumen' }
+                ],
+                explanation: 'Web Browser (Peramban) dirancang khusus untuk memuat, menerjemahkan kode HTML, dan menampilkan halaman web World Wide Web (WWW).'
+            },
+            {
+                id: 22,
+                module: 4,
+                moduleTitle: 'Aktivitas 4 — Peramban (Browser)',
+                type: 'mcq',
+                q: 'Kelompok aplikasi yang seluruhnya merupakan peramban (browser) adalah...',
+                options: [
+                    { id: 'A', text: 'A. Google Chrome, Mozilla Firefox, Microsoft Edge', correct: true },
+                    { id: 'B', text: 'B. Microsoft Word, Excel, PowerPoint' },
+                    { id: 'C', text: 'C. Paint, Notepad, Calculator' },
+                    { id: 'D', text: 'D. VLC Player, Winamp, Spotify' }
+                ],
+                explanation: 'Google Chrome, Mozilla Firefox, dan Microsoft Edge adalah contoh aplikasi peramban populer untuk menjelajah internet.'
+            },
+            {
+                id: 23,
+                module: 4,
+                moduleTitle: 'Aktivitas 4 — Peramban (Browser)',
+                type: 'browser_simulator',
+                q: 'Simulasi Mini Browser: Klik ke-3 tombol antarmuka berikut (Address Bar, Back, dan Refresh)!',
+                tasks: [
+                    { target: 'address-bar', label: '1. Klik bagian Address Bar (kolom mengetik URL)' },
+                    { target: 'back-btn', label: '2. Klik tombol Kembali (Back)' },
+                    { target: 'refresh-btn', label: '3. Klik tombol Muat Ulang (Refresh)' }
+                ],
+                explanation: 'Navigasi peramban: Address bar untuk mengetik URL, tombol Back untuk kembali ke halaman sebelumnya, dan Refresh untuk memuat ulang halaman.'
+            },
+            {
+                id: 24,
+                module: 4,
+                moduleTitle: 'Aktivitas 4 — Peramban (Browser)',
+                type: 'mcq',
+                q: 'Untuk mencari informasi di internet menggunakan kata kunci, kita mengetikkannya di...',
+                options: [
+                    { id: 'A', text: 'A. Mesin Pencari (Google, Bing, dll)', correct: true },
+                    { id: 'B', text: 'B. Task Manager' },
+                    { id: 'C', text: 'C. Recycle Bin' },
+                    { id: 'D', text: 'D. Control Panel' }
+                ],
+                explanation: 'Mesin pencari (Search Engine) seperti Google memproses kata kunci untuk menampilkan daftar situs web yang relevan.'
+            },
+            {
+                id: 25,
+                module: 4,
+                moduleTitle: 'Aktivitas 4 — Peramban (Browser)',
+                type: 'multiselect',
+                q: 'Skenario: Kamu menemukan artikel di internet. Bagaimana cara memilah apakah informasi itu dapat dipercaya? (Pilih 3 jawaban benar)',
+                options: [
+                    { id: 'o1', text: '✅ Melihat sumber dan penulisnya teridentifikasi jelas', correct: true },
+                    { id: 'o2', text: '✅ Membandingkan dengan sumber berita terpercaya lainnya', correct: true },
+                    { id: 'o3', text: '✅ Melihat tanggal publikasi artikel', correct: true },
+                    { id: 'o4', text: '❌ Langsung percaya tanpa mengecek kebenaran' },
+                    { id: 'o5', text: '❌ Langsung menyebarkan ke grup media sosial' }
+                ],
+                explanation: 'Untuk memverifikasi keabsahan informasi di internet: periksa identitas penulis/penerbit, bandingkan dengan situs resmi lain, dan cek tanggal keterbaruan artikel.'
+            },
+            {
+                id: 26,
+                module: 4,
+                moduleTitle: 'Aktivitas 4 — Peramban (Browser)',
+                type: 'mcq',
+                q: 'Saat mencari informasi di internet, hal yang HARUS dihindari adalah...',
+                options: [
+                    { id: 'A', text: 'A. Menggunakan kata kunci yang jelas' },
+                    { id: 'B', text: 'B. Membaca dari situs resmi' },
+                    { id: 'C', text: 'C. Membuka situs web yang mencurigakan atau meminta data pribadi', correct: true },
+                    { id: 'D', text: 'D. Mencatat sumber referensi' }
+                ],
+                explanation: 'Membuka situs mencurigakan atau memberikan informasi pribadi dapat memicu ancaman kejahatan siber seperti phishing dan virus/malware.'
+            },
+            {
+                id: 27,
+                module: 4,
+                moduleTitle: 'Aktivitas 4 — Peramban (Browser)',
+                type: 'mcq',
+                q: 'Bagian URL "https://www.kemdikbud.go.id" yang menandakan bahwa situs ini resmi milik instansi pemerintah Indonesia adalah...',
+                options: [
+                    { id: 'A', text: 'A. https' },
+                    { id: 'B', text: 'B. www' },
+                    { id: 'C', text: 'C. .go.id', correct: true },
+                    { id: 'D', text: 'D. .com' }
+                ],
+                explanation: 'Domain berkahiran .go.id (.go = government, .id = Indonesia) dikhususkan khusus untuk lembaga pemerintah resmi Republik Indonesia.'
+            },
+
+            /* AKTIVITAS 5: KOMUNIKASI E-MAIL (Q28 - Q35) */
+            {
+                id: 28,
+                module: 5,
+                moduleTitle: 'Aktivitas 5 — E-mail',
+                type: 'mcq',
+                q: 'E-mail merupakan singkatan dari...',
+                options: [
+                    { id: 'A', text: 'A. Electronic Mail', correct: true },
+                    { id: 'B', text: 'B. Easy Mail' },
+                    { id: 'C', text: 'C. Emergency Mail' },
+                    { id: 'D', text: 'D. Extra Mail' }
+                ],
+                explanation: 'E-mail singkatan dari Electronic Mail (Surat Elektronik) yaitu metode pengiriman surat secara digital melalui jaringan internet.'
+            },
+            {
+                id: 29,
+                module: 5,
+                moduleTitle: 'Aktivitas 5 — E-mail',
+                type: 'mcq',
+                q: 'Manakah penulisan alamat e-mail dengan format standar yang benar?',
+                options: [
+                    { id: 'A', text: 'A. budi#gmail.com' },
+                    { id: 'B', text: 'B. budi@gmail.com', correct: true },
+                    { id: 'C', text: 'C. budi.gmail@com' },
+                    { id: 'D', text: 'D. budi@.com' }
+                ],
+                explanation: 'Format e-mail standar menggunakan simbol "@" (at) yang memisahkan nama pengguna dengan nama domain penyedia e-mail (misal: budi@gmail.com).'
+            },
+            {
+                id: 30,
+                module: 5,
+                moduleTitle: 'Aktivitas 5 — E-mail',
+                type: 'mcq',
+                q: 'Bagian e-mail yang berisi judul singkat mengenai pokok topik pesan dinamakan...',
+                options: [
+                    { id: 'A', text: 'A. Subject', correct: true },
+                    { id: 'B', text: 'B. Inbox' },
+                    { id: 'C', text: 'C. Attachment' },
+                    { id: 'D', text: 'D. Signature' }
+                ],
+                explanation: 'Subject adalah perihal/judul e-mail yang memberi tahu penerima gambaran umum ringkas mengenai isi surat.'
+            },
+            {
+                id: 31,
+                module: 5,
+                moduleTitle: 'Aktivitas 5 — E-mail',
+                type: 'matching_drag',
+                q: 'Cocokkan komponen e-mail berikut dengan fungsinya:',
+                pairs: [
+                    { item: 'To', match: 'Alamat Penerima Utama' },
+                    { item: 'Subject', match: 'Judul Singkat Pesan' },
+                    { item: 'Body', match: 'Isi Utama Pesan' },
+                    { item: 'Attachment', match: 'File Lampiran' },
+                    { item: 'CC', match: 'Salinan ke Penerima Lain' }
+                ],
+                explanation: 'To (Penerima utama), Subject (Judul), Body (Isi surat), Attachment (File terlampir), dan CC (Salinan surat ke pihak terkait).'
+            },
+            {
+                id: 32,
+                module: 5,
+                moduleTitle: 'Aktivitas 5 — E-mail',
+                type: 'mcq',
+                q: 'Manakah sikap yang mencerminkan etika komunikasi e-mail yang baik dan santun?',
+                options: [
+                    { id: 'A', text: 'A. Menggunakan huruf KAPITAL SEMUA agar tegas' },
+                    { id: 'B', text: 'B. Menggunakan bahasa yang sopan, jelas, dan menyapa penerima', correct: true },
+                    { id: 'C', text: 'C. Mengirim pesan spam ke banyak orang' },
+                    { id: 'D', text: 'D. Mengosongkan judul pesan' }
+                ],
+                explanation: 'Etika e-mail baik mencakup penggunaan salam pembuka/penutup, bahasa yang sopan, serta tidak menggunakan huruf kapital semua (yang terkesan membentak).'
+            },
+            {
+                id: 33,
+                module: 5,
+                moduleTitle: 'Aktivitas 5 — E-mail',
+                type: 'mcq',
+                q: 'Sebelum menekan tombol "Kirim/Send" e-mail tugas kepada guru, hal terpenting yang harus diperiksa adalah...',
+                options: [
+                    { id: 'A', text: 'A. Menghapus pesan' },
+                    { id: 'B', text: 'B. Memeriksa kelengkapan lampiran file dan kesopanan bahasa', correct: true },
+                    { id: 'C', text: 'C. Mengirim ke semua teman sekelas dahulu' },
+                    { id: 'D', text: 'D. Menghapus alamat tujuan' }
+                ],
+                explanation: 'Memastikan file tugas sudah benar-benar terlampir (attached) dan bahasa pesan sudah sopan adalah langkah wajib sebelum mengirim e-mail ke guru.'
+            },
+            {
+                id: 34,
+                module: 5,
+                moduleTitle: 'Aktivitas 5 — E-mail',
+                type: 'multiselect',
+                q: 'Rani ingin mengirim tugas kepada gurunya melalui e-mail. Manakah langkah yang paling tepat? (Pilih 3 jawaban benar)',
+                options: [
+                    { id: 'm1', text: '✅ Menulis subject: "Tugas Informatika - Rani Kelas VII"', correct: true },
+                    { id: 'm2', text: '✅ Menulis pesan dengan salam pembuka dan penutup', correct: true },
+                    { id: 'm3', text: '✅ Melampirkan file tugas (.docx/.pptx)', correct: true },
+                    { id: 'm4', text: '❌ Menulis pesan singkat saja tanpa salam "Ini tugas saya"' },
+                    { id: 'm5', text: '❌ Mengirim e-mail tanpa menyertakan lampiran file' }
+                ],
+                explanation: 'Mengirim tugas via e-mail yang tepat memerlukan: 1) Subject informatif, 2) Pesan santun berpembuka/penutup, dan 3) Melampirkan file tugas.'
+            },
+            {
+                id: 35,
+                module: 5,
+                moduleTitle: 'Aktivitas 5 — E-mail',
+                type: 'mcq',
+                q: 'Fitur pada e-mail yang digunakan untuk membalas pesan yang kita terima adalah...',
+                options: [
+                    { id: 'A', text: 'A. Forward' },
+                    { id: 'B', text: 'B. Reply', correct: true },
+                    { id: 'C', text: 'C. Delete' },
+                    { id: 'D', text: 'D. Archive' }
+                ],
+                explanation: 'Reply digunakan untuk membalas pesan ke pengirim e-mail, sedangkan Forward digunakan untuk meneruskan pesan ke orang lain.'
+            },
+
+            /* AKTIVITAS 6: EVALUASI AKHIR (Q36 - Q45) */
+            {
+                id: 36,
+                module: 6,
+                moduleTitle: 'Aktivitas 6 — Evaluasi Akhir',
+                type: 'mcq',
+                q: 'Perangkat TIK yang paling tepat untuk menyusun dokumen laporan makalah yang panjang adalah...',
+                options: [
+                    { id: 'A', text: 'A. Laptop / Komputer', correct: true },
+                    { id: 'B', text: 'B. Smartphone' },
+                    { id: 'C', text: 'C. Kamera Digital' },
+                    { id: 'D', text: 'D. Speaker' }
+                ],
+                explanation: 'Komputer/Laptop menyediakan kenyamanan keyboard fisik berukuran penuh dan aplikasi pengolah kata lengkap untuk menyusun laporan.'
+            },
+            {
+                id: 37,
+                module: 6,
+                moduleTitle: 'Aktivitas 6 — Evaluasi Akhir',
+                type: 'mcq',
+                q: 'File dengan ekstensi .pptx biasanya merupakan file...',
+                options: [
+                    { id: 'A', text: 'A. Foto' },
+                    { id: 'B', text: 'B. Presentasi', correct: true },
+                    { id: 'C', text: 'C. Video' },
+                    { id: 'D', text: 'D. Musik' }
+                ],
+                explanation: 'Ekstensi .pptx adalah format resmi file dokumen presentasi slide (Microsoft PowerPoint).'
+            },
+            {
+                id: 38,
+                module: 6,
+                moduleTitle: 'Aktivitas 6 — Evaluasi Akhir',
+                type: 'mcq',
+                q: 'Untuk membuat gandaan/salinan suatu file tanpa menghapus file aslinya digunakan perintah...',
+                options: [
+                    { id: 'A', text: 'A. Move' },
+                    { id: 'B', text: 'B. Copy', correct: true },
+                    { id: 'C', text: 'C. Delete' },
+                    { id: 'D', text: 'D. Rename' }
+                ],
+                explanation: 'Perintah Copy (Salin) menggandakan file ke lokasi baru dan tetap mempertahankan file asli di direktori awal.'
+            },
+            {
+                id: 39,
+                module: 6,
+                moduleTitle: 'Aktivitas 6 — Evaluasi Akhir',
+                type: 'mcq',
+                q: 'Fitur pada komputer yang digunakan untuk mencari nama file tersimpan secara cepat adalah...',
+                options: [
+                    { id: 'A', text: 'A. Search / Kolom Pencarian', correct: true },
+                    { id: 'B', text: 'B. Speaker' },
+                    { id: 'C', text: 'C. Calculator' },
+                    { id: 'D', text: 'D. Wallpaper' }
+                ],
+                explanation: 'Fitur Search (Pencarian) memindai seluruh penyimpanan komputer untuk menemukan file berdasarkan kata kunci nama file.'
+            },
+            {
+                id: 40,
+                module: 6,
+                moduleTitle: 'Aktivitas 6 — Evaluasi Akhir',
+                type: 'mcq',
+                q: 'Manajemen file dan folder yang baik memberikan manfaat...',
+                options: [
+                    { id: 'A', text: 'A. File menjadi sulit ditemukan' },
+                    { id: 'B', text: 'B. File lebih mudah dicari, rapi, dan terstruktur', correct: true },
+                    { id: 'C', text: 'C. Komputer langsung penuh' },
+                    { id: 'D', text: 'D. File tidak dapat dibuka' }
+                ],
+                explanation: 'Manajemen file yang baik mencegah penumpukan file liar sehingga menghemat waktu saat mencari dokumen penting.'
+            },
+            {
+                id: 41,
+                module: 6,
+                moduleTitle: 'Aktivitas 6 — Evaluasi Akhir',
+                type: 'mcq',
+                q: 'Peramban (browser) yang dikembangkan oleh perusahaan Google adalah...',
+                options: [
+                    { id: 'A', text: 'A. Mozilla Firefox' },
+                    { id: 'B', text: 'B. Microsoft Edge' },
+                    { id: 'C', text: 'C. Google Chrome', correct: true },
+                    { id: 'D', text: 'D. Safari' }
+                ],
+                explanation: 'Google Chrome adalah peramban web populer buatan Google Inc.'
+            },
+            {
+                id: 42,
+                module: 6,
+                moduleTitle: 'Aktivitas 6 — Evaluasi Akhir',
+                type: 'mcq',
+                q: 'Situs web dengan akhiran ekstensi domain .go.id umumnya dimiliki oleh...',
+                options: [
+                    { id: 'A', text: 'A. Perusahaan swasta' },
+                    { id: 'B', text: 'B. Instansi Pemerintah Indonesia', correct: true },
+                    { id: 'C', text: 'C. Toko jualan online' },
+                    { id: 'D', text: 'D. Blog pribadi' }
+                ],
+                explanation: 'Domain .go.id (.go=Government, .id=Indonesia) secara resmi khusus digunakan instansi/lembaga pemerintahan Republik Indonesia.'
+            },
+            {
+                id: 43,
+                module: 6,
+                moduleTitle: 'Aktivitas 6 — Evaluasi Akhir',
+                type: 'mcq',
+                q: 'Saat hendak mengirim e-mail resmi kepada guru, hal yang harus diperhatikan adalah...',
+                options: [
+                    { id: 'A', text: 'A. Warna background e-mail' },
+                    { id: 'B', text: 'B. Bahasa sopan, subject jelas, dan menyertakan lampiran file', correct: true },
+                    { id: 'C', text: 'C. Kecepatan mengetik saja' },
+                    { id: 'D', text: 'D. Mengirim ke semua alamat yang ada' }
+                ],
+                explanation: 'Ketiga unsur utama e-mail sekolah: Bahasa sopan berpembuka, Subject jelas mencantumkan nama/tugas, dan lampiran file terpasang.'
+            },
+            {
+                id: 44,
+                module: 6,
+                moduleTitle: 'Aktivitas 6 — Evaluasi Akhir',
+                type: 'mcq',
+                q: 'Pernyataan (Benar/Salah): "Layanan e-mail dapat digunakan untuk melampirkan file dokumen atau foto melalui fitur attachment."',
+                options: [
+                    { id: 'A', text: 'A. BENAR ✅', correct: true },
+                    { id: 'B', text: 'B. SALAH ❌' }
+                ],
+                explanation: 'BENAR. Fitur Attachment (Lampiran) pada e-mail memungkinkan pengguna mengirimkan dokumen, foto, maupun file audio/video.'
+            },
+            {
+                id: 45,
+                module: 6,
+                moduleTitle: 'Aktivitas 6 — Evaluasi Akhir',
+                type: 'mcq',
+                q: 'Pernyataan (Benar/Salah): "Semua berita dan informasi yang ditemukan di internet dipastikan selalu benar dan bisa langsung dipercaya."',
+                options: [
+                    { id: 'A', text: 'A. BENAR ✅' },
+                    { id: 'B', text: 'B. SALAH ❌ (Harus diverifikasi dahulu)', correct: true }
+                ],
+                explanation: 'SALAH. Internet mengandung banyak informasi yang belum teruji kebenarannya (hoaks). Informasi harus selalu diverifikasi dari situs terpercaya.'
+            }
+        ];
+
+        /* APPLICATION LIFECYCLE & INITIALIZATION */
+        window.onload = function() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                } catch(e) {}
+            }
+
+            if (appData.student && appData.student.nama) {
+                document.getElementById('input-nama').value = appData.student.nama;
+                document.getElementById('input-kelas').value = appData.student.kelas;
+                document.getElementById('input-absen').value = appData.student.absen;
+                showDashboard();
+            } else {
+                switchView('view-identity');
+            }
+        };
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+        }
+
+        function switchView(viewId) {
+            ['view-identity', 'view-instructions', 'view-dashboard', 'view-question-runner', 'view-certificate'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* IDENTITY SUBMISSION */
+        function submitIdentity() {
+            const nama = document.getElementById('input-nama').value.trim();
+            const kelas = document.getElementById('input-kelas').value;
+            const absen = document.getElementById('input-absen').value.trim();
+
+            if (!nama || !absen) {
+                document.getElementById('identity-error').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('identity-error').classList.add('hidden');
+
+            appData.student = { nama, kelas, absen };
+            saveData();
+            switchView('view-instructions');
+        }
+
+        function startLKPDWork() {
+            showDashboard();
+        }
+
+        /* DASHBOARD RENDERING & PROGRESS TRACKING */
+        function showDashboard() {
+            // Header stats
+            document.getElementById('header-student-info').classList.remove('hidden');
+            document.getElementById('nav-student-name').innerText = appData.student.nama;
+            document.getElementById('nav-student-class').innerText = appData.student.kelas;
+            document.getElementById('nav-student-attempt').innerText = `Ke-${appData.student.attempt || appData.currentAttempt || 1}`;
+
+            document.getElementById('dash-student-name').innerText = appData.student.nama;
+            document.getElementById('dash-student-info').innerText = `Kelas ${appData.student.kelas} • No. Absen: ${appData.student.absen}`;
+            document.getElementById('dash-attempt-count').innerText = `Ke-${appData.currentAttempt || 1}`;
+
+            // Calculate Best Score
+            let bestScore = 0;
+            if (appData.history && appData.history.length > 0) {
+                bestScore = Math.max(...appData.history.map(h => h.score));
+            }
+            document.getElementById('dash-best-score').innerText = `${bestScore}/100`;
+
+            // Answer progress count
+            const answeredCount = Object.keys(studentAnswers).length;
+            const percent = Math.round((answeredCount / questionsDatabase.length) * 100);
+            document.getElementById('dash-progress-percent').innerText = `${percent}% (${answeredCount}/${questionsDatabase.length} Soal)`;
+            document.getElementById('dash-progress-bar').style.width = `${percent}%`;
+
+            // Update individual module badges
+            updateModuleBadges();
+
+            // Render History Table
+            renderHistoryTable();
+
+            switchView('view-dashboard');
+        }
+
+        function updateModuleBadges() {
+            for (let m = 1; m <= 6; m++) {
+                const moduleQuestions = questionsDatabase.filter(q => q.module === m);
+                const answeredInModule = moduleQuestions.filter(q => studentAnswers[q.id] !== undefined).length;
+                const statusSpan = document.getElementById(`act${m}-status`);
+                
+                if (answeredInModule === moduleQuestions.length) {
+                    statusSpan.innerText = '✅ Selesai';
+                    statusSpan.className = 'text-emerald-600 font-bold';
+                } else if (answeredInModule > 0) {
+                    statusSpan.innerText = `🟡 ${answeredInModule}/${moduleQuestions.length}`;
+                    statusSpan.className = 'text-amber-600 font-bold';
+                } else {
+                    statusSpan.innerText = 'Belum';
+                    statusSpan.className = 'text-slate-400';
+                }
+            }
+        }
+
+        function renderHistoryTable() {
+            const tbody = document.getElementById('history-table-body');
+            if (!appData.history || appData.history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">Belum ada riwayat pengerjaan. Klik kumpulkan setelah menjawab soal.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            appData.history.forEach(item => {
+                html += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-3 font-bold text-sky-700">Percobaan ke-${item.attempt}</td>
+                        <td class="p-3 text-slate-600">${item.date}</td>
+                        <td class="p-3 font-bold text-slate-800">${item.correctCount} / ${questionsDatabase.length}</td>
+                        <td class="p-3 font-black text-slate-900">${item.score}/100</td>
+                        <td class="p-3 font-bold text-amber-600">${item.predicate}</td>
+                        <td class="p-3 text-right">
+                            <button onclick="viewHistoryCertificate(${item.attempt})" class="px-3 py-1 bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold rounded-lg text-[11px] transition">
+                                🏆 Certificate
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        /* QUESTION RUNNER ENGINE */
+        function openActivityModule(moduleNum) {
+            const firstQuestionInModule = questionsDatabase.findIndex(q => q.module === moduleNum);
+            if (firstQuestionInModule !== -1) {
+                currentQuestionIdx = firstQuestionInModule;
+                renderCurrentQuestion();
+                switchView('view-question-runner');
+            }
+        }
+
+        function renderCurrentQuestion() {
+            const q = questionsDatabase[currentQuestionIdx];
+            const container = document.getElementById('runner-question-container');
+
+            document.getElementById('runner-module-title').innerText = q.moduleTitle;
+            document.getElementById('runner-question-counter').innerText = `Soal ${currentQuestionIdx + 1} dari ${questionsDatabase.length}`;
+
+            let html = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <h3 class="font-outfit font-extrabold text-slate-900 text-lg md:text-xl flex items-center gap-2">
+                            <span>Soal #${currentQuestionIdx + 1}</span>
+                        </h3>
+                        <span class="text-xs font-bold px-3 py-1 bg-sky-100 text-sky-800 rounded-full">
+                            Bobot: ~2.22 Poin
+                        </span>
+                    </div>
+
+                    ${q.illustration ? `<div class="text-5xl text-center my-3">${q.illustration}</div>` : ''}
+
+                    <p class="text-slate-800 text-base md:text-lg font-medium leading-relaxed">${q.q}</p>
+            `;
+
+            // TYPE 1: MULTIPLE CHOICE (MCQ)
+            if (q.type === 'mcq') {
+                const selected = studentAnswers[q.id];
+                html += `<div class="grid gap-3 pt-2">`;
+                q.options.forEach(opt => {
+                    const isChecked = selected === opt.id;
+                    html += `
+                        <button onclick="saveMcqAnswer(${q.id}, '${opt.id}')" class="w-full text-left p-4 rounded-2xl border-2 transition flex items-center justify-between ${isChecked ? 'border-sky-600 bg-sky-50 font-extrabold text-sky-950 shadow-sm' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'}">
+                            <span>${opt.text}</span>
+                            <span class="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs ${isChecked ? 'border-sky-600 bg-sky-600 text-white' : 'border-slate-300'}">
+                                ${isChecked ? '✓' : ''}
+                            </span>
+                        </button>
+                    `;
+                });
+                html += `</div>`;
+            }
+            
+            // TYPE 2: MULTI-SELECT CHECKBOXES
+            else if (q.type === 'multiselect') {
+                const selectedArr = studentAnswers[q.id] || [];
+                html += `<div class="grid gap-3 pt-2">`;
+                q.options.forEach(opt => {
+                    const isChecked = selectedArr.includes(opt.id);
+                    html += `
+                        <button onclick="toggleMultiSelectAnswer(${q.id}, '${opt.id}')" class="w-full text-left p-4 rounded-2xl border-2 transition flex items-center justify-between ${isChecked ? 'border-indigo-600 bg-indigo-50 font-extrabold text-indigo-950 shadow-sm' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'}">
+                            <span>${opt.text}</span>
+                            <span class="w-6 h-6 rounded-lg border-2 flex items-center justify-center text-xs ${isChecked ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-300'}">
+                                ${isChecked ? '✓' : ''}
+                            </span>
+                        </button>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            // TYPE 3: DRAG MATCHING / PAIRS
+            else if (q.type === 'matching_drag') {
+                const currentMatches = studentAnswers[q.id] || {};
+                html += `
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                        <p class="text-xs font-bold text-slate-500 uppercase">Pilih pasangan yang sesuai untuk setiap item:</p>
+                `;
+                q.pairs.forEach((pair) => {
+                    const selectedVal = currentMatches[pair.item] || '';
+                    html += `
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-2 p-3 bg-white rounded-xl border border-slate-200">
+                            <span class="font-bold text-slate-800 text-sm">${pair.item}</span>
+                            <select onchange="saveMatchingPair(${q.id}, '${pair.item}', this.value)" class="px-3 py-2 border rounded-xl bg-slate-50 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-sky-500">
+                                <option value="">-- Pilih Pasangan --</option>
+                                ${q.pairs.map(p => `<option value="${p.match}" ${selectedVal === p.match ? 'selected' : ''}>${p.match}</option>`).join('')}
+                            </select>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            // TYPE 4: CLASSIFY FILES VS FOLDER
+            else if (q.type === 'classify_files') {
+                const currentClassifications = studentAnswers[q.id] || {};
+                html += `
+                    <div class="grid md:grid-cols-2 gap-3 pt-2">
+                `;
+                q.items.forEach(item => {
+                    const selectedCat = currentClassifications[item.name] || '';
+                    html += `
+                        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between">
+                            <span class="font-bold text-slate-800 text-sm">${item.name}</span>
+                            <div class="flex gap-1">
+                                <button onclick="saveClassifyItem(${q.id}, '${item.name}', 'FILE')" class="px-3 py-1.5 rounded-xl text-xs font-bold ${selectedCat === 'FILE' ? 'bg-sky-600 text-white' : 'bg-white border text-slate-600'}">FILE</button>
+                                <button onclick="saveClassifyItem(${q.id}, '${item.name}', 'FOLDER')" class="px-3 py-1.5 rounded-xl text-xs font-bold ${selectedCat === 'FOLDER' ? 'bg-amber-600 text-white' : 'bg-white border text-slate-600'}">FOLDER</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            // TYPE 5: TEXT INPUT (RENAME)
+            else if (q.type === 'text_input') {
+                const val = studentAnswers[q.id] || '';
+                html += `
+                    <div class="space-y-3 pt-2">
+                        <label class="block text-xs font-bold text-slate-600 uppercase">Ketikkan nama file baru:</label>
+                        <input type="text" oninput="saveTextInputAnswer(${q.id}, this.value)" value="${val}" placeholder="Contoh: Tugas_Informatika_NamaSiswa.docx" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 outline-none font-semibold text-slate-800">
+                        <p class="text-xs text-slate-400 italic">${q.hint}</p>
+                    </div>
+                `;
+            }
+
+            // TYPE 6: VIRTUAL FILE MANAGER
+            else if (q.type === 'virtual_file_manager') {
+                const moves = studentAnswers[q.id] || {};
+                html += `
+                    <div class="bg-slate-900 text-white p-5 rounded-2xl space-y-4">
+                        <p class="text-xs text-slate-300 font-bold uppercase">📁 File Manager Virtual - Folder Sekolah</p>
+                        <div class="grid gap-3">
+                `;
+                q.files.forEach(f => {
+                    const chosen = moves[f.id] || '';
+                    html += `
+                        <div class="flex flex-col sm:flex-row items-center justify-between p-3 bg-slate-800/80 rounded-xl border border-slate-700 gap-2">
+                            <span class="font-mono text-xs text-sky-300">${f.name}</span>
+                            <select onchange="saveFileManagerMove(${q.id}, '${f.id}', this.value)" class="px-3 py-1.5 bg-slate-700 text-white text-xs font-semibold rounded-lg border border-slate-600">
+                                <option value="">-- Pindahkan ke Folder --</option>
+                                ${q.folders.map(fold => `<option value="${fold}" ${chosen === fold ? 'selected' : ''}>${fold}</option>`).join('')}
+                            </select>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            }
+
+            // TYPE 7: MINI BROWSER SIMULATOR
+            else if (q.type === 'browser_simulator') {
+                const currentClicks = studentAnswers[q.id] || [];
+                html += `
+                    <div class="bg-slate-100 rounded-2xl border-2 border-slate-300 overflow-hidden space-y-2">
+                        <!-- Browser Bar Header -->
+                        <div class="bg-slate-200 p-3 flex items-center gap-2 border-b">
+                            <button id="sim-back-btn" onclick="triggerBrowserSimClick(${q.id}, 'back-btn')" class="p-2 rounded-lg bg-white shadow-sm border font-bold hover:bg-sky-100 ${currentClicks.includes('back-btn') ? 'ring-2 ring-emerald-500 bg-emerald-50 text-emerald-800' : ''}">⬅️ Back</button>
+                            <button id="sim-refresh-btn" onclick="triggerBrowserSimClick(${q.id}, 'refresh-btn')" class="p-2 rounded-lg bg-white shadow-sm border font-bold hover:bg-sky-100 ${currentClicks.includes('refresh-btn') ? 'ring-2 ring-emerald-500 bg-emerald-50 text-emerald-800' : ''}">🔄 Refresh</button>
+                            <input id="sim-address-bar" onclick="triggerBrowserSimClick(${q.id}, 'address-bar')" readonly value="https://www.smpn1tinggimoncong.sch.id" class="flex-grow px-3 py-2 rounded-lg border bg-white font-mono text-xs cursor-pointer hover:bg-sky-50 ${currentClicks.includes('address-bar') ? 'ring-2 ring-emerald-500 bg-emerald-50 text-emerald-800' : ''}">
+                        </div>
+                        <div class="p-4 bg-white text-xs text-slate-600 space-y-2">
+                            <p class="font-bold text-slate-800">Petunjuk Simulasi:</p>
+                            ${q.tasks.map(t => `<p class="${currentClicks.includes(t.target) ? 'text-emerald-600 font-extrabold' : 'text-slate-600'}">${currentClicks.includes(t.target) ? '✅' : '⏳'} ${t.label}</p>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+
+            // Update footer controls state
+            document.getElementById('btn-runner-prev').disabled = (currentQuestionIdx === 0);
+            if (currentQuestionIdx === questionsDatabase.length - 1) {
+                document.getElementById('btn-runner-next').innerHTML = '🎯 SELESAI LKPD & KIRIM';
+                document.getElementById('btn-runner-next').className = 'px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-xs md:text-sm shadow-lg transition';
+            } else {
+                document.getElementById('btn-runner-next').innerHTML = 'Soal Berikutnya ➡️';
+                document.getElementById('btn-runner-next').className = 'px-5 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs md:text-sm shadow-md transition';
+            }
+        }
+
+        /* ANSWER HANDLERS */
+        function saveMcqAnswer(qId, optId) {
+            studentAnswers[qId] = optId;
+            playTone('select');
+            renderCurrentQuestion();
+        }
+
+        function toggleMultiSelectAnswer(qId, optId) {
+            let arr = studentAnswers[qId] || [];
+            if (arr.includes(optId)) {
+                arr = arr.filter(i => i !== optId);
+            } else {
+                arr.push(optId);
+            }
+            studentAnswers[qId] = arr;
+            playTone('select');
+            renderCurrentQuestion();
+        }
+
+        function saveMatchingPair(qId, item, val) {
+            let matches = studentAnswers[qId] || {};
+            matches[item] = val;
+            studentAnswers[qId] = matches;
+            playTone('select');
+        }
+
+        function saveClassifyItem(qId, itemName, category) {
+            let obj = studentAnswers[qId] || {};
+            obj[itemName] = category;
+            studentAnswers[qId] = obj;
+            playTone('select');
+            renderCurrentQuestion();
+        }
+
+        function saveTextInputAnswer(qId, val) {
+            studentAnswers[qId] = val;
+        }
+
+        function saveFileManagerMove(qId, fileId, folder) {
+            let moves = studentAnswers[qId] || {};
+            moves[fileId] = folder;
+            studentAnswers[qId] = moves;
+            playTone('select');
+        }
+
+        function triggerBrowserSimClick(qId, targetId) {
+            let currentClicks = studentAnswers[qId] || [];
+            if (!currentClicks.includes(targetId)) {
+                currentClicks.push(targetId);
+            }
+            studentAnswers[qId] = currentClicks;
+            playTone('select');
+            renderCurrentQuestion();
+        }
+
+        function navigateRunner(direction) {
+            const newIndex = currentQuestionIdx + direction;
+            if (newIndex >= 0 && newIndex < questionsDatabase.length) {
+                currentQuestionIdx = newIndex;
+                renderCurrentQuestion();
+            } else if (newIndex >= questionsDatabase.length) {
+                submitLKPDAttempt();
+            }
+        }
+
+        function returnToDashboard() {
+            showDashboard();
+        }
+
+        /* EVALUATION ENGINE & SCORING CALCULATOR */
+        function submitLKPDAttempt() {
+            let correctCount = 0;
+
+            questionsDatabase.forEach(q => {
+                const userAns = studentAnswers[q.id];
+                let isCorrect = false;
+
+                if (q.type === 'mcq') {
+                    const correctOpt = q.options.find(o => o.correct);
+                    if (correctOpt && userAns === correctOpt.id) isCorrect = true;
+                } 
+                else if (q.type === 'multiselect') {
+                    const correctIds = q.options.filter(o => o.correct).map(o => o.id);
+                    const userArr = userAns || [];
+                    if (correctIds.length === userArr.length && correctIds.every(i => userArr.includes(i))) {
+                        isCorrect = true;
+                    }
+                }
+                else if (q.type === 'matching_drag') {
+                    const matches = userAns || {};
+                    let allMatched = true;
+                    q.pairs.forEach(p => {
+                        if (matches[p.item] !== p.match) allMatched = false;
+                    });
+                    if (allMatched && Object.keys(matches).length === q.pairs.length) isCorrect = true;
+                }
+                else if (q.type === 'classify_files') {
+                    const classes = userAns || {};
+                    let allCorrect = true;
+                    q.items.forEach(it => {
+                        if (classes[it.name] !== it.type) allCorrect = false;
+                    });
+                    if (allCorrect && Object.keys(classes).length === q.items.length) isCorrect = true;
+                }
+                else if (q.type === 'text_input') {
+                    if (userAns && userAns.trim().toLowerCase().includes('tugas')) isCorrect = true;
+                }
+                else if (q.type === 'virtual_file_manager') {
+                    const moves = userAns || {};
+                    let allCorrect = true;
+                    q.files.forEach(f => {
+                        if (moves[f.id] !== f.targetFolder) allCorrect = false;
+                    });
+                    if (allCorrect && Object.keys(moves).length === q.files.length) isCorrect = true;
+                }
+                else if (q.type === 'browser_simulator') {
+                    const clicks = userAns || [];
+                    if (q.tasks.every(t => clicks.includes(t.target))) isCorrect = true;
+                }
+
+                if (isCorrect) correctCount++;
+            });
+
+            const wrongCount = questionsDatabase.length - correctCount;
+            const totalScore = Math.round((correctCount / questionsDatabase.length) * 100);
+
+            let predicate = '';
+            let message = '';
+            if (totalScore >= 90) {
+                predicate = '🏆 SANGAT BAIK';
+                message = 'Luar biasa! Kamu telah menguasai penggunaan perangkat TIK, antarmuka, manajemen file, peramban, dan e-mail dengan sangat unggul.';
+            } else if (totalScore >= 80) {
+                predicate = '🥇 BAIK';
+                message = 'Hebat! Pemahaman digitalmu sudah sangat baik. Terus tingkatkan keterampilanmu!';
+            } else if (totalScore >= 70) {
+                predicate = '🥈 CUKUP';
+                message = 'Cukup baik. Pelajari kembali materi yang masih keliru melalui pembahasan di bawah ini.';
+            } else {
+                predicate = '🌱 PERLU BERLATIH';
+                message = 'Jangan berkecil hati! Pelajari pembahasan di bawah ini dan coba kerjakan LKPD sekali lagi.';
+            }
+
+            const currentDate = new Date().toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+
+            const currentAttemptNum = appData.currentAttempt || 1;
+
+            const record = {
+                attempt: currentAttemptNum,
+                date: currentDate,
+                score: totalScore,
+                predicate: predicate,
+                correctCount: correctCount,
+                wrongCount: wrongCount,
+                answersSnapshot: JSON.parse(JSON.stringify(studentAnswers))
+            };
+
+            appData.history.unshift(record);
+            saveData();
+            playTone('correct');
+
+            renderCertificate(record);
+            renderExplanationsReview(record);
+        }
+
+        function renderCertificate(record) {
+            // Update Summary Display Cards
+            document.getElementById('res-correct-count').innerText = `${record.correctCount} / ${questionsDatabase.length}`;
+            document.getElementById('res-wrong-count').innerText = `${record.wrongCount} / ${questionsDatabase.length}`;
+            document.getElementById('res-total-score').innerText = `${record.score} / 100`;
+            document.getElementById('res-predicate').innerText = record.predicate;
+
+            document.getElementById('cert-student-name').innerText = appData.student.nama.toUpperCase();
+            document.getElementById('cert-student-class').innerText = `Kelas: ${appData.student.kelas} • Nomor Absen: ${appData.student.absen}`;
+            document.getElementById('cert-score-display').innerText = `${record.score}/100`;
+            document.getElementById('cert-predicate-display').innerText = record.predicate;
+            document.getElementById('cert-attempt-display').innerText = `Ke-${record.attempt}`;
+            document.getElementById('cert-date-display').innerText = record.date;
+            document.getElementById('cert-id-code').innerText = `INF-LKPD-${Math.floor(1000 + Math.random() * 9000)}`;
+
+            document.getElementById('cert-feedback-message').innerText = record.predicate + " — " + (record.score >= 80 ? "Hasil luar biasa! Pemahaman digitalmu sangat kuat." : "Teruslah berlatih dan pelajari pembahasan jawaban.");
+
+            const certArea = document.getElementById('certificate-print-area');
+            const certFrame = document.getElementById('cert-inner-frame');
+
+            // Vibrant colorful gradient palettes tailored for certificate display
+            if (record.score >= 90) {
+                certArea.className = "bg-gradient-to-r from-amber-400 via-pink-500 via-purple-500 via-indigo-500 to-emerald-400 p-1.5 md:p-2 rounded-3xl shadow-2xl relative overflow-hidden font-sans max-w-3xl mx-auto my-4 transition-all";
+                certFrame.className = "bg-gradient-to-br from-amber-50/95 via-white to-emerald-50/95 backdrop-blur-md p-5 md:p-8 rounded-[22px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner";
+            } else if (record.score >= 80) {
+                certArea.className = "bg-gradient-to-r from-sky-400 via-indigo-500 via-purple-500 to-teal-400 p-1.5 md:p-2 rounded-3xl shadow-2xl relative overflow-hidden font-sans max-w-3xl mx-auto my-4 transition-all";
+                certFrame.className = "bg-gradient-to-br from-sky-50/95 via-white to-indigo-50/95 backdrop-blur-md p-5 md:p-8 rounded-[22px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner";
+            } else if (record.score >= 70) {
+                certArea.className = "bg-gradient-to-r from-amber-400 via-orange-500 via-rose-500 to-yellow-400 p-1.5 md:p-2 rounded-3xl shadow-2xl relative overflow-hidden font-sans max-w-3xl mx-auto my-4 transition-all";
+                certFrame.className = "bg-gradient-to-br from-amber-50/95 via-white to-orange-50/95 backdrop-blur-md p-5 md:p-8 rounded-[22px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner";
+            } else {
+                certArea.className = "bg-gradient-to-r from-teal-400 via-sky-500 via-indigo-500 to-purple-400 p-1.5 md:p-2 rounded-3xl shadow-2xl relative overflow-hidden font-sans max-w-3xl mx-auto my-4 transition-all";
+                certFrame.className = "bg-gradient-to-br from-teal-50/95 via-white to-sky-50/95 backdrop-blur-md p-5 md:p-8 rounded-[22px] h-full flex flex-col justify-between text-center relative overflow-hidden border-2 border-white/80 shadow-inner";
+            }
+
+            switchView('view-certificate');
+        }
+
+        /* RENDER EXPLANATIONS & ANSWER REVIEW */
+        function renderExplanationsReview(record) {
+            const container = document.getElementById('review-questions-list');
+            const answers = record.answersSnapshot || studentAnswers;
+            let html = '';
+
+            questionsDatabase.forEach((q, idx) => {
+                const userAns = answers[q.id];
+                let isCorrect = false;
+                let userFormattedText = '';
+                let correctFormattedText = '';
+
+                // Evaluate correctness & format user vs correct text
+                if (q.type === 'mcq') {
+                    const correctOpt = q.options.find(o => o.correct);
+                    const userOpt = q.options.find(o => o.id === userAns);
+                    if (correctOpt && userAns === correctOpt.id) isCorrect = true;
+                    
+                    userFormattedText = userOpt ? userOpt.text : '<i>(Tidak dijawab)</i>';
+                    correctFormattedText = correctOpt ? correctOpt.text : '';
+                } 
+                else if (q.type === 'multiselect') {
+                    const correctOpts = q.options.filter(o => o.correct);
+                    const correctIds = correctOpts.map(o => o.id);
+                    const userArr = userAns || [];
+                    if (correctIds.length === userArr.length && correctIds.every(i => userArr.includes(i))) isCorrect = true;
+
+                    userFormattedText = userArr.length > 0 ? userArr.map(id => {
+                        const opt = q.options.find(o => o.id === id);
+                        return opt ? opt.text : id;
+                    }).join(', ') : '<i>(Tidak dijawab)</i>';
+
+                    correctFormattedText = correctOpts.map(o => o.text).join(', ');
+                }
+                else if (q.type === 'matching_drag') {
+                    const matches = userAns || {};
+                    let allMatched = true;
+                    q.pairs.forEach(p => {
+                        if (matches[p.item] !== p.match) allMatched = false;
+                    });
+                    if (allMatched && Object.keys(matches).length === q.pairs.length) isCorrect = true;
+
+                    userFormattedText = Object.keys(matches).length > 0 ? Object.entries(matches).map(([k, v]) => `${k} ➔ ${v}`).join('; ') : '<i>(Belum mencocokkan)</i>';
+                    correctFormattedText = q.pairs.map(p => `${p.item} ➔ ${p.match}`).join('; ');
+                }
+                else if (q.type === 'classify_files') {
+                    const classes = userAns || {};
+                    let allCorrect = true;
+                    q.items.forEach(it => {
+                        if (classes[it.name] !== it.type) allCorrect = false;
+                    });
+                    if (allCorrect && Object.keys(classes).length === q.items.length) isCorrect = true;
+
+                    userFormattedText = Object.keys(classes).length > 0 ? Object.entries(classes).map(([k, v]) => `${k} [${v}]`).join(', ') : '<i>(Belum dikelompokkan)</i>';
+                    correctFormattedText = q.items.map(it => `${it.name} [${it.type}]`).join(', ');
+                }
+                else if (q.type === 'text_input') {
+                    if (userAns && userAns.trim().toLowerCase().includes('tugas')) isCorrect = true;
+                    userFormattedText = userAns ? `"${userAns}"` : '<i>(Kosong)</i>';
+                    correctFormattedText = 'Tugas_Informatika_NamaSiswa.docx (Memuat kata "Tugas")';
+                }
+                else if (q.type === 'virtual_file_manager') {
+                    const moves = userAns || {};
+                    let allCorrect = true;
+                    q.files.forEach(f => {
+                        if (moves[f.id] !== f.targetFolder) allCorrect = false;
+                    });
+                    if (allCorrect && Object.keys(moves).length === q.files.length) isCorrect = true;
+
+                    userFormattedText = Object.keys(moves).length > 0 ? Object.entries(moves).map(([k, v]) => `${k} ➔ ${v}`).join('; ') : '<i>(Belum dipindahkan)</i>';
+                    correctFormattedText = q.files.map(f => `${f.name} ➔ ${f.targetFolder}`).join('; ');
+                }
+                else if (q.type === 'browser_simulator') {
+                    const clicks = userAns || [];
+                    if (q.tasks.every(t => clicks.includes(t.target))) isCorrect = true;
+                    userFormattedText = `${clicks.length} dari 3 tombol diklik (${clicks.join(', ') || 'Belum diklik'})`;
+                    correctFormattedText = 'Mengklik Address Bar, Back, dan Refresh (Seluruh 3 tombol)';
+                }
+
+                html += `
+                    <div class="review-item bg-slate-50 border border-slate-200 rounded-2xl p-4 md:p-5 space-y-3 transition" data-status="${isCorrect ? 'correct' : 'wrong'}">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="font-outfit font-bold text-slate-900 text-sm md:text-base">Soal #${idx + 1}</span>
+                                <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700">${q.moduleTitle}</span>
+                            </div>
+                            <div>
+                                ${isCorrect ? 
+                                    `<span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-black">✅ BENAR (+2.2 Poin)</span>` : 
+                                    `<span class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-black">❌ SALAH (0 Poin)</span>`
+                                }
+                            </div>
+                        </div>
+
+                        <p class="font-semibold text-slate-800 text-sm md:text-base">${q.q}</p>
+
+                        <div class="grid md:grid-cols-2 gap-3 text-xs">
+                            <div class="p-3 rounded-xl ${isCorrect ? 'bg-emerald-50/70 border border-emerald-200 text-emerald-950' : 'bg-rose-50/70 border border-rose-200 text-rose-950'}">
+                                <span class="font-extrabold block mb-1 uppercase tracking-wide">Jawaban Kamu:</span>
+                                <div>${userFormattedText}</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-sky-50/70 border border-sky-200 text-sky-950">
+                                <span class="font-extrabold block mb-1 uppercase tracking-wide">Kunci Jawaban Benar:</span>
+                                <div>${correctFormattedText}</div>
+                            </div>
+                        </div>
+
+                        <div class="p-3.5 bg-amber-50/80 border border-amber-200 rounded-xl text-xs text-amber-950 leading-relaxed space-y-1">
+                            <p class="font-bold text-amber-900 flex items-center gap-1.5">
+                                💡 Penjelasan & Pembahasan:
+                            </p>
+                            <p class="font-medium">${q.explanation}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            filterReviewList(currentReviewFilter);
+        }
+
+        function filterReviewList(status) {
+            currentReviewFilter = status;
+            
+            document.getElementById('filter-btn-all').className = status === 'all' ? 'px-3 py-1.5 rounded-lg bg-white shadow-sm text-slate-800 font-bold' : 'px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white/50';
+            document.getElementById('filter-btn-wrong').className = status === 'wrong' ? 'px-3 py-1.5 rounded-lg bg-rose-600 text-white font-bold shadow-sm' : 'px-3 py-1.5 rounded-lg text-rose-600 hover:bg-white/50';
+            document.getElementById('filter-btn-correct').className = status === 'correct' ? 'px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold shadow-sm' : 'px-3 py-1.5 rounded-lg text-emerald-600 hover:bg-white/50';
+
+            const items = document.querySelectorAll('.review-item');
+            items.forEach(item => {
+                const itemStatus = item.getAttribute('data-status');
+                if (status === 'all') {
+                    item.classList.remove('hidden');
+                } else if (status === itemStatus) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        function viewHistoryCertificate(attemptNum) {
+            const record = appData.history.find(h => h.attempt === attemptNum);
+            if (record) {
+                renderCertificate(record);
+                renderExplanationsReview(record);
+            }
+        }
+
+        /* RETAKE & QUESTION RANDOMIZATION ENGINE */
+        function retakeLKPD() {
+            appData.currentAttempt = (appData.currentAttempt || 1) + 1;
+            saveData();
+
+            // Clear previous user answers
+            studentAnswers = {};
+
+            // Shuffle option choices inside MCQ questions for variation
+            questionsDatabase.forEach(q => {
+                if (q.type === 'mcq' && q.options) {
+                    q.options.sort(() => Math.random() - 0.5);
+                }
+            });
+
+            currentQuestionIdx = 0;
+            showDashboard();
+        }
+
+        /* FULL DATA RESET FUNCTIONALITY */
+        function confirmResetAllData() {
+            if (confirm("Apakah kamu yakin ingin menghapus seluruh riwayat pengerjaan di perangkat ini? Data yang sudah dihapus tidak dapat dikembalikan.")) {
+                localStorage.removeItem(STORAGE_KEY);
+                appData = {
+                    student: { nama: '', kelas: 'VII A', absen: '' },
+                    currentAttempt: 1,
+                    history: []
+                };
+                studentAnswers = {};
+                document.getElementById('input-nama').value = '';
+                document.getElementById('input-absen').value = '';
+                document.getElementById('header-student-info').classList.add('hidden');
+                switchView('view-identity');
+            }
+        }
+    </script>
+</body>
+</html>
+```
