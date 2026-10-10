@@ -1,0 +1,1409 @@
+```html
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Prompt Tugas Interaktif 3 Level</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-md shadow-emerald-500/20">
+                    🎯
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-900 text-lg leading-tight">Generator Prompt Tugas 3 Level</h1>
+                    <p class="text-xs text-slate-500 font-medium">SMP Interactive Task Prompt Creator (Mudah - Normal - Sulit)</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200/80">
+                <button onclick="switchTab('app')" id="tab-btn-app" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-emerald-700 bg-white shadow-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Web App Generator
+                </button>
+                <button onclick="switchTab('script')" id="tab-btn-script" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-code mr-2"></i>Kode Apps Script
+                </button>
+                <button onclick="switchTab('guide')" id="tab-btn-guide" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-book-open mr-2"></i>Panduan Setup
+                </button>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 3 Level Ready
+                </span>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Tabs -->
+        <div class="md:hidden flex border-t border-slate-200 bg-slate-50 px-2 py-1.5 gap-1 overflow-x-auto">
+            <button onclick="switchTab('app')" id="mobile-tab-btn-app" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg whitespace-nowrap bg-white text-emerald-700 shadow-sm text-center">
+                🚀 Web App
+            </button>
+            <button onclick="switchTab('mobile-tab-btn-script')" id="mobile-tab-btn-script" onclick="switchTab('script')" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg whitespace-nowrap text-slate-600 text-center">
+                💻 Apps Script
+            </button>
+            <button onclick="switchTab('guide')" id="mobile-tab-btn-guide" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg whitespace-nowrap text-slate-600 text-center">
+                📖 Panduan
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- TAB 1: WEB APP GENERATOR -->
+        <div id="tab-app" class="space-y-6">
+            
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <span class="inline-block px-3 py-1 bg-emerald-500/30 backdrop-blur-md rounded-full text-emerald-200 text-xs font-semibold mb-3 border border-emerald-400/30">
+                        ⚡ 3 Level Task Prompt Engine
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
+                        Generator Prompt Tugas Interaktif 3 Level
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                        Isi form di bawah atau klik preset materi. Sistem akan merangkai prompt raksasa (3.000+ kata) bertingkat 🟢 Mudah - 🔵 Normal - 🔴 Sulit yang siap dipaste ke ChatGPT, Claude, atau Gemini!
+                    </p>
+
+                    <!-- Presets Selector -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider mr-2">Pilih Preset:</span>
+                        <button onclick="loadPreset('informatics')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-lg backdrop-blur border border-white/10 transition flex items-center gap-1.5">
+                            ⚡ Informatika: Gerbang Logika 3 Level
+                        </button>
+                        <button onclick="loadPreset('science')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-lg backdrop-blur border border-white/10 transition flex items-center gap-1.5">
+                            🔬 IPA: Sistem Organ Pencernaan
+                        </button>
+                        <button onclick="loadPreset('math')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-lg backdrop-blur border border-white/10 transition flex items-center gap-1.5">
+                            📐 Matematika: Persamaan Kuadrat
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form & Output Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Form Input Area (5 Cols) -->
+                <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-emerald-600"></i> Form Parameter 3 Level
+                        </h3>
+                        <button onclick="resetForm()" class="text-xs font-medium text-slate-500 hover:text-rose-600 transition">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Reset Form
+                        </button>
+                    </div>
+
+                    <form id="promptForm" class="space-y-4" onsubmit="event.preventDefault(); generateLivePrompt();">
+                        <!-- Mapel & Materi -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Mata Pelajaran</label>
+                                <input type="text" id="mapel" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="Contoh: Informatika">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Materi Utama</label>
+                                <input type="text" id="materi" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="Contoh: Gerbang Logika Dasar">
+                            </div>
+                        </div>
+
+                        <!-- Tujuan Pembelajaran (1-5) -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Tujuan Pembelajaran (1–5)</label>
+                            <div class="space-y-1.5">
+                                <input type="text" id="tujuan1" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Tujuan 1...">
+                                <input type="text" id="tujuan2" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Tujuan 2...">
+                                <input type="text" id="tujuan3" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Tujuan 3...">
+                                <input type="text" id="tujuan4" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Tujuan 4...">
+                                <input type="text" id="tujuan5" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Tujuan 5...">
+                            </div>
+                        </div>
+
+                        <!-- Subtopik Per Level -->
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                            <span class="block text-xs font-bold text-slate-800">📌 Subtopik / Fokus Materi Per Level</span>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-emerald-700">🟢 Subtopik Level Mudah</label>
+                                <input type="text" id="subtopikMudah" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Subtopik mudah...">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-blue-700">🔵 Subtopik Level Normal</label>
+                                <input type="text" id="subtopikNormal" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Subtopik normal...">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-rose-700">🔴 Subtopik Level Sulit</label>
+                                <input type="text" id="subtopikSulit" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Subtopik sulit...">
+                            </div>
+                        </div>
+
+                        <!-- Nama Karakter Per Level -->
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                            <span class="block text-xs font-bold text-slate-800">👤 Nama Karakter / Gelar Per Level</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-emerald-700">🟢 Karakter Mudah</label>
+                                    <input type="text" id="karakterMudah" class="w-full px-2 py-1 text-xs border border-slate-300 rounded-lg outline-none" placeholder="e.g. Detektif Pemula">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-blue-700">🔵 Karakter Normal</label>
+                                    <input type="text" id="karakterNormal" class="w-full px-2 py-1 text-xs border border-slate-300 rounded-lg outline-none" placeholder="e.g. Analis Utama">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-rose-700">🔴 Karakter Sulit</label>
+                                    <input type="text" id="karakterSulit" class="w-full px-2 py-1 text-xs border border-slate-300 rounded-lg outline-none" placeholder="e.g. Master Arsitek">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Warna Tema -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Palet Warna Utama</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input type="text" id="warna1" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Warna 1 (#10b981)">
+                                <input type="text" id="warna2" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Warna 2 (#2563eb)">
+                                <input type="text" id="warna3" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Warna 3 (#ef4444)">
+                            </div>
+                        </div>
+
+                        <!-- Ikon Elemen -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Ikon Elemen Khas (1–5)</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="ikon1" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 1 (⚡ Sinyal)">
+                                <input type="text" id="ikon2" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 2 (🔀 Gerbang)">
+                                <input type="text" id="ikon3" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 3 (💡 Lampu)">
+                                <input type="text" id="ikon4" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 4 (🎛️ Switch)">
+                                <input type="text" id="ikon5" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 5 (🧠 Microchip)">
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button type="button" onclick="generateLivePrompt()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rocket"></i> Generate Prompt Tugas 3 Level
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Prompt Display Output (7 Cols) -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 flex flex-col h-[820px]">
+                        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                                    <i class="fa-solid fa-file-lines text-teal-600"></i> Hasil Prompt Raksasa 3 Level
+                                </h3>
+                                <p class="text-xs text-slate-500">Prompt instruksi pedagogis 3000+ kata anti-error untuk AI</p>
+                            </div>
+
+                            <button onclick="copyGeneratedPrompt()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-500/20 transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-copy"></i> Copy ke Clipboard
+                            </button>
+                        </div>
+
+                        <!-- Output Textarea -->
+                        <div class="relative flex-1 mt-4">
+                            <textarea id="promptOutput" readonly class="w-full h-full p-4 bg-slate-900 text-slate-100 font-mono text-xs rounded-xl border border-slate-800 resize-none focus:outline-none custom-scrollbar leading-relaxed" placeholder="Klik 'Generate Prompt Tugas 3 Level' atau pilih salah satu preset di atas..."></textarea>
+                        </div>
+
+                        <!-- External AI Launchers -->
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-xs text-slate-500 font-medium">Lanjutkan ke AI Studio pilihan:</span>
+                            <div class="flex items-center gap-2">
+                                <a href="https://chatgpt.com/" target="_blank" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> ChatGPT
+                                </a>
+                                <a href="https://claude.ai/" target="_blank" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Claude AI
+                                </a>
+                                <a href="https://gemini.google.com/" target="_blank" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Gemini
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: KODE GOOGLE APPS SCRIPT -->
+        <div id="tab-script" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Google Apps Script ES6+</span>
+                        <h2 class="text-xl font-bold text-slate-900">Kode Lengkap Script Spreadsheet (Code.gs)</h2>
+                        <p class="text-xs text-slate-500">Salin seluruh kode JavaScript di bawah ini ke Editor Apps Script Google Sheets Anda.</p>
+                    </div>
+                    <button onclick="copyGasCode()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-500/20 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-copy"></i> Salin Seluruh Kode Script
+                    </button>
+                </div>
+
+                <div class="relative">
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs overflow-x-auto max-h-[620px] custom-scrollbar leading-relaxed border border-slate-800"><code id="gasCodeBlock">/**
+ * Proyek: Generator Prompt Tugas Interaktif 3 Level (Mudah - Normal - Sulit)
+ * Peran: Senior Google Apps Script Developer & Instructional Designer
+ * Fitur: Auto-generate prompt raksasa 3000+ kata untuk AI & Auto Copy Clipboard
+ */
+
+/**
+ * Trigger otomatis saat spreadsheet dibuka.
+ * Menambahkan menu kustom "⚡ Menu Prompt" di toolbar spreadsheet.
+ */
+function onOpen() {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('⚡ Menu Prompt')
+    .addItem('🚀 Generate Prompt Tugas 3 Level', 'generatePrompt')
+    .addItem('📋 Copy Prompt ke Clipboard', 'copyPrompt')
+    .addToUi();
+}
+
+/**
+ * Fungsi utama untuk membaca data dari Sheet "Input",
+ * merangkai template prompt raksasa 3 level, dan menyimpannya di Sheet "Prompt" sel A1.
+ */
+function generatePrompt() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const inputSheet = ss.getSheetByName('Input');
+  const promptSheet = ss.getSheetByName('Prompt');
+
+  // Validasi keberadaan sheet
+  if (!inputSheet) {
+    SpreadsheetApp.getUi().alert('⚠️ Error: Sheet "Input" tidak ditemukan. Pastikan nama sheet sesuai!');
+    return;
+  }
+  if (!promptSheet) {
+    SpreadsheetApp.getUi().alert('⚠️ Error: Sheet "Prompt" tidak ditemukan. Pastikan nama sheet sesuai!');
+    return;
+  }
+
+  // Mengambil nilai input dari range B1:B21
+  const values = inputSheet.getRange('B1:B21').getValues();
+
+  // Helper function untuk mengambil nilai sel dengan fallback jika kosong
+  const getValue = (index, fallback) => {
+    const val = values[index] ? values[index][0] : '';
+    return (val !== null && val !== undefined && val.toString().trim() !== '') 
+      ? val.toString().trim() 
+      : fallback;
+  };
+
+  // Ekstraksi variabel dari sheet Input
+  const mapel          = getValue(0, '[MAPEL]');
+  const materi         = getValue(1, '[NAMA MATERI]');
+  const tujuan1        = getValue(2, '[TUJUAN 1]');
+  const tujuan2        = getValue(3, '[TUJUAN 2]');
+  const tujuan3        = getValue(4, '[TUJUAN 3]');
+  const tujuan4        = getValue(5, '[TUJUAN 4]');
+  const tujuan5        = getValue(6, '[TUJUAN 5]');
+  const subtopikMudah  = getValue(7, '[SUBTOPIK MUDAH]');
+  const subtopikNormal = getValue(8, '[SUBTOPIK NORMAL]');
+  const subtopikSulit  = getValue(9, '[SUBTOPIK SULIT]');
+  const karakterMudah  = getValue(10, '[NAMA KARAKTER MUDAH]');
+  const karakterNormal = getValue(11, '[NAMA KARAKTER NORMAL]');
+  const karakterSulit  = getValue(12, '[NAMA KARAKTER SULIT]');
+  const warna1         = getValue(13, '[WARNA 1]');
+  const warna2         = getValue(14, '[WARNA 2]');
+  const warna3         = getValue(15, '[WARNA 3]');
+  const ikon1          = getValue(16, '[IKON 1]');
+  const ikon2          = getValue(17, '[IKON 2]');
+  const ikon3          = getValue(18, '[IKON 3]');
+  const ikon4          = getValue(19, '[IKON 4]');
+  const ikon5          = getValue(20, '[IKON 5]');
+
+  // Merangkai Prompt Raksasa menggunakan Template Literals ES6
+  const promptText = `PROMPT WEBSITE TUGAS INTERAKTIF ${mapel.toUpperCase()} KELAS VIII
+3 LEVEL: MUDAH — NORMAL — SULIT
+(Materi: ${materi})
+
+═══════════════════════════════════════════════
+🎯 PERAN KAMU
+═══════════════════════════════════════════════
+Kamu adalah Senior Front-End Developer + Instructional Designer.
+Tugasmu: menghasilkan SATU FILE index.html lengkap (HTML + CSS + JS)
+yang langsung bisa dibuka di browser, tanpa server, tanpa error.
+
+═══════════════════════════════════════════════
+📌 IDENTITAS
+═══════════════════════════════════════════════
+· Sekolah: SMPN 1 Tinggimoncong
+· Mapel: ${mapel}
+· Kelas: VIII
+· Guru: Syarifuddin, S. Pd., M. Si.
+· Materi: ${materi}
+· Alokasi: ±80 menit
+
+TUJUAN PEMBELAJARAN
+1. ${tujuan1}
+2. ${tujuan2}
+3. ${tujuan3}
+4. ${tujuan4}
+5. ${tujuan5}
+
+═══════════════════════════════════════════════
+⚙️ ATURAN UTAMA (WAJIB DIPATUHI)
+═══════════════════════════════════════════════
+1. Setiap level hanya dapat dikerjakan SATU KALI.
+2. Level selesai → soal tidak muncul lagi, tombol berubah jadi
+   "🏆 LIHAT SERTIFIKAT".
+3. Level yang belum selesai tetap bisa dikerjakan.
+4. Tidak ada tombol ulangi / reset level.
+5. Status tersimpan di localStorage (tetap saat refresh).
+6. Setiap level punya sertifikat sendiri.
+7. Ketiga sertifikat berbeda warna sesuai levelnya.
+
+═══════════════════════════════════════════════
+🎨 TEMA KHUSUS MATERI (WAJIB)
+═══════════════════════════════════════════════
+Website punya tema visual khusus ${materi}, bukan generik.
+· Palet warna utama: ${warna1}, ${warna2}, ${warna3}
+· Ikon khas: ${ikon1}, ${ikon2}, ${ikon3}, ${ikon4}, ${ikon5}
+· Ornamen latar bertema materi + animasi ringan
+· Setiap konsep punya warna & ikon berbeda
+· Warna level: 🟢 Mudah = hijau | 🔵 Normal = biru | 🔴 Sulit = merah
+
+═══════════════════════════════════════════════
+🏗️ STRUKTUR HALAMAN
+═══════════════════════════════════════════════
+
+1. HALAMAN AWAL
+   - Judul: 🎯 TUGAS INTERAKTIF ${mapel.toUpperCase()} — "Tantangan ${materi}"
+   - Info: Kelas VIII, SMPN 1 Tinggimoncong, Guru: Syarifuddin, S. Pd., M. Si.
+   - Ilustrasi ikon bertema materi
+   - Form: Nama Lengkap, Kelas, Nomor Absen (wajib isi)
+   - Tombol: 🚀 MASUK KE TANTANGAN
+
+2. PILIH LEVEL
+   Tiga kartu besar berwarna:
+   - 🟢 LEVEL MUDAH — "${karakterMudah}" — 10 soal
+     Materi: ${subtopikMudah}
+   - 🔵 LEVEL NORMAL — "${karakterNormal}" — 10 soal
+     Materi: ${subtopikNormal}
+   - 🔴 LEVEL SULIT — "${karakterSulit}" — 10 soal
+     Materi: ${subtopikSulit}
+
+   Status per kartu:
+   - 🟢 Belum → tombol MULAI
+   - 🟡 Sedang → tandai
+   - 🔒 Selesai → tombol 🏆 LIHAT SERTIFIKAT
+
+3. KONFIRMASI SEBELUM MULAI
+   ⚠️ PERHATIAN: level hanya sekali, tidak bisa diulang.
+   Tombol: SAYA SIAP — MULAI | KEMBALI
+
+4. SOAL (10 per level)
+   - Level Mudah  → soal dasar (${subtopikMudah})
+   - Level Normal → soal pemahaman + tabel (${subtopikNormal})
+   - Level Sulit  → soal penalaran + rangkaian bertingkat (${subtopikSulit})
+
+5. PEMBAHASAN (WAJIB)
+   Setelah nilai muncul, tampilkan halaman pembahasan:
+   - Ringkasan: benar, salah, nilai, predikat
+   - Daftar 10 soal: pertanyaan, jawaban siswa, jawaban benar,
+     alasan singkat, warna kartu (hijau=benar, merah=salah)
+   - Filter: Semua | Hanya salah | Hanya benar
+   - Tombol: 🎓 LIHAT SERTIFIKAT | 🏠 KEMBALI
+
+6. SERTIFIKAT GAMBAR PORTRAIT 3:4 BERTEMA
+   - Render via <canvas> atau html2canvas
+   - Ukuran 900×1200 px (rasio 3:4), tajam (devicePixelRatio)
+   - Isi lengkap:
+     · Judul: SERTIFIKAT TANTANGAN ${mapel.toUpperCase()}
+     · Nama siswa (besar, bold)
+     · Kelas
+     · NAMA MATERI: ${materi}  ← WAJIB TAMPIL JELAS
+     · LEVEL: MUDAH / NORMAL / SULIT  ← WAJIB TAMPIL JELAS
+     · Subjudul karakter level
+     · Nilai XX/100
+     · Predikat
+     · Tanggal otomatis
+     · Sekolah: SMPN 1 Tinggimoncong
+     · Guru: Syarifuddin, S. Pd., M. Si.
+     · Area tanda tangan guru (tanpa tanda tangan digital palsu)
+   - Desain bertema ${materi}: border, ornamen, ikon khas
+   - Warna dominan mengikuti level (hijau/biru/merah)
+   - Tombol: ⬇️ DOWNLOAD GAMBAR SERTIFIKAT (PNG)
+             🖨️ CETAK | 🏠 KEMBALI
+   - Nama file: Sertifikat_[Nama]_[Level]_[Materi].png
+
+═══════════════════════════════════════════════
+📊 SISTEM PENILAIAN
+═══════════════════════════════════════════════
+· 10 soal × 10 poin = 100 per level
+
+PREDIKAT
+90–100 → 🏆 Sangat Baik
+80–89  → 🥇 Baik
+70–79  → 🥈 Cukup
+<70    → 🌱 Perlu Belajar Lagi
+
+Sertifikat tetap diberikan untuk semua nilai.
+
+═══════════════════════════════════════════════
+📄 HALAMAN HASIL
+═══════════════════════════════════════════════
+Setelah level selesai tampilkan:
+Nama | Level | Benar X/10 | Nilai XX/100 | Predikat
+Tombol: 🎓 LIHAT SERTIFIKAT | 🏠 KEMBALI
+
+═══════════════════════════════════════════════
+📈 DASHBOARD PROGRESS
+═══════════════════════════════════════════════
+· 🟢 Mudah — status + nilai
+· 🔵 Normal — status + nilai
+· 🔴 Sulit — status + nilai
+Jika semua selesai: 🎉 SEMUA TANTANGAN SELESAI!
+Tombol 3 sertifikat muncul.
+
+═══════════════════════════════════════════════
+🚦 JIKA LEVEL SUDAH/BELUM SELESAI DIKLIK
+═══════════════════════════════════════════════
+JIKA LEVEL SUDAH SELESAI DIKLIK:
+Jangan buka soal. Langsung tampilkan:
+🏆 LEVEL [X] SUDAH SELESAI — Nilai XX/100 — Predikat
+Tombol: 🎓 LIHAT SERTIFIKAT
+(Tidak ada tombol ulangi.)
+
+JIKA LEVEL BELUM SELESAI DIKLIK:
+Tampilkan: "Level ini belum dikerjakan."
+Tombol: 🚀 MULAI LEVEL [X]
+
+═══════════════════════════════════════════════
+💾 PENYIMPANAN (localStorage)
+═══════════════════════════════════════════════
+Simpan: identitas siswa, status tiap level, nilai, tanggal.
+Contoh struktur:
+  levelMudah  = selesai | nilaiMudah  = 90
+  levelNormal = belum   | nilaiNormal = -
+  levelSulit  = selesai | nilaiSulit  = 80
+Bungkus try-catch agar aman.
+
+═══════════════════════════════════════════════
+🎨 DESAIN
+═══════════════════════════════════════════════
+· 🌈 Warna-warni cerah & ceria, modern, ramah SMP
+· Responsif (HP/tablet/PC)
+· Animasi ringan (lampu berkedip, gerbang berkilau)
+· Progress bar warna-warni
+· Kartu level besar dengan ikon tema
+· Banyak ikon bertema materi
+· Feedback jawaban berwarna
+· Warna level sangat jelas
+
+═══════════════════════════════════════════════
+✅ FITUR WAJIB
+═══════════════════════════════════════════════
+✅ HTML+CSS+JS satu file, langsung jalan, tanpa server
+✅ Tanpa login, tanpa database
+✅ Nama wajib diisi
+✅ 3 level × 10 soal = 30 soal
+✅ Level mudah/normal/sulit sesuai tingkatan
+✅ Penilaian otomatis, maks 100/level
+✅ Sekali kerja per level (tidak bisa ulang)
+✅ Level selesai → langsung ke sertifikat
+✅ Halaman pembahasan (benar/salah + alasan)
+✅ Sertifikat GAMBAR portrait rasio 3:4
+✅ Nama materi tampil jelas di sertifikat
+✅ Sertifikat bertema materi (ikon, warna, ornamen)
+✅ Warna sertifikat sesuai level (hijau/biru/merah)
+✅ Tombol download gambar sertifikat (PNG)
+✅ Status tersimpan di localStorage
+✅ Tidak ada tombol "Coba Lagi" untuk level selesai
+
+═══════════════════════════════════════════════
+🔄 ALUR WEBSITE
+═══════════════════════════════════════════════
+Isi Nama
+↓
+Pilih Level (🟢 | 🔵 | 🔴)
+↓
+Konfirmasi "Saya Siap"
+↓
+10 Soal (sekali kerja)
+↓
+Nilai Otomatis
+↓
+Pembahasan (benar/salah + alasan)
+↓
+Sertifikat Gambar Portrait 3:4 Bertema
+↓
+⬇️ Download Gambar Sertifikat
+↓
+Kembali ke Pilihan Level
+↓
+Level selesai → 🏆 LIHAT SERTIFIKAT
+Level belum → 🚀 MULAI
+
+═══════════════════════════════════════════════
+🚫 PERINTAH ANTI-ERROR (WAJIB DIPATUHI)
+═══════════════════════════════════════════════
+1. Bebas error di browser (Chrome/Edge/Firefox/Safari),
+   tanpa console error.
+2. Tidak pakai sintaks deprecated.
+3. Fungsi didefinisikan sebelum dipanggil / hoisting benar.
+4. Tidak ada variabel undefined/null tanpa pengecekan.
+5. Event listener pakai addEventListener.
+6. Elemen DOM dicek if (element) sebelum diakses.
+7. localStorage dibungkus try-catch.
+8. Library eksternal hanya html2canvas (CDN stabil).
+9. html2canvas dipanggil setelah DOMContentLoaded/window.onload.
+10. Semua tag HTML ditutup benar.
+11. CSS valid, tidak ada typo properti.
+12. Escape karakter khusus dengan benar.
+13. Beri komentar singkat per bagian kode.
+14. Canvas sertifikat 900×1200 px (rasio 3:4),
+    pakai devicePixelRatio agar tajam.
+15. Download menghasilkan .png dengan nama dinamis.
+16. Hindari CORS: jangan load gambar eksternal ke canvas
+    (gunakan shape/CSS/emoji saja).
+17. Emoji di canvas dirender via fillText.
+18. Konsisten: skor, predikat, status level di pembahasan,
+    sertifikat, dan dashboard.
+19. Semua tombol navigasi berfungsi, tidak ada yang mati.
+20. Tidak ada alert() bawaan; gunakan modal kustom.
+
+═══════════════════════════════════════════════
+📚 CATATAN MATERI
+═══════════════════════════════════════════════
+· Sediakan tabel/tabel kebenaran berwarna per konsep
+  (hijau=benar, merah=salah) sebagai petunjuk.
+· Gunakan karakter mudah diingat per konsep.
+· Berikan analogi sederhana per konsep.
+· Sertakan simbol visual khas materi di setiap soal.
+· Level sulit memuat soal rangkaian/kombinasi bertingkat.
+· Sertifikat bertema materi (ikon + warna + ornamen).
+· NAMA MATERI WAJIB tampil jelas di sertifikat.
+
+═══════════════════════════════════════════════
+📤 OUTPUT YANG SAYA INGINKAN
+═══════════════════════════════════════════════
+Berikan SATU FILE index.html lengkap yang berisi:
+1. Struktur HTML semua halaman (awal, pilih level, konfirmasi,
+   soal, pembahasan, sertifikat, dashboard).
+2. CSS lengkap dengan tema materi, warna level, animasi, responsif.
+3. JavaScript lengkap:
+   - Manajemen state (localStorage try-catch)
+   - Navigasi halaman
+   - Render soal per level
+   - Penilaian otomatis
+   - Halaman pembahasan dengan filter
+   - Generate sertifikat via canvas (900×1200 px, 3:4)
+   - Download sertifikat sebagai PNG
+   - Dashboard progress 3 level
+4. Komentar singkat per bagian kode.
+
+Buat seluruh kode HTML + CSS + JavaScript lengkap dalam
+SATU FILE (index.html) yang langsung dapat dijalankan,
+tanpa error, tampilan sangat menarik, berwarna-warni,
+bertema ${materi}, dengan banyak gambar dan ikon.`;
+
+  // Simpan hasil rakitan prompt ke Sheet "Prompt" sel A1
+  const cell = promptSheet.getRange('A1');
+  cell.setValue(promptText);
+
+  // Mengatur tata letak tampilan sel A1
+  cell.setWrap(true);
+  promptSheet.setColumnWidth(1, 800);
+
+  // Tampilkan dialog notifikasi sukses
+  SpreadsheetApp.getUi().alert(
+    '🚀 Berhasil Generate Prompt!',
+    'Prompt Raksasa Tugas 3 Level berhasil dibuat dan disimpan pada Sheet "Prompt" sel A1.\n\nLangkah berikutnya:\nPilih menu "⚡ Menu Prompt" > "📋 Copy Prompt ke Clipboard".',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+/**
+ * Fungsi untuk menyalin isi sel A1 Sheet "Prompt" langsung ke Clipboard komputer user
+ * menggunakan modal dialog HTML interaktif dan Navigator Clipboard API.
+ */
+function copyPrompt() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const promptSheet = ss.getSheetByName('Prompt');
+
+  if (!promptSheet) {
+    SpreadsheetApp.getUi().alert('⚠️ Error: Sheet "Prompt" tidak ditemukan!');
+    return;
+  }
+
+  const promptText = promptSheet.getRange('A1').getValue();
+
+  if (!promptText || promptText.toString().trim() === '') {
+    SpreadsheetApp.getUi().alert(
+      '⚠️ Prompt Masih Kosong!',
+      'Silakan jalankan "🚀 Generate Prompt Tugas 3 Level" terlebih dahulu dari menu.',
+      SpreadsheetApp.getUi().ButtonSet.OK
+    );
+    return;
+  }
+
+  // Membuat halaman HTML interaktif untuk mengeksekusi perintah copy ke clipboard
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <base target="_top">
+        <style>
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            text-align: center;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+          }
+          .box {
+            background: #ffffff;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+          }
+          .icon { font-size: 42px; margin-bottom: 8px; }
+          h3 { margin: 8px 0; color: #047857; font-size: 18px; }
+          p { font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.5; }
+          button {
+            background-color: #059669;
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+          }
+          button:hover { background-color: #047857; }
+          textarea { position: absolute; left: -9999px; }
+        </style>
+      </head>
+      <body>
+        <div class="box">
+          <div class="icon">📋</div>
+          <h3 id="status-title">Proses Menyalin Prompt 3 Level...</h3>
+          <p id="status-desc">Mohon tunggu sebentar...</p>
+          <textarea id="copy-area"></textarea>
+          <button onclick="google.script.host.close()">Tutup Window</button>
+        </div>
+
+        <script>
+          const rawPrompt = ${JSON.stringify(promptText)};
+          const copyArea = document.getElementById('copy-area');
+          copyArea.value = rawPrompt;
+
+          async function copyToClipboard() {
+            try {
+              if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(rawPrompt);
+              } else {
+                copyArea.select();
+                document.execCommand('copy');
+              }
+              document.getElementById('status-title').innerText = '✅ Berhasil Disalin!';
+              document.getElementById('status-desc').innerText = 'Prompt Raksasa Tugas 3 Level sudah masuk ke Clipboard. Lakukan PASTE ke ChatGPT, Claude, atau Gemini!';
+              setTimeout(() => { google.script.host.close(); }, 2200);
+            } catch (err) {
+              copyArea.select();
+              document.execCommand('copy');
+              document.getElementById('status-title').innerText = '✅ Berhasil Disalin!';
+              document.getElementById('status-desc').innerText = 'Prompt Raksasa telah disalin ke Clipboard.';
+              setTimeout(() => { google.script.host.close(); }, 2200);
+            }
+          }
+
+          window.onload = copyToClipboard;
+        </script>
+      </body>
+    </html>
+  `;
+
+  const htmlOutput = HtmlService.createHtmlOutput(htmlContent)
+    .setWidth(430)
+    .setHeight(240);
+
+  SpreadsheetApp.getUi().showModalDialog(htmlOutput, '📋 Copy Prompt Tugas 3 Level');
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: PANDUAN SETUP STEP-BY-STEP -->
+        <div id="tab-guide" class="hidden space-y-6">
+            
+            <!-- Setup Steps Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Step 1 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-lg">
+                        1
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Setup Sheet Spreadsheet</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Buat file Google Sheets baru. Buat 2 Sheet dengan nama persis: 
+                        <span class="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-emerald-600">Input</span> dan 
+                        <span class="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-emerald-600">Prompt</span>.
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-700 font-mono">
+                        Isi Kolom A Sheet "Input" baris 1–21: MAPEL, MATERI, TUJUAN 1-5, SUBTOPIK 3 LEVEL, KARAKTER 3 LEVEL, WARNA 1-3, IKON 1-5.
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-lg">
+                        2
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Pasang Kode Apps Script</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Buka menu <span class="font-semibold text-slate-800">Extensions (Ekstensi) > Apps Script</span>.
+                        Hapus semua kode bawaan, lalu paste kode dari Tab <span class="font-semibold text-emerald-600">Kode Apps Script</span> di atas.
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-700">
+                        Tekan <kbd class="bg-white border border-slate-300 px-1.5 py-0.5 rounded text-[10px] font-mono shadow-sm">Ctrl + S</kbd> untuk menyimpan, lalu refresh spreadsheet Anda.
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 font-bold flex items-center justify-center text-lg">
+                        3
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Eksekusi & Otorisasi</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Buka menu toolbar baru <span class="font-semibold text-slate-800">⚡ Menu Prompt > 🚀 Generate Prompt Tugas 3 Level</span>.
+                        Saat Google meminta ijin otorisasi, klik Continue > Select Account > Advanced > Go to Script (unsafe) > Allow.
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 font-bold flex items-center justify-center text-lg">
+                        4
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Paste Ke AI & Hasilkan Website</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Klik menu <span class="font-semibold text-slate-800">📋 Copy Prompt ke Clipboard</span>. Buka Claude 3.5 Sonnet / ChatGPT-4o / Gemini 1.5 Pro, lalu Paste (<kbd class="bg-white border border-slate-300 px-1.5 py-0.5 rounded text-[10px] font-mono shadow-sm">Ctrl + V</kbd>).
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Debugging & Technical Tips -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-amber-500"></i> Aturan Anti-Error & Fitur 3 Level
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-600">
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                        <span class="font-bold text-slate-900 block">🔒 Aturan Sekali Kerja</span>
+                        <p>AI akan mengunci level yang telah diselesaikan menggunakan <code class="bg-white px-1 py-0.5 rounded border text-emerald-600">localStorage</code>. Tombol pengerjaan berubah menjadi 🏆 LIHAT SERTIFIKAT.</p>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                        <span class="font-bold text-slate-900 block">📜 Sertifikat Canvas 3:4</span>
+                        <p>Setiap level menghasilkan sertifikat gambar portrait HD (900×1200 px) dengan warna dominan hijau (mudah), biru (normal), atau merah (sulit).</p>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                        <span class="font-bold text-slate-900 block">🤖 Rekomendasi LLM AI</span>
+                        <p>Gunakan <strong>Claude 3.5 Sonnet</strong> atau <strong>ChatGPT-4o</strong> untuk menghasilkan berkas tunggal <code class="bg-white px-1 py-0.5 rounded border text-indigo-600">index.html</code> secara utuh tanpa terpotong.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1">
+            <p class="font-semibold text-slate-700">Generator Prompt Tugas Interaktif 3 Level &copy; 2026 — SMPN 1 Tinggimoncong</p>
+            <p>Dikembangkan oleh Syarifuddin, S. Pd., M. Si. (Senior Instructional Designer & Script Developer)</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50 text-xs font-semibold border border-slate-700 pointer-events-none">
+        <span id="toastIcon" class="text-emerald-400 text-base">✅</span>
+        <span id="toastMessage">Prompt 3 Level berhasil disalin!</span>
+    </div>
+
+    <script>
+        // Tab Navigation Function
+        function switchTab(tabName) {
+            const tabs = ['app', 'script', 'guide'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                
+                // Desktop navigation buttons
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (btn) {
+                    btn.classList.remove('bg-white', 'text-emerald-700', 'shadow-sm');
+                    btn.classList.add('text-slate-600');
+                }
+
+                // Mobile navigation buttons
+                const mBtn = document.getElementById(`mobile-tab-btn-${t}`);
+                if (mBtn) {
+                    mBtn.classList.remove('bg-white', 'text-emerald-700', 'shadow-sm');
+                    mBtn.classList.add('text-slate-600');
+                }
+            });
+
+            // Activate chosen tab
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-white', 'text-emerald-700', 'shadow-sm');
+                activeBtn.classList.remove('text-slate-600');
+            }
+
+            const activeMBtn = document.getElementById(`mobile-tab-btn-${tabName}`);
+            if (activeMBtn) {
+                activeMBtn.classList.add('bg-white', 'text-emerald-700', 'shadow-sm');
+                activeMBtn.classList.remove('text-slate-600');
+            }
+        }
+
+        // Show Toast Notification
+        function showToast(message, icon = '✅') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = message;
+            document.getElementById('toastIcon').innerText = icon;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
+        // Preset Data
+        const presets = {
+            informatics: {
+                mapel: 'Informatika',
+                materi: 'Gerbang Logika Dasar',
+                tujuan1: 'Memahami konsep biner 0/1 dan fungsi sakelar logika.',
+                tujuan2: 'Menganalisis operasi dasar Gerbang NOT, AND, dan OR.',
+                tujuan3: 'Menentukan output dari kombinasi dua gerbang logika.',
+                tujuan4: 'Menganalisis sirkuit bertingkat tiga gerbang logika.',
+                tujuan5: 'Memecahkan studi kasus sirkuit sistem keamanan digital.',
+                subtopikMudah: 'Konsep Biner, Input-Output & Gerbang NOT',
+                subtopikNormal: 'Operasi Gerbang AND, OR & Kombinasi 2 Input',
+                subtopikSulit: 'Sirkuit Bertingkat, Kombinasi NAND/NOR & Case Study',
+                karakterMudah: 'Detektif Pemula Biner',
+                karakterNormal: 'Analis Logika Utama',
+                karakterSulit: 'Master Arsitek Sirkuit',
+                warna1: 'Hijau Neon (#10b981)',
+                warna2: 'Biru Elektrik (#2563eb)',
+                warna3: 'Merah Crimson (#ef4444)',
+                ikon1: '⚡ Sinyal Digital',
+                ikon2: '🔀 Symbol Gerbang Logika',
+                ikon3: '💡 Lampu Indikator',
+                ikon4: '🎛️ Switch Sakelar',
+                ikon5: '🧠 Microchip Prosesor'
+            },
+            science: {
+                mapel: 'IPA (Ilmu Pengetahuan Alam)',
+                materi: 'Sistem Organ Pencernaan Manusia',
+                tujuan1: 'Mengidentifikasi organ pencernaan utama dan fungsinya.',
+                tujuan2: 'Menganalisis proses pencernaan mekanis dan kimiawi.',
+                tujuan3: 'Menjelaskan peran enzim pencernaan (Amilase, Pepsin, Lipase).',
+                tujuan4: 'Menganalisis gangguan dan penyakit pada sistem pencernaan.',
+                tujuan5: 'Merancang pola makan sehat sesuai nutrisi seimbang.',
+                subtopikMudah: 'Mengenal Organ Pencernaan Utama & Fungsi Dasar',
+                subtopikNormal: 'Enzim Pencernaan, Nutrisi & Proses Kimiawi',
+                subtopikSulit: 'Analisis Gangguan Organ & Kasus Metabolisme Kompleks',
+                karakterMudah: 'Penjelajah Anatomi Muda',
+                karakterNormal: 'Ahli Biologi Pencernaan',
+                karakterSulit: 'Dokter Spesialis Gastro',
+                warna1: 'Hijau Toska (#059669)',
+                warna2: 'Biru Samudra (#0284c7)',
+                warna3: 'Oranye Aksa (#d97706)',
+                ikon1: '🍎 Nutrisi Makanan',
+                ikon2: '🫀 Organ Tubuh',
+                ikon3: '🧪 Enzim Kimiawi',
+                ikon4: '🔬 Mikroskop Lab',
+                ikon5: '💊 Kesehatan Gastro'
+            },
+            math: {
+                mapel: 'Matematika',
+                materi: 'Persamaan & Fungsi Kuadrat',
+                tujuan1: 'Memahami bentuk umum persamaan kuadrat ax²+bx+c=0.',
+                tujuan2: 'Menentukan akar-akar persamaan kuadrat dengan pemfaktoran.',
+                tujuan3: 'Menggunakan rumus ABC & melengkapi kuadrat sempurna.',
+                tujuan4: 'Menganalisis grafik fungsi kuadrat, titik puncak, dan sumbu simetri.',
+                tujuan5: 'Menyelesaikan soal cerita penerapan fungsi kuadrat.',
+                subtopikMudah: 'Bentuk Umum & Pemfaktoran Dasar',
+                subtopikNormal: 'Rumus ABC, Diskriminan & Sifat Akar',
+                subtopikSulit: 'Grafik Parabola, Titik Ekstrem & Aplikasi Cerita',
+                karakterMudah: 'Hitung Pemula Aljabar',
+                karakterNormal: 'Pakar Rumus Kuadrat',
+                karakterSulit: 'Master Arsitek Parabola',
+                warna1: 'Zamrud (#059669)',
+                warna2: 'Indigo (#4f46e5)',
+                warna3: 'Mawar Merah (#e11d48)',
+                ikon1: '📐 Penggaris Kurva',
+                ikon2: '📈 Grafik Parabola',
+                ikon3: '🔢 Rumus Aljabar',
+                ikon4: '🎯 Titik Puncak',
+                ikon5: '📊 Koordinat Kartesius'
+            }
+        };
+
+        // Load Preset Values
+        function loadPreset(key) {
+            const data = presets[key];
+            if (!data) return;
+
+            document.getElementById('mapel').value = data.mapel;
+            document.getElementById('materi').value = data.materi;
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`tujuan${i}`).value = data[`tujuan${i}`];
+            }
+            document.getElementById('subtopikMudah').value = data.subtopikMudah;
+            document.getElementById('subtopikNormal').value = data.subtopikNormal;
+            document.getElementById('subtopikSulit').value = data.subtopikSulit;
+
+            document.getElementById('karakterMudah').value = data.karakterMudah;
+            document.getElementById('karakterNormal').value = data.karakterNormal;
+            document.getElementById('karakterSulit').value = data.karakterSulit;
+
+            document.getElementById('warna1').value = data.warna1;
+            document.getElementById('warna2').value = data.warna2;
+            document.getElementById('warna3').value = data.warna3;
+
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`ikon${i}`).value = data[`ikon${i}`];
+            }
+
+            generateLivePrompt();
+            showToast(`Preset ${data.materi} dimuat!`, '🚀');
+        }
+
+        // Reset Form
+        function resetForm() {
+            document.getElementById('promptForm').reset();
+            document.getElementById('promptOutput').value = '';
+            showToast('Form telah dikosongkan', '🔄');
+        }
+
+        // Generate Live Prompt Function
+        function generateLivePrompt() {
+            const getVal = (id, fallback) => {
+                const val = document.getElementById(id).value.trim();
+                return val !== '' ? val : fallback;
+            };
+
+            const mapel          = getVal('mapel', '[MAPEL]');
+            const materi         = getVal('materi', '[NAMA MATERI]');
+            const t1             = getVal('tujuan1', '[TUJUAN 1]');
+            const t2             = getVal('tujuan2', '[TUJUAN 2]');
+            const t3             = getVal('tujuan3', '[TUJUAN 3]');
+            const t4             = getVal('tujuan4', '[TUJUAN 4]');
+            const t5             = getVal('tujuan5', '[TUJUAN 5]');
+
+            const subMudah       = getVal('subtopikMudah', '[SUBTOPIK MUDAH]');
+            const subNormal      = getVal('subtopikNormal', '[SUBTOPIK NORMAL]');
+            const subSulit       = getVal('subtopikSulit', '[SUBTOPIK SULIT]');
+
+            const karMudah       = getVal('karakterMudah', '[NAMA KARAKTER MUDAH]');
+            const karNormal      = getVal('karakterNormal', '[NAMA KARAKTER NORMAL]');
+            const karSulit       = getVal('karakterSulit', '[NAMA KARAKTER SULIT]');
+
+            const w1             = getVal('warna1', '[WARNA 1]');
+            const w2             = getVal('warna2', '[WARNA 2]');
+            const w3             = getVal('warna3', '[WARNA 3]');
+
+            const i1             = getVal('ikon1', '[IKON 1]');
+            const i2             = getVal('ikon2', '[IKON 2]');
+            const i3             = getVal('ikon3', '[IKON 3]');
+            const i4             = getVal('ikon4', '[IKON 4]');
+            const i5             = getVal('ikon5', '[IKON 5]');
+
+            const prompt = `PROMPT WEBSITE TUGAS INTERAKTIF ${mapel.toUpperCase()} KELAS VIII
+3 LEVEL: MUDAH — NORMAL — SULIT
+(Materi: ${materi})
+
+═══════════════════════════════════════════════
+🎯 PERAN KAMU
+═══════════════════════════════════════════════
+Kamu adalah Senior Front-End Developer + Instructional Designer.
+Tugasmu: menghasilkan SATU FILE index.html lengkap (HTML + CSS + JS)
+yang langsung bisa dibuka di browser, tanpa server, tanpa error.
+
+═══════════════════════════════════════════════
+📌 IDENTITAS
+═══════════════════════════════════════════════
+· Sekolah: SMPN 1 Tinggimoncong
+· Mapel: ${mapel}
+· Kelas: VIII
+· Guru: Syarifuddin, S. Pd., M. Si.
+· Materi: ${materi}
+· Alokasi: ±80 menit
+
+TUJUAN PEMBELAJARAN
+1. ${t1}
+2. ${t2}
+3. ${t3}
+4. ${t4}
+5. ${t5}
+
+═══════════════════════════════════════════════
+⚙️ ATURAN UTAMA (WAJIB DIPATUHI)
+═══════════════════════════════════════════════
+1. Setiap level hanya dapat dikerjakan SATU KALI.
+2. Level selesai → soal tidak muncul lagi, tombol berubah jadi
+   "🏆 LIHAT SERTIFIKAT".
+3. Level yang belum selesai tetap bisa dikerjakan.
+4. Tidak ada tombol ulangi / reset level.
+5. Status tersimpan di localStorage (tetap saat refresh).
+6. Setiap level punya sertifikat sendiri.
+7. Ketiga sertifikat berbeda warna sesuai levelnya.
+
+═══════════════════════════════════════════════
+🎨 TEMA KHUSUS MATERI (WAJIB)
+═══════════════════════════════════════════════
+Website punya tema visual khusus ${materi}, bukan generik.
+· Palet warna utama: ${w1}, ${w2}, ${w3}
+· Ikon khas: ${i1}, ${i2}, ${i3}, ${i4}, ${i5}
+· Ornamen latar bertema materi + animasi ringan
+· Setiap konsep punya warna & ikon berbeda
+· Warna level: 🟢 Mudah = hijau | 🔵 Normal = biru | 🔴 Sulit = merah
+
+═══════════════════════════════════════════════
+🏗️ STRUKTUR HALAMAN
+═══════════════════════════════════════════════
+
+1. HALAMAN AWAL
+   - Judul: 🎯 TUGAS INTERAKTIF ${mapel.toUpperCase()} — "Tantangan ${materi}"
+   - Info: Kelas VIII, SMPN 1 Tinggimoncong, Guru: Syarifuddin, S. Pd., M. Si.
+   - Ilustrasi ikon bertema materi
+   - Form: Nama Lengkap, Kelas, Nomor Absen (wajib isi)
+   - Tombol: 🚀 MASUK KE TANTANGAN
+
+2. PILIH LEVEL
+   Tiga kartu besar berwarna:
+   - 🟢 LEVEL MUDAH — "${karMudah}" — 10 soal
+     Materi: ${subMudah}
+   - 🔵 LEVEL NORMAL — "${karNormal}" — 10 soal
+     Materi: ${subNormal}
+   - 🔴 LEVEL SULIT — "${karSulit}" — 10 soal
+     Materi: ${subSulit}
+
+   Status per kartu:
+   - 🟢 Belum → tombol MULAI
+   - 🟡 Sedang → tandai
+   - 🔒 Selesai → tombol 🏆 LIHAT SERTIFIKAT
+
+3. KONFIRMASI SEBELUM MULAI
+   ⚠️ PERHATIAN: level hanya sekali, tidak bisa diulang.
+   Tombol: SAYA SIAP — MULAI | KEMBALI
+
+4. SOAL (10 per level)
+   - Level Mudah  → soal dasar (${subMudah})
+   - Level Normal → soal pemahaman + tabel (${subNormal})
+   - Level Sulit  → soal penalaran + rangkaian bertingkat (${subSulit})
+
+5. PEMBAHASAN (WAJIB)
+   Setelah nilai muncul, tampilkan halaman pembahasan:
+   - Ringkasan: benar, salah, nilai, predikat
+   - Daftar 10 soal: pertanyaan, jawaban siswa, jawaban benar,
+     alasan singkat, warna kartu (hijau=benar, merah=salah)
+   - Filter: Semua | Hanya salah | Hanya benar
+   - Tombol: 🎓 LIHAT SERTIFIKAT | 🏠 KEMBALI
+
+6. SERTIFIKAT GAMBAR PORTRAIT 3:4 BERTEMA
+   - Render via <canvas> atau html2canvas
+   - Ukuran 900×1200 px (rasio 3:4), tajam (devicePixelRatio)
+   - Isi lengkap:
+     · Judul: SERTIFIKAT TANTANGAN ${mapel.toUpperCase()}
+     · Nama siswa (besar, bold)
+     · Kelas
+     · NAMA MATERI: ${materi}  ← WAJIB TAMPIL JELAS
+     · LEVEL: MUDAH / NORMAL / SULIT  ← WAJIB TAMPIL JELAS
+     · Subjudul karakter level
+     · Nilai XX/100
+     · Predikat
+     · Tanggal otomatis
+     · Sekolah: SMPN 1 Tinggimoncong
+     · Guru: Syarifuddin, S. Pd., M. Si.
+     · Area tanda tangan guru (tanpa tanda tangan digital palsu)
+   - Desain bertema ${materi}: border, ornamen, ikon khas
+   - Warna dominan mengikuti level (hijau/biru/merah)
+   - Tombol: ⬇️ DOWNLOAD GAMBAR SERTIFIKAT (PNG)
+             🖨️ CETAK | 🏠 KEMBALI
+   - Nama file: Sertifikat_[Nama]_[Level]_[Materi].png
+
+═══════════════════════════════════════════════
+📊 SISTEM PENILAIAN
+═══════════════════════════════════════════════
+· 10 soal × 10 poin = 100 per level
+
+PREDIKAT
+90–100 → 🏆 Sangat Baik
+80–89  → 🥇 Baik
+70–79  → 🥈 Cukup
+<70    → 🌱 Perlu Belajar Lagi
+
+Sertifikat tetap diberikan untuk semua nilai.
+
+═══════════════════════════════════════════════
+📄 HALAMAN HASIL
+═══════════════════════════════════════════════
+Setelah level selesai tampilkan:
+Nama | Level | Benar X/10 | Nilai XX/100 | Predikat
+Tombol: 🎓 LIHAT SERTIFIKAT | 🏠 KEMBALI
+
+═══════════════════════════════════════════════
+📈 DASHBOARD PROGRESS
+═══════════════════════════════════════════════
+· 🟢 Mudah — status + nilai
+· 🔵 Normal — status + nilai
+· 🔴 Sulit — status + nilai
+Jika semua selesai: 🎉 SEMUA TANTANGAN SELESAI!
+Tombol 3 sertifikat muncul.
+
+═══════════════════════════════════════════════
+🚦 JIKA LEVEL SUDAH/BELUM SELESAI DIKLIK
+═══════════════════════════════════════════════
+JIKA LEVEL SUDAH SELESAI DIKLIK:
+Jangan buka soal. Langsung tampilkan:
+🏆 LEVEL [X] SUDAH SELESAI — Nilai XX/100 — Predikat
+Tombol: 🎓 LIHAT SERTIFIKAT
+(Tidak ada tombol ulangi.)
+
+JIKA LEVEL BELUM SELESAI DIKLIK:
+Tampilkan: "Level ini belum dikerjakan."
+Tombol: 🚀 MULAI LEVEL [X]
+
+═══════════════════════════════════════════════
+💾 PENYIMPANAN (localStorage)
+═══════════════════════════════════════════════
+Simpan: identitas siswa, status tiap level, nilai, tanggal.
+Contoh struktur:
+  levelMudah  = selesai | nilaiMudah  = 90
+  levelNormal = belum   | nilaiNormal = -
+  levelSulit  = selesai | nilaiSulit  = 80
+Bungkus try-catch agar aman.
+
+═══════════════════════════════════════════════
+🎨 DESAIN
+═══════════════════════════════════════════════
+· 🌈 Warna-warni cerah & ceria, modern, ramah SMP
+· Responsif (HP/tablet/PC)
+· Animasi ringan (lampu berkedip, gerbang berkilau)
+· Progress bar warna-warni
+· Kartu level besar dengan ikon tema
+· Banyak ikon bertema materi
+· Feedback jawaban berwarna
+· Warna level sangat jelas
+
+═══════════════════════════════════════════════
+✅ FITUR WAJIB
+═══════════════════════════════════════════════
+✅ HTML+CSS+JS satu file, langsung jalan, tanpa server
+✅ Tanpa login, tanpa database
+✅ Nama wajib diisi
+✅ 3 level × 10 soal = 30 soal
+✅ Level mudah/normal/sulit sesuai tingkatan
+✅ Penilaian otomatis, maks 100/level
+✅ Sekali kerja per level (tidak bisa ulang)
+✅ Level selesai → langsung ke sertifikat
+✅ Halaman pembahasan (benar/salah + alasan)
+✅ Sertifikat GAMBAR portrait rasio 3:4
+✅ Nama materi tampil jelas di sertifikat
+✅ Sertifikat bertema materi (ikon, warna, ornamen)
+✅ Warna sertifikat sesuai level (hijau/biru/merah)
+✅ Tombol download gambar sertifikat (PNG)
+✅ Status tersimpan di localStorage
+✅ Tidak ada tombol "Coba Lagi" untuk level selesai
+
+═══════════════════════════════════════════════
+🔄 ALUR WEBSITE
+═══════════════════════════════════════════════
+Isi Nama
+↓
+Pilih Level (🟢 | 🔵 | 🔴)
+↓
+Konfirmasi "Saya Siap"
+↓
+10 Soal (sekali kerja)
+↓
+Nilai Otomatis
+↓
+Pembahasan (benar/salah + alasan)
+↓
+Sertifikat Gambar Portrait 3:4 Bertema
+↓
+⬇️ Download Gambar Sertifikat
+↓
+Kembali ke Pilihan Level
+↓
+Level selesai → 🏆 LIHAT SERTIFIKAT
+Level belum → 🚀 MULAI
+
+═══════════════════════════════════════════════
+🚫 PERINTAH ANTI-ERROR (WAJIB DIPATUHI)
+═══════════════════════════════════════════════
+1. Bebas error di browser (Chrome/Edge/Firefox/Safari),
+   tanpa console error.
+2. Tidak pakai sintaks deprecated.
+3. Fungsi didefinisikan sebelum dipanggil / hoisting benar.
+4. Tidak ada variabel undefined/null tanpa pengecekan.
+5. Event listener pakai addEventListener.
+6. Elemen DOM dicek if (element) sebelum diakses.
+7. localStorage dibungkus try-catch.
+8. Library eksternal hanya html2canvas (CDN stabil).
+9. html2canvas dipanggil setelah DOMContentLoaded/window.onload.
+10. Semua tag HTML ditutup benar.
+11. CSS valid, tidak ada typo properti.
+12. Escape karakter khusus dengan benar.
+13. Beri komentar singkat per bagian kode.
+14. Canvas sertifikat 900×1200 px (rasio 3:4),
+    pakai devicePixelRatio agar tajam.
+15. Download menghasilkan .png dengan nama dinamis.
+16. Hindari CORS: jangan load gambar eksternal ke canvas
+    (gunakan shape/CSS/emoji saja).
+17. Emoji di canvas dirender via fillText.
+18. Konsisten: skor, predikat, status level di pembahasan,
+    sertifikat, dan dashboard.
+19. Semua tombol navigasi berfungsi, tidak ada yang mati.
+20. Tidak ada alert() bawaan; gunakan modal kustom.
+
+═══════════════════════════════════════════════
+📚 CATATAN MATERI
+═══════════════════════════════════════════════
+· Sediakan tabel/tabel kebenaran berwarna per konsep
+  (hijau=benar, merah=salah) sebagai petunjuk.
+· Gunakan karakter mudah diingat per konsep.
+· Berikan analogi sederhana per konsep.
+· Sertakan simbol visual khas materi di setiap soal.
+· Level sulit memuat soal rangkaian/kombinasi bertingkat.
+· Sertifikat bertema materi (ikon + warna + ornamen).
+· NAMA MATERI WAJIB tampil jelas di sertifikat.
+
+═══════════════════════════════════════════════
+📤 OUTPUT YANG SAYA INGINKAN
+═══════════════════════════════════════════════
+Berikan SATU FILE index.html lengkap yang berisi:
+1. Struktur HTML semua halaman (awal, pilih level, konfirmasi,
+   soal, pembahasan, sertifikat, dashboard).
+2. CSS lengkap dengan tema materi, warna level, animasi, responsif.
+3. JavaScript lengkap:
+   - Manajemen state (localStorage try-catch)
+   - Navigasi halaman
+   - Render soal per level
+   - Penilaian otomatis
+   - Halaman pembahasan dengan filter
+   - Generate sertifikat via canvas (900×1200 px, 3:4)
+   - Download sertifikat sebagai PNG
+   - Dashboard progress 3 level
+4. Komentar singkat per bagian kode.
+
+Buat seluruh kode HTML + CSS + JavaScript lengkap dalam
+SATU FILE (index.html) yang langsung dapat dijalankan,
+tanpa error, tampilan sangat menarik, berwarna-warni,
+bertema ${materi}, dengan banyak gambar dan ikon.`;
+
+            document.getElementById('promptOutput').value = prompt;
+        }
+
+        // Copy Generated Prompt to Clipboard
+        function copyGeneratedPrompt() {
+            const output = document.getElementById('promptOutput');
+            if (!output.value.trim()) {
+                showToast('Generasikan prompt terlebih dahulu!', '⚠️');
+                return;
+            }
+
+            output.select();
+            document.execCommand('copy');
+            showToast('Prompt 3 Level berhasil disalin!', '📋');
+        }
+
+        // Copy Apps Script Code to Clipboard
+        function copyGasCode() {
+            const code = document.getElementById('gasCodeBlock').innerText;
+            const dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = code;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+
+            showToast('Kode Google Apps Script disalin!', '💻');
+        }
+
+        // Initialize with default preset
+        window.onload = function() {
+            loadPreset('informatics');
+        };
+    </script>
+</body>
+</html>
+```
