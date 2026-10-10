@@ -1,0 +1,1394 @@
+```html
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Prompt LKPD Interaktif & Panduan Apps Script</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-md shadow-blue-500/20">
+                    ⚡
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-900 text-lg leading-tight">Generator Prompt LKPD</h1>
+                    <p class="text-xs text-slate-500 font-medium">Asisten Guru SMP — Powered by AI Prompting</p>
+                </div>
+            </div>
+
+            <!-- Tab Buttons -->
+            <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200/80">
+                <button onclick="switchTab('app')" id="tab-btn-app" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-blue-600 bg-white shadow-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Web App Generator
+                </button>
+                <button onclick="switchTab('script')" id="tab-btn-script" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-code mr-2"></i>Kode Apps Script
+                </button>
+                <button onclick="switchTab('guide')" id="tab-btn-guide" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-book-open mr-2"></i>Panduan Setup
+                </button>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Mode Siap
+                </span>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Tabs -->
+        <div class="md:hidden flex border-t border-slate-200 bg-slate-50 px-2 py-1.5 gap-1 overflow-x-auto">
+            <button onclick="switchTab('app')" id="mobile-tab-btn-app" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg whitespace-nowrap bg-white text-blue-600 shadow-sm text-center">
+                🚀 Web App
+            </button>
+            <button onclick="switchTab('script')" id="mobile-tab-btn-script" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg whitespace-nowrap text-slate-600 text-center">
+                💻 Apps Script
+            </button>
+            <button onclick="switchTab('guide')" id="mobile-tab-btn-guide" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg whitespace-nowrap text-slate-600 text-center">
+                📖 Panduan
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- TAB 1: WEB APP GENERATOR (DIRECT TOOL IN BROWSER) -->
+        <div id="tab-app" class="space-y-6">
+            <!-- Hero / Preset Banner -->
+            <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <span class="inline-block px-3 py-1 bg-blue-500/30 backdrop-blur-md rounded-full text-blue-200 text-xs font-semibold mb-3 border border-blue-400/30">
+                        ⚡ Interactive Prompt Generator
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
+                        Buat Prompt LKPD Interaktif Secara Instan
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                        Isi form di bawah ini atau pilih contoh preset materi. Generator akan merangkai prompt raksasa 3.000+ kata yang siap dipaste ke ChatGPT, Claude, atau Gemini!
+                    </p>
+
+                    <!-- Preset Selector Buttons -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider mr-2">Pilih Preset:</span>
+                        <button onclick="loadPreset('informatics')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-lg backdrop-blur border border-white/10 transition flex items-center gap-1.5">
+                            ⚡ Informatika: Gerbang Logika
+                        </button>
+                        <button onclick="loadPreset('science')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-lg backdrop-blur border border-white/10 transition flex items-center gap-1.5">
+                            🌱 IPA: Ekosistem & Rantai Makanan
+                        </button>
+                        <button onclick="loadPreset('math')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-lg backdrop-blur border border-white/10 transition flex items-center gap-1.5">
+                            📐 Matematika: Bangun Datar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form & Output Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Left Column: Input Form (5 Cols) -->
+                <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-blue-600"></i> Data Input Pembelajaran
+                        </h3>
+                        <button onclick="resetForm()" class="text-xs font-medium text-slate-500 hover:text-rose-600 transition">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Reset Form
+                        </button>
+                    </div>
+
+                    <form id="promptForm" class="space-y-4" onsubmit="event.preventDefault(); generateLivePrompt();">
+                        <!-- Mapel & Materi -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Mata Pelajaran (MAPEL)</label>
+                                <input type="text" id="mapel" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Informatika">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Materi Utama</label>
+                                <input type="text" id="materi" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Gerbang Logika Dasar">
+                            </div>
+                        </div>
+
+                        <!-- Tujuan Pembelajaran (1-5) -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Tujuan Pembelajaran (1–5)</label>
+                            <div class="space-y-2">
+                                <input type="text" id="tujuan1" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Tujuan 1...">
+                                <input type="text" id="tujuan2" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Tujuan 2...">
+                                <input type="text" id="tujuan3" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Tujuan 3...">
+                                <input type="text" id="tujuan4" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Tujuan 4...">
+                                <input type="text" id="tujuan5" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Tujuan 5...">
+                            </div>
+                        </div>
+
+                        <!-- Subtopik (1-5) -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Subtopik Aktivitas (1–5)</label>
+                            <div class="space-y-2">
+                                <input type="text" id="subtopik1" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Subtopik 1...">
+                                <input type="text" id="subtopik2" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Subtopik 2...">
+                                <input type="text" id="subtopik3" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Subtopik 3...">
+                                <input type="text" id="subtopik4" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Subtopik 4...">
+                                <input type="text" id="subtopik5" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Subtopik 5...">
+                            </div>
+                        </div>
+
+                        <!-- Warna Tema -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Palet Warna Utama</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input type="text" id="warna1" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Biru #2563eb">
+                                <input type="text" id="warna2" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Cyan #0891b2">
+                                <input type="text" id="warna3" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Kuning #f59e0b">
+                            </div>
+                        </div>
+
+                        <!-- Ikon Theme -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Ikon Elemen (1–6)</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="ikon1" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 1 (e.g. ⚡ Sinyal)">
+                                <input type="text" id="ikon2" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 2 (e.g. 🔀 Gerbang)">
+                                <input type="text" id="ikon3" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 3 (e.g. 💡 LED)">
+                                <input type="text" id="ikon4" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 4 (e.g. 🎛️ Switch)">
+                                <input type="text" id="ikon5" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 5 (e.g. 🧠 Chip)">
+                                <input type="text" id="ikon6" class="px-2 py-1.5 text-xs border border-slate-300 rounded-lg outline-none" placeholder="Ikon 6 (e.g. 📊 Tabel)">
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="button" onclick="generateLivePrompt()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rocket"></i> Rangkai & Buat Prompt Raksasa
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right Column: Generated Prompt Preview (7 Cols) -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 flex flex-col h-[780px]">
+                        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                                    <i class="fa-solid fa-file-lines text-indigo-600"></i> Hasil Prompt Raksasa AI
+                                </h3>
+                                <p class="text-xs text-slate-500">Prompt ini berisi instruksi pedagogis & teknik bebas error 3.000+ kata</p>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <button onclick="copyGeneratedPrompt()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-500/20 transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-copy"></i> Copy ke Clipboard
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Textarea Display -->
+                        <div class="relative flex-1 mt-4">
+                            <textarea id="promptOutput" readonly class="w-full h-full p-4 bg-slate-900 text-slate-100 font-mono text-xs rounded-xl border border-slate-800 resize-none focus:outline-none custom-scrollbar leading-relaxed" placeholder="Klik tombol 'Rangkai & Buat Prompt Raksasa' atau pilih Preset di atas..."></textarea>
+                        </div>
+
+                        <!-- AI Jump Links -->
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-xs text-slate-500 font-medium">Buka AI Pilihan Anda:</span>
+                            <div class="flex items-center gap-2">
+                                <a href="https://chatgpt.com/" target="_blank" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> ChatGPT
+                                </a>
+                                <a href="https://claude.ai/" target="_blank" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Claude AI
+                                </a>
+                                <a href="https://gemini.google.com/" target="_blank" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Gemini
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: KODE GOOGLE APPS SCRIPT -->
+        <div id="tab-script" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Google Apps Script</span>
+                        <h2 class="text-xl font-bold text-slate-900">Kode Lengkap Script Spreadsheet (Code.gs)</h2>
+                        <p class="text-xs text-slate-500">Salin kode di bawah ini ke Editor Apps Script Google Sheets Anda.</p>
+                    </div>
+                    <button onclick="copyGasCode()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md shadow-blue-500/20 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-copy"></i> Salin Seluruh Kode Script
+                    </button>
+                </div>
+
+                <div class="relative">
+                    <pre class="bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs overflow-x-auto max-h-[600px] custom-scrollbar leading-relaxed border border-slate-800"><code id="gasCodeBlock">/**
+ * Proyek: Generator Prompt LKPD Interaktif
+ * Penulis: Senior Google Apps Script Developer & Instructional Designer
+ * Fitur: Auto-generate prompt raksasa 3000+ kata untuk AI & Auto Copy Clipboard
+ */
+
+/**
+ * Trigger otomatis saat spreadsheet dibuka.
+ * Menambahkan menu kustom "⚡ Menu Prompt" di toolbar.
+ */
+function onOpen() {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('⚡ Menu Prompt')
+    .addItem('🚀 Generate Prompt LKPD', 'generatePrompt')
+    .addItem('📋 Copy Prompt ke Clipboard', 'copyPrompt')
+    .addToUi();
+}
+
+/**
+ * Fungsi utama untuk membaca data dari Sheet "Input",
+ * merangkai template prompt raksasa, dan menyimpannya di Sheet "Prompt" sel A1.
+ */
+function generatePrompt() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const inputSheet = ss.getSheetByName('Input');
+  const promptSheet = ss.getSheetByName('Prompt');
+
+  // Validasi keberadaan sheet
+  if (!inputSheet) {
+    SpreadsheetApp.getUi().alert('⚠️ Error: Sheet "Input" tidak ditemukan. Pastikan nama sheet sesuai!');
+    return;
+  }
+  if (!promptSheet) {
+    SpreadsheetApp.getUi().alert('⚠️ Error: Sheet "Prompt" tidak ditemukan. Pastikan nama sheet sesuai!');
+    return;
+  }
+
+  // Mengambil nilai input dari range B1:B21
+  const values = inputSheet.getRange('B1:B21').getValues();
+
+  // Helper function untuk mengambil nilai sel dengan fallback jika kosong
+  const getValue = (index, fallback) => {
+    const val = values[index] ? values[index][0] : '';
+    return (val !== null && val !== undefined && val.toString().trim() !== '') 
+      ? val.toString().trim() 
+      : fallback;
+  };
+
+  // Ekstraksi variabel dari sheet Input
+  const mapel     = getValue(0, '[MAPEL]');
+  const materi    = getValue(1, '[NAMA MATERI]');
+  const tujuan1   = getValue(2, '[TUJUAN 1]');
+  const tujuan2   = getValue(3, '[TUJUAN 2]');
+  const tujuan3   = getValue(4, '[TUJUAN 3]');
+  const tujuan4   = getValue(5, '[TUJUAN 4]');
+  const tujuan5   = getValue(6, '[TUJUAN 5]');
+  const subtopik1 = getValue(7, '[SUBTOPIK 1]');
+  const subtopik2 = getValue(8, '[SUBTOPIK 2]');
+  const subtopik3 = getValue(9, '[SUBTOPIK 3]');
+  const subtopik4 = getValue(10, '[SUBTOPIK 4]');
+  const subtopik5 = getValue(11, '[SUBTOPIK 5]');
+  const warna1    = getValue(12, '[WARNA 1]');
+  const warna2    = getValue(13, '[WARNA 2]');
+  const warna3    = getValue(14, '[WARNA 3]');
+  const ikon1     = getValue(15, '[IKON 1]');
+  const ikon2     = getValue(16, '[IKON 2]');
+  const ikon3     = getValue(17, '[IKON 3]');
+  const ikon4     = getValue(18, '[IKON 4]');
+  const ikon5     = getValue(19, '[IKON 5]');
+  const ikon6     = getValue(20, '[IKON 6]');
+
+  // Merangkai Prompt Raksasa menggunakan ES6 Template Literals
+  const promptText = `PROMPT PEMBUATAN WEBSITE LKPD INTERAKTIF ${mapel.toUpperCase()} KELAS VIII
+(Materi: ${materi})
+
+---
+
+IDENTITAS
+· Sekolah: SMPN 1 Tinggimoncong
+· Mapel: ${mapel}
+· Kelas: VIII
+· Guru: Syarifuddin, S. Pd., M. Si.
+· Materi: ${materi}
+· Alokasi: ±80 menit
+
+TUJUAN PEMBELAJARAN
+1. ${tujuan1}
+2. ${tujuan2}
+3. ${tujuan3}
+4. ${tujuan4}
+5. ${tujuan5}
+
+---
+
+TEMA KHUSUS MATERI (WAJIB)
+
+Website harus memiliki TEMA VISUAL KHUSUS yang
+mencerminkan materi ${materi}, bukan template umum.
+
+Ketentuan tema:
+
+1. Palet warna utama diambil dari nuansa materi:
+   - Warna primer: ${warna1}
+   - Warna sekunder: ${warna2}
+   - Warna aksen: ${warna3}
+   - Warna latar: gradasi cerah & ramah anak
+
+2. Ikon & ilustrasi khas materi:
+   - ${ikon1} untuk konsep dasar/utama ${materi}
+   - ${ikon2} untuk jenis/elemen ${materi}
+   - ${ikon3} untuk penerapan/simulasi
+   - ${ikon4} untuk analisis & perhitungan
+   - ${ikon5} untuk evaluasi & pemahaman
+   - ${ikon6} untuk rangkuman & refleksi
+
+3. Ornaments latar:
+   - Pola/gambar samar bertema ${materi} di background
+   - Animasi ringan (mengambang, berkilau, berdenyut)
+   - Mascot karakter bertema ${materi} (opsional)
+
+4. Setiap aktivitas punya warna & ikon berbeda:
+   - Aktivitas 1 → ${warna1} + ${ikon1}
+   - Aktivitas 2 → ${warna2} + ${ikon2}
+   - Aktivitas 3 → ${warna3} + ${ikon3}
+   - Aktivitas 4 → ${warna1} + ${ikon4}
+   - Aktivitas 5 → ${warna2} + ${ikon5}
+
+5. Kartu soal, tombol, tabel, dan sertifikat
+   menggunakan gaya visual konsisten bertema ${materi}
+   (bukan generik abu-abu/putih polos).
+
+---
+
+STRUKTUR HALAMAN
+
+1. HALAMAN AWAL
+   - Judul: LKPD INTERAKTIF ${mapel.toUpperCase()} — "Petualangan ${materi}"
+   - Info: Kelas VIII, SMPN 1 Tinggimoncong, Guru: Syarifuddin, S. Pd., M. Si.
+   - Ilustrasi ikon bertema materi (warna-warni)
+   - Form: Nama Lengkap, Kelas, Nomor Absen (wajib isi)
+   - Tombol: 🚀 MULAI LKPD
+
+2. PETUNJUK
+   - 8 poin instruksi (baca teliti, kerjakan semua, boleh mengulang, dll.)
+   - Tombol: ▶️ MULAI MENGERJAKAN
+
+3. DASHBOARD
+   - Nama, Kelas, Percobaan ke-N
+   - Progress bar
+   - 5 menu aktivitas berwarna dengan ikon tema
+
+4. AKTIVITAS 1 — ${subtopik1} (5 soal)
+5. AKTIVITAS 2 — ${subtopik2} (5 soal)
+6. AKTIVITAS 3 — ${subtopik3} (5 soal)
+7. AKTIVITAS 4 — ${subtopik4} (7 soal)
+8. AKTIVITAS 5 — ${subtopik5} (3 soal)
+
+Tipe soal wajib: pilihan ganda, drag-and-drop, tabel isian,
+simulator interaktif, studi kasus, hitung cepat, tebak konsep.
+
+---
+
+SISTEM PENILAIAN
+· 25 soal × 4 poin = 100
+· Drag-and-drop: nilai setelah semua pasangan benar
+· Tampilkan: Benar XX/25 | Nilai XX/100
+
+PREDIKAT
+90–100 → 🏆 SANGAT BAIK
+80–89  → 🥇 BAIK
+70–79  → 🥈 CUKUP
+<70    → 🌱 PERLU BERLATIH
+
+---
+
+PEMBAHASAN JAWABAN (WAJIB)
+
+Setelah siswa selesai mengerjakan seluruh 25 soal dan
+nilai otomatis muncul, tampilkan halaman PEMBAHASAN
+sebelum sertifikat.
+
+Halaman pembahasan wajib berisi:
+
+1. Ringkasan hasil:
+   - Jumlah benar dan salah
+   - Nilai akhir
+   - Predikat
+
+2. Daftar pembahasan per soal:
+   - Nomor soal
+   - Teks pertanyaan
+   - Jawaban siswa (benar/salah, tandai warna)
+   - Jawaban benar (jika salah, tampilkan yang benar)
+   - Penjelasan singkat/alasan jawaban
+   - Warna kartu: hijau = benar, merah = salah
+
+3. Filter/tombol navigasi:
+   - Tampilkan semua
+   - Hanya yang salah
+   - Hanya yang benar
+
+4. Tombol:
+   - 🎓 LIHAT SERTIFIKAT
+   - 🔄 COBA LAGI
+
+---
+
+SERTIFIKAT (GAMBAR PORTRAIT 3×4 DENGAN TEMA MATERI)
+
+Setelah pembahasan ditutup, tampilkan sertifikat berupa
+GAMBAR dengan rasio portrait 3:4 (lebar : tinggi)
+dan WAJIB menampilkan NAMA MATERI secara jelas.
+
+Ketentuan sertifikat:
+
+1. Format: gambar (bukan sekadar HTML biasa).
+   - Gunakan <canvas> atau library html2canvas
+     untuk render sertifikat menjadi gambar.
+   - Ukuran disarankan: 900 × 1200 px (rasio 3:4).
+
+2. Isi sertifikat (WAJIB LENGKAP):
+   - Judul: SERTIFIKAT PENYELESAIAN LKPD
+   - Nama siswa (besar, bold)
+   - Kelas
+   - Judul LKPD: LKPD INTERAKTIF ${mapel.toUpperCase()}
+   - NAMA MATERI: ${materi}  ← WAJIB TAMPIL JELAS
+   - Nilai: XX/100
+   - Predikat
+   - Percobaan ke-N
+   - Tanggal otomatis
+   - Nama sekolah: SMPN 1 Tinggimoncong
+   - Nama guru: Syarifuddin, S. Pd., M. Si.
+   - Area tanda tangan guru (tanpa tanda tangan digital palsu)
+
+3. Desain sertifikat BERTEMA MATERI:
+   - Warna dominan mengikuti predikat DAN tema materi
+   - Border/ornamen khas materi ${materi}
+   - Ikon-ikon tema menghiasi sudut & latar sertifikat
+   - Ada simbol/ilustrasi khas materi
+   - Background bergradasi warna-warni ceria
+   - Nama materi ditampilkan dengan ukuran menonjol
+     di bagian tengah sertifikat
+
+4. Warna dominan mengikuti predikat:
+   - 90–100 → Hijau/Emas 🏆
+   - 80–89  → Biru 🥇
+   - 70–79  → Oranye 🥈
+   - <70    → Abu-abu/Hijau Muda 🌱
+   Dikombinasikan dengan warna tema materi.
+
+5. Tombol pada halaman sertifikat:
+   - ⬇️ DOWNLOAD GAMBAR SERTIFIKAT
+     (mengunduh file PNG dari canvas,
+      nama file: Sertifikat_[NamaSiswa]_[Materi]_Percobaan[N].png)
+   - 🖨️ CETAK SERTIFIKAT (opsional, via print browser)
+   - 🔄 COBA LAGI
+   - 📊 LIHAT RIWAYAT
+
+6. Sertifikat tetap diberikan untuk semua nilai (termasuk <70).
+
+---
+
+FITUR PENDUKUNG
+· 🔄 Coba Lagi (percobaan +1, soal & pilihan diacak, nilai baru)
+· 🏆 Lihat Sertifikat (per percobaan)
+· 📊 Riwayat Pengerjaan (tabel + tombol sertifikat per baris)
+· 🏆 Nilai Terbaik (otomatis diperbarui)
+· 🔄 Reset Riwayat (konfirmasi + localStorage)
+
+---
+
+DESAIN
+Modern, ceria, warna-warni, responsif (HP/tablet/PC),
+banyak ikon bertema materi, tombol besar, progress bar,
+animasi ringan, feedback langsung, sedikit teks.
+
+---
+
+ALOKASI WAKTU (80 menit)
+5' identitas & petunjuk | 8' akt.1 | 15' akt.2 | 10' akt.3
+15' akt.4 | 22' akt.5 | 5' pembahasan, sertifikat & refleksi
+
+---
+
+FITUR WAJIB
+✅ Responsif  ✅ Tanpa login  ✅ Input nama di awal
+✅ 25 soal interaktif  ✅ Ilustrasi bertema materi
+✅ Drag-and-drop  ✅ Penilaian otomatis  ✅ Feedback langsung
+✅ Bisa diulang  ✅ Nilai baru per percobaan
+✅ Nomor percobaan otomatis  ✅ Acak soal & pilihan
+✅ Riwayat nilai  ✅ Nilai terbaik  ✅ Sertifikat otomatis
+✅ Pembahasan jawaban benar & salah
+✅ Sertifikat berupa gambar portrait rasio 3:4
+✅ Nama materi tampil jelas di sertifikat
+✅ Tema visual khusus sesuai materi (bukan generik)
+✅ Tombol download gambar sertifikat
+✅ Data lengkap di sertifikat
+
+---
+
+ALUR AKHIR
+Isi Nama → Petunjuk → 5 Aktivitas → 25 Soal →
+Nilai Otomatis → Predikat → PEMBAHASAN (benar/salah + alasan) →
+SERTIFIKAT GAMBAR PORTRAIT 3:4 BERTEMA MATERI →
+DOWNLOAD GAMBAR → Coba Lagi → Soal Diacak → Nilai Baru →
+Sertifikat Baru
+
+---
+
+CATATAN MATERI
+· Sediakan simulator interaktif (input → output)
+· Tabel berwarna per konsep (hijau=benar, merah=salah)
+· Karakter/nama mudah diingat per konsep
+· Analogi sederhana per konsep
+· Studi kasus nyata
+· Kartu berwarna untuk drag-and-drop
+· Semua visual (ikon, warna, ornamen) konsisten bertema materi
+
+---
+
+PERINTAH ANTI-ERROR (WAJIB DIPATUHI)
+
+Hasil generate kode HTML + CSS + JavaScript HARUS:
+
+1. Bebas error saat dijalankan langsung di browser
+   (Chrome, Edge, Firefox, Safari) tanpa console error.
+2. Tidak menggunakan sintaks yang deprecated.
+3. Semua fungsi didefinisikan sebelum dipanggil
+   atau menggunakan function hoisting yang benar.
+4. Tidak ada variabel yang undefined / null tanpa pengecekan.
+5. Semua event listener terpasang dengan benar
+   (gunakan addEventListener, bukan inline onclick jika memungkinkan).
+6. Semua elemen DOM yang diakses dipastikan ada sebelum digunakan
+   (gunakan pengecekan if (element) { ... }).
+7. localStorage dibungkus try-catch untuk antisipasi error.
+8. Tidak menggunakan library eksternal kecuali html2canvas
+   (untuk export sertifikat) — sertakan CDN yang stabil.
+9. Jika menggunakan html2canvas, pastikan dipanggil setelah
+   DOM selesai dimuat (DOMContentLoaded / window.onload).
+10. Semua tag HTML ditutup dengan benar.
+11. CSS valid, tidak ada properti typo.
+12. Tidak ada karakter khusus yang merusak sintaks
+    (escape dengan benar).
+13. Kode diberi komentar singkat per bagian agar mudah dicek.
+14. Ukuran canvas sertifikat 900×1200 px (rasio 3:4)
+    dengan devicePixelRatio agar hasil tajam.
+15. Tombol download menghasilkan file .png
+    dengan nama dinamis sesuai nama siswa, materi & percobaan.
+16. Pastikan tidak ada CORS issue saat render canvas
+    (jangan load gambar eksternal ke dalam canvas;
+    gunakan shape/CSS/emoji saja).
+17. Jika menggunakan emoji di canvas, render via fillText
+    agar kompatibel.
+18. Uji logika: pastikan skor, predikat, dan nomor percobaan
+    konsisten di pembahasan, sertifikat, dan riwayat.
+19. Semua tombol navigasi berfungsi dan tidak ada yang mati.
+20. Tidak ada alert() bawaan browser yang mengganggu;
+    gunakan modal kustom.
+
+Buat seluruh kode HTML + CSS + JavaScript lengkap dalam
+SATU FILE (index.html) yang langsung dapat dijalankan,
+tanpa error, tampilan sangat menarik, berwarna-warni,
+bertema ${materi}, dengan banyak gambar dan ikon.`;
+
+  // Simpan hasil rakitan prompt ke Sheet "Prompt" sel A1
+  const cell = promptSheet.getRange('A1');
+  cell.setValue(promptText);
+
+  // Mengatur tata letak tampilan sel A1
+  cell.setWrap(true);
+  promptSheet.setColumnWidth(1, 850);
+
+  // Tampilkan dialog notifikasi sukses
+  SpreadsheetApp.getUi().alert(
+    '🚀 Berhasil Generate Prompt!',
+    'Prompt Raksasa LKPD berhasil dibuat dan disimpan pada Sheet "Prompt" sel A1.\n\nLangkah berikutnya:\nPilih menu "⚡ Menu Prompt" > "📋 Copy Prompt ke Clipboard".',
+    SpreadsheetApp.getUi().ButtonSet.OK
+  );
+}
+
+/**
+ * Fungsi untuk menyalin isi sel A1 Sheet "Prompt" langsung ke Clipboard komputer user
+ * menggunakan modal dialog HTML dan Clipboard API browser.
+ */
+function copyPrompt() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const promptSheet = ss.getSheetByName('Prompt');
+
+  if (!promptSheet) {
+    SpreadsheetApp.getUi().alert('⚠️ Error: Sheet "Prompt" tidak ditemukan!');
+    return;
+  }
+
+  const promptText = promptSheet.getRange('A1').getValue();
+
+  if (!promptText || promptText.toString().trim() === '') {
+    SpreadsheetApp.getUi().alert(
+      '⚠️ Prompt Masih Kosong!',
+      'Silakan jalankan "🚀 Generate Prompt LKPD" terlebih dahulu dari menu.',
+      SpreadsheetApp.getUi().ButtonSet.OK
+    );
+    return;
+  }
+
+  // Membuat halaman HTML interaktif untuk mengeksekusi perintah copy ke clipboard
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <base target="_top">
+        <style>
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            text-align: center;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+          }
+          .box {
+            background: #ffffff;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+          }
+          .icon { font-size: 42px; margin-bottom: 8px; }
+          h3 { margin: 8px 0; color: #1e40af; font-size: 18px; }
+          p { font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.5; }
+          button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+          }
+          button:hover { background-color: #1d4ed8; }
+          textarea { position: absolute; left: -9999px; }
+        </style>
+      </head>
+      <body>
+        <div class="box">
+          <div class="icon">📋</div>
+          <h3 id="status-title">Proses Menyalin Prompt...</h3>
+          <p id="status-desc">Mohon tunggu sebentar...</p>
+          <textarea id="copy-area"></textarea>
+          <button onclick="google.script.host.close()">Tutup Window</button>
+        </div>
+
+        <script>
+          const rawPrompt = ${JSON.stringify(promptText)};
+          const copyArea = document.getElementById('copy-area');
+          copyArea.value = rawPrompt;
+
+          async function copyToClipboard() {
+            try {
+              if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(rawPrompt);
+              } else {
+                copyArea.select();
+                document.execCommand('copy');
+              }
+              document.getElementById('status-title').innerText = '✅ Berhasil Disalin!';
+              document.getElementById('status-desc').innerText = 'Prompt Raksasa sudah masuk ke Clipboard. Anda tinggal lakukan PASTE ke ChatGPT/Claude/Gemini!';
+              setTimeout(() => { google.script.host.close(); }, 2200);
+            } catch (err) {
+              copyArea.select();
+              document.execCommand('copy');
+              document.getElementById('status-title').innerText = '✅ Berhasil Disalin!';
+              document.getElementById('status-desc').innerText = 'Prompt Raksasa telah berhasil disalin ke Clipboard.';
+              setTimeout(() => { google.script.host.close(); }, 2200);
+            }
+          }
+
+          window.onload = copyToClipboard;
+        </script>
+      </body>
+    </html>
+  `;
+
+  const htmlOutput = HtmlService.createHtmlOutput(htmlContent)
+    .setWidth(420)
+    .setHeight(230);
+
+  SpreadsheetApp.getUi().showModalDialog(htmlOutput, '📋 Copy Prompt LKPD');
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: PANDUAN SETUP STEP-BY-STEP -->
+        <div id="tab-guide" class="hidden space-y-6">
+            
+            <!-- Setup Steps Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Step 1 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-lg">
+                        1
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Setup Sheet Spreadsheet</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Buat file Google Sheets baru. Buat 2 Sheet dengan nama persis: 
+                        <span class="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-blue-600">Input</span> dan 
+                        <span class="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-blue-600">Prompt</span>.
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-700 font-mono">
+                        Kolom A (Input): Baris 1-21 berisi label MAPEL, NAMA MATERI, TUJUAN 1-5, SUBTOPIK 1-5, WARNA 1-3, IKON 1-6.
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-lg">
+                        2
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Pasang Kode Apps Script</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Klik menu <span class="font-semibold text-slate-800">Extensions (Ekstensi) > Apps Script</span>.
+                        Hapus kode bawaan, lalu paste seluruh kode dari Tab <span class="font-semibold text-blue-600">Kode Apps Script</span> di atas.
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-700">
+                        Tekan <kbd class="bg-white border border-slate-300 px-1.5 py-0.5 rounded text-[10px] font-mono shadow-sm">Ctrl + S</kbd> untuk menyimpan, lalu refresh spreadsheet Anda.
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 font-bold flex items-center justify-center text-lg">
+                        3
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Jalankan & Otorisasi</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Buka menu baru <span class="font-semibold text-slate-800">⚡ Menu Prompt > 🚀 Generate Prompt LKPD</span>.
+                        Saat muncul peringatan otorisasi Google, klik Continue > Select Account > Advanced > Go to Script (unsafe) > Allow.
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-lg">
+                        4
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Paste Ke AI & Hasilkan Website</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Klik menu <span class="font-semibold text-slate-800">📋 Copy Prompt ke Clipboard</span>. Buka ChatGPT-4o, Claude 3.5 Sonnet, atau Gemini 1.5 Pro, lalu Paste (<kbd class="bg-white border border-slate-300 px-1.5 py-0.5 rounded text-[10px] font-mono shadow-sm">Ctrl + V</kbd>).
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Debugging Tips Accordion -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-bug text-rose-500"></i> Tips Debugging & Anti-Error
+                </h3>
+
+                <div class="space-y-3 text-xs text-slate-600">
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="font-bold text-slate-900">1. Kenapa menu '⚡ Menu Prompt' tidak muncul?</span>
+                        <p class="mt-1">Pastikan Anda telah merefresh halaman Google Sheets. Jika belum muncul, buka Apps Script dan jalankan fungsi <code class="bg-white px-1 py-0.5 rounded border text-blue-600">onOpen()</code> secara manual sekali.</p>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="font-bold text-slate-900">2. Hasil Sertifikat Gambar HD 3:4:</span>
+                        <p class="mt-1">AI diinstruksikan menggunakan library <code class="bg-white px-1 py-0.5 rounded border text-indigo-600">html2canvas</code> dengan devicePixelRatio 2 untuk menghasilkan sertifikat PNG tajam berukuran 900×1200 px.</p>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="font-bold text-slate-900">3. Rekomendasi Model AI:</span>
+                        <p class="mt-1">Gunakan <strong>Claude 3.5 Sonnet</strong> atau <strong>ChatGPT-4o</strong> karena memiliki kemampuan merender single-file index.html tanpa terpotong untuk prompt panjang.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1">
+            <p class="font-semibold text-slate-700">Generator Prompt LKPD Interaktif &copy; 2026 — SMPN 1 Tinggimoncong</p>
+            <p>Dikembangkan oleh Syarifuddin, S. Pd., M. Si. (Senior Instructional Designer & Script Developer)</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50 text-xs font-semibold border border-slate-700 pointer-events-none">
+        <span id="toastIcon" class="text-emerald-400 text-base">✅</span>
+        <span id="toastMessage">Prompt berhasil disalin ke clipboard!</span>
+    </div>
+
+    <script>
+        // Tab Switcher
+        function switchTab(tabName) {
+            const tabs = ['app', 'script', 'guide'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                
+                // Desktop buttons
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (btn) {
+                    btn.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+                    btn.classList.add('text-slate-600');
+                }
+
+                // Mobile buttons
+                const mBtn = document.getElementById(`mobile-tab-btn-${t}`);
+                if (mBtn) {
+                    mBtn.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+                    mBtn.classList.add('text-slate-600');
+                }
+            });
+
+            // Activate active tab
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+                activeBtn.classList.remove('text-slate-600');
+            }
+
+            const activeMBtn = document.getElementById(`mobile-tab-btn-${tabName}`);
+            if (activeMBtn) {
+                activeMBtn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+                activeMBtn.classList.remove('text-slate-600');
+            }
+        }
+
+        // Show Toast Notification
+        function showToast(message, icon = '✅') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = message;
+            document.getElementById('toastIcon').innerText = icon;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
+        // Presets Data
+        const presets = {
+            informatics: {
+                mapel: 'Informatika',
+                materi: 'Gerbang Logika Dasar',
+                tujuan1: 'Memahami konsep sinyal biner (0 dan 1) serta fungsi logika dasar.',
+                tujuan2: 'Menganalisis cara kerja Gerbang Logika AND, OR, dan NOT.',
+                tujuan3: 'Melengkapi Tabel Kebenaran untuk kombinasi gerbang logika.',
+                tujuan4: 'Menguji rangkaian logika sederhana menggunakan simulator interaktif.',
+                tujuan5: 'Memecahkan studi kasus penerapan gerbang logika dalam kehidupan sehari-hari.',
+                subtopik1: 'Konsep Sinyal Biner & Input-Output',
+                subtopik2: 'Mengenal Gerbang AND, OR, dan NOT',
+                subtopik3: 'Melengkapi Tabel Kebenaran',
+                subtopik4: 'Simulasi Rangkaian Sakelar & Lampu',
+                subtopik5: 'Studi Kasus Sistem Keamanan & Bel Rumah',
+                warna1: 'Biru Elektrik (#2563eb)',
+                warna2: 'Hijau Toska Cyan (#0891b2)',
+                warna3: 'Kuning Neon (#f59e0b)',
+                ikon1: '⚡ Sinyal Listrik',
+                ikon2: '🔀 Symbol Gerbang Logika',
+                ikon3: '💡 Lampu Indikator',
+                ikon4: '🎛️ Switch Sakelar',
+                ikon5: '🧠 Microchip Prosesor',
+                ikon6: '📊 Tabel Kebenaran'
+            },
+            science: {
+                mapel: 'IPA (Ilmu Pengetahuan Alam)',
+                materi: 'Ekosistem & Rantai Makanan',
+                tujuan1: 'Menganalisis komponen biotik dan abiotik dalam suatu ekosistem.',
+                tujuan2: 'Mengidentifikasi peran produsen, konsumen, dan pengurai.',
+                tujuan3: 'Menyusun alur rantai makanan dan jaring-jaring makanan.',
+                tujuan4: 'Menganalisis dampak perubahan lingkungan terhadap dinamika populasi.',
+                tujuan5: 'Merancang solusi pelestarian keseimbangan ekosistem.',
+                subtopik1: 'Komponen Ekosistem Biotik & Abiotik',
+                subtopik2: 'Tingkatan Trofik & Rantai Makanan',
+                subtopik3: 'Jaring-Jaring Makanan Interaktif',
+                subtopik4: 'Simulasi Keseimbangan Populasi',
+                subtopik5: 'Studi Kasus Pencemaran & Pelestarian',
+                warna1: 'Hijau Daun (#16a34a)',
+                warna2: 'Cokelat Tanah (#854d0e)',
+                warna3: 'Kuning Emas (#d97706)',
+                warna4: '🌱 Tunas Muda',
+                ikon1: '🦁 Konsumen Puncak',
+                ikon2: '☀️ Energi Matahari',
+                ikon3: '🍄 Pengurai/Jamur',
+                ikon4: '🌊 Lingkungan Abiotik',
+                ikon5: '🔄 Siklus Daur Materi',
+                ikon6: '⚖️ Keseimbangan Alam'
+            },
+            math: {
+                mapel: 'Matematika',
+                materi: 'Teorema Pythagoras & Bangun Datar',
+                tujuan1: 'Memahami rumus Teorema Pythagoras pada segitiga siku-siku.',
+                tujuan2: 'Menghitung panjang sisi miring dan sisi tegak segitiga.',
+                tujuan3: 'Mengidentifikasi Tripel Pythagoras dengan cepat.',
+                tujuan4: 'Menghitung luas dan keliling gabungan bangun datar.',
+                tujuan5: 'Menyelesaikan soal cerita penerapan Pythagoras dalam kehidupan nyata.',
+                subtopik1: 'Konsep Luas Persegi & Teorema Pythagoras',
+                subtopik2: 'Menghitung Sisi Segitiga Siku-Siku',
+                subtopik3: 'Eksplorasi Tripel Pythagoras',
+                subtopik4: 'Simulator Visual Segitiga & Tangga',
+                subtopik5: 'Studi Kasus Jarak & Navigasi',
+                warna1: 'Ungu Indigo (#4f46e5)',
+                warna2: 'Teal Cyan (#0d9488)',
+                warna3: 'Oranye Aksesoris (#ea580c)',
+                ikon1: '📐 Penggaris Siku-Siku',
+                ikon2: '🔺 Segitiga Siku-Siku',
+                ikon3: '🔢 Rumus a²+b²=c²',
+                ikon4: '📏 Alat Ukur Panjang',
+                ikon5: '🏠 Aplikasi Konstruksi',
+                ikon6: '🏆 Capaian Matematika'
+            }
+        };
+
+        // Load Preset into Form
+        function loadPreset(key) {
+            const data = presets[key];
+            if (!data) return;
+
+            document.getElementById('mapel').value = data.mapel;
+            document.getElementById('materi').value = data.materi;
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`tujuan${i}`).value = data[`tujuan${i}`];
+                document.getElementById(`subtopik${i}`).value = data[`subtopik${i}`];
+            }
+            document.getElementById('warna1').value = data.warna1;
+            document.getElementById('warna2').value = data.warna2;
+            document.getElementById('warna3').value = data.warna3;
+
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`ikon${i}`).value = data[`ikon${i}`];
+            }
+
+            generateLivePrompt();
+            showToast(`Preset ${data.materi} berhasil dimuat!`, '🚀');
+        }
+
+        // Reset Form
+        function resetForm() {
+            document.getElementById('promptForm').reset();
+            document.getElementById('promptOutput').value = '';
+            showToast('Form telah dibersihkan', '🔄');
+        }
+
+        // Generate Live Prompt Text
+        function generateLivePrompt() {
+            const getVal = (id, fallback) => {
+                const val = document.getElementById(id).value.trim();
+                return val !== '' ? val : fallback;
+            };
+
+            const mapel = getVal('mapel', '[MAPEL]');
+            const materi = getVal('materi', '[NAMA MATERI]');
+            const t1 = getVal('tujuan1', '[TUJUAN 1]');
+            const t2 = getVal('tujuan2', '[TUJUAN 2]');
+            const t3 = getVal('tujuan3', '[TUJUAN 3]');
+            const t4 = getVal('tujuan4', '[TUJUAN 4]');
+            const t5 = getVal('tujuan5', '[TUJUAN 5]');
+
+            const s1 = getVal('subtopik1', '[SUBTOPIK 1]');
+            const s2 = getVal('subtopik2', '[SUBTOPIK 2]');
+            const s3 = getVal('subtopik3', '[SUBTOPIK 3]');
+            const s4 = getVal('subtopik4', '[SUBTOPIK 4]');
+            const s5 = getVal('subtopik5', '[SUBTOPIK 5]');
+
+            const w1 = getVal('warna1', '[WARNA 1]');
+            const w2 = getVal('warna2', '[WARNA 2]');
+            const w3 = getVal('warna3', '[WARNA 3]');
+
+            const i1 = getVal('ikon1', '[IKON 1]');
+            const i2 = getVal('ikon2', '[IKON 2]');
+            const i3 = getVal('ikon3', '[IKON 3]');
+            const i4 = getVal('ikon4', '[IKON 4]');
+            const i5 = getVal('ikon5', '[IKON 5]');
+            const i6 = getVal('ikon6', '[IKON 6]');
+
+            const prompt = `PROMPT PEMBUATAN WEBSITE LKPD INTERAKTIF ${mapel.toUpperCase()} KELAS VIII
+(Materi: ${materi})
+
+---
+
+IDENTITAS
+· Sekolah: SMPN 1 Tinggimoncong
+· Mapel: ${mapel}
+· Kelas: VIII
+· Guru: Syarifuddin, S. Pd., M. Si.
+· Materi: ${materi}
+· Alokasi: ±80 menit
+
+TUJUAN PEMBELAJARAN
+1. ${t1}
+2. ${t2}
+3. ${t3}
+4. ${t4}
+5. ${t5}
+
+---
+
+TEMA KHUSUS MATERI (WAJIB)
+
+Website harus memiliki TEMA VISUAL KHUSUS yang
+mencerminkan materi ${materi}, bukan template umum.
+
+Ketentuan tema:
+
+1. Palet warna utama diambil dari nuansa materi:
+   - Warna primer: ${w1}
+   - Warna sekunder: ${w2}
+   - Warna aksen: ${w3}
+   - Warna latar: gradasi cerah & ramah anak
+
+2. Ikon & ilustrasi khas materi:
+   - ${i1} untuk konsep dasar/utama ${materi}
+   - ${i2} untuk jenis/elemen ${materi}
+   - ${i3} untuk penerapan/simulasi
+   - ${i4} untuk analisis & perhitungan
+   - ${i5} untuk evaluasi & pemahaman
+   - ${i6} untuk rangkuman & refleksi
+
+3. Ornaments latar:
+   - Pola/gambar samar bertema ${materi} di background
+   - Animasi ringan (mengambang, berkilau, berdenyut)
+   - Mascot karakter bertema ${materi} (opsional)
+
+4. Setiap aktivitas punya warna & ikon berbeda:
+   - Aktivitas 1 → ${w1} + ${i1}
+   - Aktivitas 2 → ${w2} + ${i2}
+   - Aktivitas 3 → ${w3} + ${i3}
+   - Aktivitas 4 → ${w1} + ${i4}
+   - Aktivitas 5 → ${w2} + ${i5}
+
+5. Kartu soal, tombol, tabel, dan sertifikat
+   menggunakan gaya visual konsisten bertema ${materi}
+   (bukan generik abu-abu/putih polos).
+
+---
+
+STRUKTUR HALAMAN
+
+1. HALAMAN AWAL
+   - Judul: LKPD INTERAKTIF ${mapel.toUpperCase()} — "Petualangan ${materi}"
+   - Info: Kelas VIII, SMPN 1 Tinggimoncong, Guru: Syarifuddin, S. Pd., M. Si.
+   - Ilustrasi ikon bertema materi (warna-warni)
+   - Form: Nama Lengkap, Kelas, Nomor Absen (wajib isi)
+   - Tombol: 🚀 MULAI LKPD
+
+2. PETUNJUK
+   - 8 poin instruksi (baca teliti, kerjakan semua, boleh mengulang, dll.)
+   - Tombol: ▶️ MULAI MENGERJAKAN
+
+3. DASHBOARD
+   - Nama, Kelas, Percobaan ke-N
+   - Progress bar
+   - 5 menu aktivitas berwarna dengan ikon tema
+
+4. AKTIVITAS 1 — ${s1} (5 soal)
+5. AKTIVITAS 2 — ${s2} (5 soal)
+6. AKTIVITAS 3 — ${s3} (5 soal)
+7. AKTIVITAS 4 — ${s4} (7 soal)
+8. AKTIVITAS 5 — ${s5} (3 soal)
+
+Tipe soal wajib: pilihan ganda, drag-and-drop, tabel isian,
+simulator interaktif, studi kasus, hitung cepat, tebak konsep.
+
+---
+
+SISTEM PENILAIAN
+· 25 soal × 4 poin = 100
+· Drag-and-drop: nilai setelah semua pasangan benar
+· Tampilkan: Benar XX/25 | Nilai XX/100
+
+PREDIKAT
+90–100 → 🏆 SANGAT BAIK
+80–89  → 🥇 BAIK
+70–79  → 🥈 CUKUP
+<70    → 🌱 PERLU BERLATIH
+
+---
+
+PEMBAHASAN JAWABAN (WAJIB)
+
+Setelah siswa selesai mengerjakan seluruh 25 soal dan
+nilai otomatis muncul, tampilkan halaman PEMBAHASAN
+sebelum sertifikat.
+
+Halaman pembahasan wajib berisi:
+
+1. Ringkasan hasil:
+   - Jumlah benar dan salah
+   - Nilai akhir
+   - Predikat
+
+2. Daftar pembahasan per soal:
+   - Nomor soal
+   - Teks pertanyaan
+   - Jawaban siswa (benar/salah, tandai warna)
+   - Jawaban benar (jika salah, tampilkan yang benar)
+   - Penjelasan singkat/alasan jawaban
+   - Warna kartu: hijau = benar, merah = salah
+
+3. Filter/tombol navigasi:
+   - Tampilkan semua
+   - Hanya yang salah
+   - Hanya yang benar
+
+4. Tombol:
+   - 🎓 LIHAT SERTIFIKAT
+   - 🔄 COBA LAGI
+
+---
+
+SERTIFIKAT (GAMBAR PORTRAIT 3×4 DENGAN TEMA MATERI)
+
+Setelah pembahasan ditutup, tampilkan sertifikat berupa
+GAMBAR dengan rasio portrait 3:4 (lebar : tinggi)
+dan WAJIB menampilkan NAMA MATERI secara jelas.
+
+Ketentuan sertifikat:
+
+1. Format: gambar (bukan sekadar HTML biasa).
+   - Gunakan <canvas> atau library html2canvas
+     untuk render sertifikat menjadi gambar.
+   - Ukuran disarankan: 900 × 1200 px (rasio 3:4).
+
+2. Isi sertifikat (WAJIB LENGKAP):
+   - Judul: SERTIFIKAT PENYELESAIAN LKPD
+   - Nama siswa (besar, bold)
+   - Kelas
+   - Judul LKPD: LKPD INTERAKTIF ${mapel.toUpperCase()}
+   - NAMA MATERI: ${materi}  ← WAJIB TAMPIL JELAS
+   - Nilai: XX/100
+   - Predikat
+   - Percobaan ke-N
+   - Tanggal otomatis
+   - Nama sekolah: SMPN 1 Tinggimoncong
+   - Nama guru: Syarifuddin, S. Pd., M. Si.
+   - Area tanda tangan guru (tanpa tanda tangan digital palsu)
+
+3. Desain sertifikat BERTEMA MATERI:
+   - Warna dominan mengikuti predikat DAN tema materi
+   - Border/ornamen khas materi ${materi}
+   - Ikon-ikon tema menghiasi sudut & latar sertifikat
+   - Ada simbol/ilustrasi khas materi
+   - Background bergradasi warna-warni ceria
+   - Nama materi ditampilkan dengan ukuran menonjol
+     di bagian tengah sertifikat
+
+4. Warna dominan mengikuti predikat:
+   - 90–100 → Hijau/Emas 🏆
+   - 80–89  → Biru 🥇
+   - 70–79  → Oranye 🥈
+   - <70    → Abu-abu/Hijau Muda 🌱
+   Dikombinasikan dengan warna tema materi.
+
+5. Tombol pada halaman sertifikat:
+   - ⬇️ DOWNLOAD GAMBAR SERTIFIKAT
+     (mengunduh file PNG dari canvas,
+      nama file: Sertifikat_[NamaSiswa]_[Materi]_Percobaan[N].png)
+   - 🖨️ CETAK SERTIFIKAT (opsional, via print browser)
+   - 🔄 COBA LAGI
+   - 📊 LIHAT RIWAYAT
+
+6. Sertifikat tetap diberikan untuk semua nilai (termasuk <70).
+
+---
+
+FITUR PENDUKUNG
+· 🔄 Coba Lagi (percobaan +1, soal & pilihan diacak, nilai baru)
+· 🏆 Lihat Sertifikat (per percobaan)
+· 📊 Riwayat Pengerjaan (tabel + tombol sertifikat per baris)
+· 🏆 Nilai Terbaik (otomatis diperbarui)
+· 🔄 Reset Riwayat (konfirmasi + localStorage)
+
+---
+
+DESAIN
+Modern, ceria, warna-warni, responsif (HP/tablet/PC),
+banyak ikon bertema materi, tombol besar, progress bar,
+animasi ringan, feedback langsung, sedikit teks.
+
+---
+
+ALOKASI WAKTU (80 menit)
+5' identitas & petunjuk | 8' akt.1 | 15' akt.2 | 10' akt.3
+15' akt.4 | 22' akt.5 | 5' pembahasan, sertifikat & refleksi
+
+---
+
+FITUR WAJIB
+✅ Responsif  ✅ Tanpa login  ✅ Input nama di awal
+✅ 25 soal interaktif  ✅ Ilustrasi bertema materi
+✅ Drag-and-drop  ✅ Penilaian otomatis  ✅ Feedback langsung
+✅ Bisa diulang  ✅ Nilai baru per percobaan
+✅ Nomor percobaan otomatis  ✅ Acak soal & pilihan
+✅ Riwayat nilai  ✅ Nilai terbaik  ✅ Sertifikat otomatis
+✅ Pembahasan jawaban benar & salah
+✅ Sertifikat berupa gambar portrait rasio 3:4
+✅ Nama materi tampil jelas di sertifikat
+✅ Tema visual khusus sesuai materi (bukan generik)
+✅ Tombol download gambar sertifikat
+✅ Data lengkap di sertifikat
+
+---
+
+ALUR AKHIR
+Isi Nama → Petunjuk → 5 Aktivitas → 25 Soal →
+Nilai Otomatis → Predikat → PEMBAHASAN (benar/salah + alasan) →
+SERTIFIKAT GAMBAR PORTRAIT 3:4 BERTEMA MATERI →
+DOWNLOAD GAMBAR → Coba Lagi → Soal Diacak → Nilai Baru →
+Sertifikat Baru
+
+---
+
+CATATAN MATERI
+· Sediakan simulator interaktif (input → output)
+· Tabel berwarna per konsep (hijau=benar, merah=salah)
+· Karakter/nama mudah diingat per konsep
+· Analogi sederhana per konsep
+· Studi kasus nyata
+· Kartu berwarna untuk drag-and-drop
+· Semua visual (ikon, warna, ornamen) konsisten bertema materi
+
+---
+
+PERINTAH ANTI-ERROR (WAJIB DIPATUHI)
+
+Hasil generate kode HTML + CSS + JavaScript HARUS:
+
+1. Bebas error saat dijalankan langsung di browser
+   (Chrome, Edge, Firefox, Safari) tanpa console error.
+2. Tidak menggunakan sintaks yang deprecated.
+3. Semua fungsi didefinisikan sebelum dipanggil
+   atau menggunakan function hoisting yang benar.
+4. Tidak ada variabel yang undefined / null tanpa pengecekan.
+5. Semua event listener terpasang dengan benar
+   (gunakan addEventListener, bukan inline onclick jika memungkinkan).
+6. Semua elemen DOM yang diakses dipastikan ada sebelum digunakan
+   (gunakan pengecekan if (element) { ... }).
+7. localStorage dibungkus try-catch untuk antisipasi error.
+8. Tidak menggunakan library eksternal kecuali html2canvas
+   (untuk export sertifikat) — sertakan CDN yang stabil.
+9. Jika menggunakan html2canvas, pastikan dipanggil setelah
+   DOM selesai dimuat (DOMContentLoaded / window.onload).
+10. Semua tag HTML ditutup dengan benar.
+11. CSS valid, tidak ada properti typo.
+12. Tidak ada karakter khusus yang merusak sintaks
+    (escape dengan benar).
+13. Kode diberi komentar singkat per bagian agar mudah dicek.
+14. Ukuran canvas sertifikat 900×1200 px (rasio 3:4)
+    dengan devicePixelRatio agar hasil tajam.
+15. Tombol download menghasilkan file .png
+    dengan nama dinamis sesuai nama siswa, materi & percobaan.
+16. Pastikan tidak ada CORS issue saat render canvas
+    (jangan load gambar eksternal ke dalam canvas;
+    gunakan shape/CSS/emoji saja).
+17. Jika menggunakan emoji di canvas, render via fillText
+    agar kompatibel.
+18. Uji logika: pastikan skor, predikat, dan nomor percobaan
+    konsisten di pembahasan, sertifikat, dan riwayat.
+19. Semua tombol navigasi berfungsi dan tidak ada yang mati.
+20. Tidak ada alert() bawaan browser yang mengganggu;
+    gunakan modal kustom.
+
+Buat seluruh kode HTML + CSS + JavaScript lengkap dalam
+SATU FILE (index.html) yang langsung dapat dijalankan,
+tanpa error, tampilan sangat menarik, berwarna-warni,
+bertema ${materi}, dengan banyak gambar dan ikon.`;
+
+            document.getElementById('promptOutput').value = prompt;
+        }
+
+        // Copy Generated Prompt Function
+        function copyGeneratedPrompt() {
+            const output = document.getElementById('promptOutput');
+            if (!output.value.trim()) {
+                showToast('Generasikan prompt terlebih dahulu!', '⚠️');
+                return;
+            }
+
+            output.select();
+            document.execCommand('copy');
+            showToast('Prompt Raksasa berhasil disalin!', '📋');
+        }
+
+        // Copy GAS Script Code Function
+        function copyGasCode() {
+            const code = document.getElementById('gasCodeBlock').innerText;
+            const dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = code;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+
+            showToast('Kode Google Apps Script disalin!', '💻');
+        }
+
+        // Initialize default preset on load
+        window.onload = function() {
+            loadPreset('informatics');
+        };
+    </script>
+</body>
+</html>
+```
