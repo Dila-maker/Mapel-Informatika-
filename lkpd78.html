@@ -1,0 +1,1780 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Interaktif Informatika - Petualangan Gerbang Logika Dasar</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Tech Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        electric: '#2563eb',
+                        tosca: '#0891b2',
+                        amberAccent: '#f59e0b',
+                        techDark: '#0f172a',
+                        techCard: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b132b;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(8, 145, 178, 0.15) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(15, 23, 42, 0.8) 0px, transparent 100%);
+            background-attachment: fixed;
+            color: #f8fafc;
+        }
+
+        .circuit-bg {
+            background-image: radial-gradient(#2563eb 0.75px, transparent 0.75px), radial-gradient(#0891b2 0.75px, #0b132b 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            opacity: 0.25;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(8, 145, 178, 0.7); }
+        }
+
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .glow-card {
+            animation: pulseGlow 4s infinite ease-in-out;
+        }
+
+        .float-icon {
+            animation: floatAnim 3s infinite ease-in-out;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #2563eb;
+            border-radius: 4px;
+        }
+
+        /* Drag and drop styling */
+        .draggable {
+            cursor: grab;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+        .draggable:active {
+            cursor: grabbing;
+            transform: scale(1.03);
+        }
+        .dropzone {
+            transition: all 0.2s ease;
+        }
+        .dropzone.dragover {
+            border-color: #f59e0b !important;
+            background-color: rgba(245, 158, 11, 0.15) !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-electric selection:text-white">
+
+    <!-- Background Circuit Decorative Overlay -->
+    <div class="fixed inset-0 circuit-bg pointer-events-none z-0"></div>
+
+    <header class="relative z-10 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-electric to-tosca flex items-center justify-center text-white shadow-lg shadow-electric/30">
+                    <i class="fa-solid fa-microchip text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm md:text-base text-white leading-tight">LKPD INTERAKTIF INFORMATIKA</h1>
+                    <p class="text-xs text-tosca font-mono">SMPN 1 Tinggimoncong • Kelas VIII</p>
+                </div>
+            </div>
+
+            <!-- Student Info Display Header (Hidden on start screen) -->
+            <div id="headerUserInfo" class="hidden flex items-center space-x-3 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+                <div class="text-right text-xs">
+                    <p id="dispHeaderName" class="font-semibold text-white">Nama Siswa</p>
+                    <p id="dispHeaderClass" class="text-slate-400 font-mono">VIII - Absen --</p>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-electric/20 border border-electric flex items-center justify-center text-electric">
+                    <i class="fa-solid fa-user-gear text-xs"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER FOR DYNAMIC VIEWS -->
+    <main class="relative z-10 flex-grow max-w-5xl w-full mx-auto px-4 py-6">
+
+        <section id="viewLanding" class="block space-y-6">
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden backdrop-blur-sm glow-card">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-electric text-9xl pointer-events-none">
+                    <i class="fa-solid fa-diagram-project"></i>
+                </div>
+
+                <div class="text-center max-w-2xl mx-auto space-y-4">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-electric/20 text-blue-400 border border-electric/30">
+                        <i class="fa-solid fa-bolt mr-2 text-amberAccent"></i> Modul Pembelajaran Interaktif
+                    </span>
+                    <h2 class="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-amber-300">
+                        Petualangan Gerbang Logika Dasar
+                    </h2>
+                    <p class="text-slate-300 text-sm md:text-base">
+                        Selamat datang di LKPD Interaktif Informatika! Mari pelajari prinsip kerja sinyal biner, sakelar digital, dan gerbang logika (AND, OR, NOT) melalui simulasi & studi kasus interaktif.
+                    </p>
+
+                    <!-- Info Guru & Sekolah Card -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left bg-slate-800/60 p-4 rounded-xl border border-slate-700 text-xs text-slate-300 mt-4">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-school text-tosca text-lg"></i>
+                            <div>
+                                <p class="text-slate-400 font-medium">Instansi Sekolah</p>
+                                <p class="font-semibold text-white">SMPN 1 Tinggimoncong</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-chalkboard-user text-amberAccent text-lg"></i>
+                            <div>
+                                <p class="text-slate-400 font-medium">Guru Pengampu</p>
+                                <p class="font-semibold text-white">Syarifuddin, S. Pd., M. Si.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORM IDENTITAS SISWA -->
+                <div class="mt-8 max-w-lg mx-auto bg-slate-950/80 p-6 rounded-xl border border-slate-800 space-y-4">
+                    <h3 class="text-base font-bold text-white flex items-center border-b border-slate-800 pb-2">
+                        <i class="fa-solid fa-id-card text-electric mr-2"></i> Form Identitas Peserta Didik
+                    </h3>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Nama Lengkap <span class="text-red-400">*</span></label>
+                        <input type="text" id="inputNama" placeholder="Masukkan nama lengkap Anda" 
+                               class="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-electric focus:ring-1 focus:ring-electric transition text-sm">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Kelas <span class="text-red-400">*</span></label>
+                            <select id="inputKelas" class="w-full px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-electric transition text-sm">
+                                <option value="VIII.A">VIII.A</option>
+                                <option value="VIII.B">VIII.B</option>
+                                <option value="VIII.C">VIII.C</option>
+                                <option value="VIII.D">VIII.D</option>
+                                <option value="VIII.E">VIII.E</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Nomor Absen <span class="text-red-400">*</span></label>
+                            <input type="number" id="inputAbsen" min="1" max="50" placeholder="Contoh: 12" 
+                                   class="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-electric transition text-sm">
+                        </div>
+                    </div>
+
+                    <button onclick="startInstructions()" class="w-full mt-4 py-3 bg-gradient-to-r from-electric to-tosca hover:from-blue-600 hover:to-cyan-600 text-white font-bold rounded-lg shadow-lg shadow-electric/30 transition transform active:scale-95 flex items-center justify-center space-x-2 text-sm">
+                        <span>🚀 MULAI LKPD</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="viewInstructions" class="hidden space-y-6">
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-xl">
+                <div class="flex items-center space-x-3 border-b border-slate-800 pb-4 mb-6">
+                    <div class="w-10 h-10 rounded-lg bg-amberAccent/20 text-amberAccent flex items-center justify-center">
+                        <i class="fa-solid fa-clipboard-list text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Petunjuk Pengerjaan LKPD</h2>
+                        <p class="text-xs text-slate-400">Harap membaca panduan di bawah ini sebelum memulai tugas.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
+                    <div class="bg-slate-800/40 p-3.5 rounded-xl border border-slate-700/60 flex items-start space-x-3">
+                        <span class="w-6 h-6 rounded-full bg-electric text-white flex-shrink-0 flex items-center justify-center font-bold text-xs">1</span>
+                        <p>Pastikan identitas (Nama, Kelas, No. Absen) yang telah diisi sudah benar.</p>
+                    </div>
+                    <div class="bg-slate-800/40 p-3.5 rounded-xl border border-slate-700/60 flex items-start space-x-3">
+                        <span class="w-6 h-6 rounded-full bg-electric text-white flex-shrink-0 flex items-center justify-center font-bold text-xs">2</span>
+                        <p>LKPD ini terdiri dari <strong>5 Aktivitas</strong> dengan total <strong>25 Soal Interaktif</strong> (Setiap soal bernilai 4 poin).</p>
+                    </div>
+                    <div class="bg-slate-800/40 p-3.5 rounded-xl border border-slate-700/60 flex items-start space-x-3">
+                        <span class="w-6 h-6 rounded-full bg-electric text-white flex-shrink-0 flex items-center justify-center font-bold text-xs">3</span>
+                        <p>Alokasi waktu yang disarankan adalah <strong>±80 menit</strong> untuk menyelesaikan semua aktivitas.</p>
+                    </div>
+                    <div class="bg-slate-800/40 p-3.5 rounded-xl border border-slate-700/60 flex items-start space-x-3">
+                        <span class="w-6 h-6 rounded-full bg-electric text-white flex-shrink-0 flex items-center justify-center font-bold text-xs">4</span>
+                        <p>Gunakan simulator sakelar interaktif & fitur drag-and-drop untuk membuktikan nilai logika biner.</p>
+                    </div>
+                    <div class="bg-slate-800/40 p-3.5 rounded-xl border border-slate-700/60 flex items-start space-x-3">
+                        <span class="w-6 h-6 rounded-full bg-electric text-white flex-shrink-0 flex items-center justify-center font-bold text-xs">5</span>
+                        <p>Seluruh soal wajib dijawab sebelum dapat mengklik tombol kirim / selesai.</p>
+                    </div>
+                    <div class="bg-slate-800/40 p-3.5 rounded-xl border border-slate-700/60 flex items-start space-x-3">
+                        <span class="w-6 h-6 rounded-full bg-electric text-white flex-shrink-0 flex items-center justify-center font-bold text-xs">6</span>
+                        <p>Setelah selesai, nilai akhir & predikat akan dihitung secara otomatis oleh sistem.</p>
+                    </div>
+                    <div class="bg-slate-800/40 p-3.5 rounded-xl border border-slate-700/60 flex items-start space-x-3">
+                        <span class="w-6 h-6 rounded-full bg-electric text-white flex-shrink-0 flex items-center justify-center font-bold text-xs">7</span>
+                        <p>Anda dapat melihat <strong>Pembahasan Kunci Jawaban</strong> lengkap beserta alasannya setelah kirim nilai.</p>
+                    </div>
+                    <div class="bg-slate-800/40 p-3.5 rounded-xl border border-slate-700/60 flex items-start space-x-3">
+                        <span class="w-6 h-6 rounded-full bg-electric text-white flex-shrink-0 flex items-center justify-center font-bold text-xs">8</span>
+                        <p>Sertifikat Resmi 3:4 dapat diunduh langsung dalam format PNG bertema Gerbang Logika Dasar.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-between items-center pt-4 border-t border-slate-800">
+                    <button onclick="switchView('viewLanding')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                    </button>
+                    <button onclick="startLKPD()" class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-electric to-tosca hover:opacity-90 text-white font-bold text-sm shadow-lg shadow-electric/30 transition transform active:scale-95">
+                        ▶️ MULAI MENGERJAKAN
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="viewDashboard" class="hidden space-y-6">
+            
+            <!-- Student Header Banner & Progress Bar -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-mono px-2 py-0.5 bg-electric/20 text-electric rounded border border-electric/30" id="dispAttemptBadge">Percobaan ke-1</span>
+                            <h2 class="text-lg font-bold text-white" id="dispStudentName">Nama Siswa</h2>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1" id="dispStudentDetail">SMPN 1 Tinggimoncong • Informatika VIII</p>
+                    </div>
+
+                    <!-- Best Score & Quick Stats -->
+                    <div class="flex items-center space-x-3 text-xs">
+                        <div class="bg-slate-800 px-3 py-2 rounded-xl border border-slate-700">
+                            <span class="text-slate-400 block text-[10px]">Nilai Terbaik</span>
+                            <span class="font-bold text-amberAccent text-sm font-mono" id="dispBestScore">0 / 100</span>
+                        </div>
+                        <button onclick="openHistoryModal()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-300 flex items-center space-x-1.5 transition">
+                            <i class="fa-solid fa-clock-rotate-left text-tosca"></i>
+                            <span>Riwayat</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Global Progress Bar -->
+                <div>
+                    <div class="flex justify-between items-center text-xs mb-1">
+                        <span class="text-slate-400">Progress Pengerjaan Soal</span>
+                        <span class="text-electric font-bold font-mono" id="dispProgressText">0 / 25 Terjawab</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                        <div id="dispProgressBar" class="h-full bg-gradient-to-r from-electric via-tosca to-amberAccent transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AKTIVITAS MENU TABS -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2" id="activityTabsNav">
+                <!-- Tabs generated dynamically -->
+            </div>
+
+            <!-- QUESTION CARD CONTAINER -->
+            <div id="questionContainer" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 md:p-7 shadow-xl min-h-[420px] flex flex-col justify-between">
+                <!-- Content injected dynamically via JS -->
+            </div>
+
+            <!-- QUESTION NAVIGATION BUTTONS -->
+            <div class="flex items-center justify-between pt-2">
+                <button id="btnPrevQ" onclick="navigateQuestion(-1)" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl text-xs flex items-center space-x-2 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span>Sebelumnya</span>
+                </button>
+
+                <div id="quickNavBullets" class="hidden md:flex space-x-1 overflow-x-auto max-w-md py-1 px-2 bg-slate-900/80 rounded-xl border border-slate-800">
+                    <!-- Bullet list -->
+                </div>
+
+                <button id="btnNextQ" onclick="navigateQuestion(1)" class="px-5 py-2.5 bg-electric hover:bg-blue-600 text-white font-bold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-electric/20 transition">
+                    <span>Berikutnya</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <button id="btnSubmitLKPD" onclick="confirmSubmitLKPD()" class="hidden px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition transform active:scale-95">
+                    🚀 FINISH & KIRIM NILAI
+                </button>
+            </div>
+        </section>
+
+        <section id="viewPembahasan" class="hidden space-y-6">
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl">
+                
+                <!-- Summary Card -->
+                <div class="text-center pb-6 border-b border-slate-800 space-y-3">
+                    <span class="inline-block px-3 py-1 rounded-full text-xs font-mono bg-tosca/20 text-cyan-300 border border-tosca/30">
+                        HASIL EVALUASI LKPD
+                    </span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white">Pembahasan Jawaban Soal</h2>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto mt-4">
+                        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700">
+                            <span class="text-[10px] text-slate-400 uppercase font-mono block">Jumlah Benar</span>
+                            <span class="text-xl font-bold text-emerald-400 font-mono" id="summaryCorrect">0 / 25</span>
+                        </div>
+                        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700">
+                            <span class="text-[10px] text-slate-400 uppercase font-mono block">Nilai Akhir</span>
+                            <span class="text-2xl font-black text-amberAccent font-mono" id="summaryScore">0</span>
+                        </div>
+                        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700 col-span-2">
+                            <span class="text-[10px] text-slate-400 uppercase font-mono block">Predikat Kelulusan</span>
+                            <span class="text-sm font-bold text-white block mt-0.5" id="summaryPredicate">🏆 SANGAT BAIK</span>
+                        </div>
+                    </div>
+
+                    <!-- Filter buttons -->
+                    <div class="flex justify-center items-center space-x-2 pt-4">
+                        <button onclick="filterPembahasan('all')" id="btnFilterAll" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-electric text-white border border-electric">
+                            Semua Soal (25)
+                        </button>
+                        <button onclick="filterPembahasan('correct')" id="btnFilterCorrect" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700">
+                            Hanya Benar
+                        </button>
+                        <button onclick="filterPembahasan('incorrect')" id="btnFilterIncorrect" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700">
+                            Hanya Salah
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Detailed Q&A Review List -->
+                <div id="pembahasanList" class="space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar pr-2 mt-6">
+                    <!-- Dynamic Pembahasan Items -->
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-6 border-t border-slate-800">
+                    <button onclick="retakeLKPD()" class="w-full sm:w-auto px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl text-xs flex items-center justify-center space-x-2 transition">
+                        <i class="fa-solid fa-rotate-right text-amberAccent"></i>
+                        <span>🔄 COBA LAGI (Soal Diacak)</span>
+                    </button>
+                    <button onclick="generateAndShowCertificate()" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-electric to-tosca hover:opacity-90 text-white font-bold rounded-xl text-xs shadow-lg shadow-electric/30 flex items-center justify-center space-x-2 transition">
+                        <span>🎓 LIHAT SERTIFIKAT</span>
+                        <i class="fa-solid fa-certificate"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="viewCertificate" class="hidden space-y-6">
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl text-center space-y-6">
+                <div>
+                    <span class="inline-block px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        OFFICIAL CERTIFICATE
+                    </span>
+                    <h2 class="text-2xl font-bold text-white mt-2">Sertifikat Penyelesaian LKPD</h2>
+                    <p class="text-xs text-slate-400">Selamat! Berikut adalah sertifikat resmi hasil pengerjaan materi Gerbang Logika Dasar Anda.</p>
+                </div>
+
+                <!-- Hidden Canvas element for 3:4 Image generation -->
+                <div class="flex justify-center items-center py-2">
+                    <div class="relative max-w-md w-full shadow-2xl rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+                        <!-- Canvas 900 x 1200 px (Aspect ratio 3:4) rendered crisp -->
+                        <canvas id="certCanvas" width="900" height="1200" class="w-full h-auto block rounded-xl"></canvas>
+                    </div>
+                </div>
+
+                <!-- Certificate Action Buttons -->
+                <div class="flex flex-wrap justify-center items-center gap-3 pt-4 border-t border-slate-800">
+                    <button onclick="downloadCertificatePNG()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-600/30 flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-download"></i>
+                        <span>⬇️ DOWNLOAD GAMBAR SERTIFIKAT</span>
+                    </button>
+                    <button onclick="printCertificate()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl text-xs flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-print text-tosca"></i>
+                        <span>🖨️ CETAK SERTIFIKAT</span>
+                    </button>
+                    <button onclick="retakeLKPD()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-amberAccent font-semibold rounded-xl text-xs flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>🔄 COBA LAGI</span>
+                    </button>
+                    <button onclick="openHistoryModal()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl text-xs flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-list-check text-electric"></i>
+                        <span>📊 LIHAT RIWAYAT</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="relative z-10 border-t border-slate-800/80 bg-slate-950/80 py-4 text-center text-xs text-slate-500">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>© 2026 SMPN 1 Tinggimoncong • Mapel Informatika Kelas VIII</p>
+            <p class="font-mono text-[11px] text-slate-400">Guru Pengampu: Syarifuddin, S. Pd., M. Si.</p>
+        </div>
+    </footer>
+
+    <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 id="modalTitle" class="font-bold text-white text-base flex items-center">
+                    <i id="modalIcon" class="fa-solid fa-circle-info text-electric mr-2"></i>
+                    <span>Informasi</span>
+                </h3>
+                <button onclick="closeCustomModal()" class="text-slate-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div id="modalBody" class="text-sm text-slate-300 py-2">
+                <!-- Modal Message or History Table -->
+            </div>
+
+            <div id="modalFooter" class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeCustomModal()" class="px-4 py-2 bg-electric hover:bg-blue-600 text-white font-semibold rounded-lg text-xs">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        // App State
+        let currentUser = {
+            nama: "",
+            kelas: "VIII.A",
+            absen: "",
+            attempt: 1
+        };
+
+        let currentQuestionIdx = 0;
+        let userAnswers = {}; // Map Q_ID -> answer
+        let activeFilter = 'all';
+
+        // Master Questions Database (25 Questions total)
+        const MASTER_QUESTIONS = [
+            // AKTIVITAS 1: Konsep Sinyal Biner & Input-Output (Soal 1-5)
+            {
+                id: 1,
+                act: 1,
+                type: 'mcq',
+                title: 'Konsep Sinyal Biner (HIGH / ON)',
+                question: 'Dalam dunia digital dan gerbang logika, sinyal listrik bernilai "1" (HIGH) menandakan kondisi...',
+                options: [
+                    'Sakelar terputus / Lampu mati (OFF)',
+                    'Sakelar terhubung / Ada arus listrik (ON / TRUE)',
+                    'Kerusakan pada sirkuit microchip',
+                    'Sinyal analog bergelombang acak'
+                ],
+                correct: 1,
+                explanation: 'Angka 1 dalam logika biner mewakili kondisi HIGH, ON, TRUE, atau adanya tegangan listrik.'
+            },
+            {
+                id: 2,
+                act: 1,
+                type: 'mcq',
+                title: 'Sistem Bilangan Biner',
+                question: 'Komputer hanya dapat memproses data menggunakan sistem bilangan biner yang terdiri dari dua simbol, yaitu...',
+                options: ['1 dan 2', '0 dan 1', 'A dan B', '0 dan 10'],
+                correct: 1,
+                explanation: 'Sistem bilangan biner (basis 2) hanya menggunakan dua digit angka: 0 (rendah) dan 1 (tinggi).'
+            },
+            {
+                id: 3,
+                act: 1,
+                type: 'interactive_binary',
+                title: 'Simulasi Sinyal Input Biner',
+                question: 'Ubah sakelar biner di bawah ini sehingga bernilai "1" untuk mengalirkan arus listrik ke lampu!',
+                correct: 1,
+                explanation: 'Saat sakelar berada pada posisi "1" (HIGH), sirkuit tertutup dan lampu akan menyala.'
+            },
+            {
+                id: 4,
+                act: 1,
+                type: 'mcq',
+                title: 'Representasi Sinyal Rendah (LOW)',
+                question: 'Jika nilai "1" berarti TRUE, maka nilai "0" melambangkan kondisi...',
+                options: ['FALSE / OFF / Tanpa Tegangan', 'HIGH / ON', 'Sirkuit Ganda', 'Nilai Maksimal'],
+                correct: 0,
+                explanation: 'Angka biner 0 mewakili kondisi LOW, OFF, FALSE, atau tidak ada aliran listrik.'
+            },
+            {
+                id: 5,
+                act: 1,
+                type: 'fast_calc',
+                title: 'Kombinasi Tabel Kebenaran',
+                question: 'Jika sebuah gerbang logika memiliki 3 input biner (A, B, C), berapakah jumlah kombinasi baris yang ada pada Tabel Kebenaran? (Rumus: 2ⁿ)',
+                options: ['4 baris', '6 baris', '8 baris', '16 baris'],
+                correct: 2,
+                explanation: 'Jumlah kombinasi baris tabel kebenaran dihitung dengan 2ⁿ. Untuk 3 input: 2³ = 8 kombinasi.'
+            },
+
+            // AKTIVITAS 2: Mengenal Gerbang AND, OR, dan NOT (Soal 6-10)
+            {
+                id: 6,
+                act: 2,
+                type: 'mcq',
+                title: 'Karakteristik Gerbang AND',
+                question: 'Gerbang logika yang hanya menghasilkan output "1" JIKA SELURUH input bernilai "1" adalah...',
+                options: ['Gerbang OR', 'Gerbang NOT', 'Gerbang AND', 'Gerbang BUFFER'],
+                correct: 2,
+                explanation: 'Gerbang AND mensyaratkan semua inputnya bernilai 1 agar menghasilkan output 1 (Perkalian logika).'
+            },
+            {
+                id: 7,
+                act: 2,
+                type: 'mcq',
+                title: 'Karakteristik Gerbang OR',
+                question: 'Gerbang logika yang menghasilkan output "1" JIKA SALAH SATU atau KEDUA input bernilai "1" adalah...',
+                options: ['Gerbang OR', 'Gerbang AND', 'Gerbang NOT', 'Gerbang NAND'],
+                correct: 0,
+                explanation: 'Gerbang OR bernilai 1 jika setidaknya ada satu input bernilai 1 (Penjumlahan logika).'
+            },
+            {
+                id: 8,
+                act: 2,
+                type: 'mcq',
+                title: 'Prinsip Gerbang NOT (Inverter)',
+                question: 'Gerbang NOT memiliki 1 input dan 1 output. Jika input A = 1, maka output Y adalah...',
+                options: ['1', '0', '2', 'Tidak terdefinisi'],
+                correct: 1,
+                explanation: 'Gerbang NOT bertindak membalik nilai sinyal. Jika input 1, maka outputnya menjadi 0.'
+            },
+            {
+                id: 9,
+                act: 2,
+                type: 'drag_drop_gate',
+                title: 'Pencocokan Fungsi Gerbang Logika',
+                question: 'Pasangkan nama gerbang logika di sebelah kiri dengan konsep operasinya yang tepat!',
+                pairs: [
+                    { key: 'AND', val: 'Perkalian Logika (A · B)' },
+                    { key: 'OR', val: 'Penjumlahan Logika (A + B)' },
+                    { key: 'NOT', val: 'Pembalik Sinyal (Ā)' }
+                ],
+                correct: 'AND:Perkalian Logika (A · B)|OR:Penjumlahan Logika (A + B)|NOT:Pembalik Sinyal (Ā)',
+                explanation: 'AND identik dengan perkalian logika, OR dengan penjumlahan logika, dan NOT sebagai pembalik.'
+            },
+            {
+                id: 10,
+                act: 2,
+                type: 'mcq',
+                title: 'Persamaan Aljabar Boolean',
+                question: 'Simbol titik (·) dalam persamaan aljabar Boolean Y = A · B menunjukkan operasi gerbang...',
+                options: ['NOT', 'OR', 'AND', 'XOR'],
+                correct: 2,
+                explanation: 'Simbol titik (·) melambangkan operasi logika AND (A AND B).'
+            },
+
+            // AKTIVITAS 3: Melengkapi Tabel Kebenaran (Soal 11-15)
+            {
+                id: 11,
+                act: 3,
+                type: 'truth_table',
+                title: 'Tabel Kebenaran AND (A=1, B=0)',
+                gate: 'AND',
+                inA: 1,
+                inB: 0,
+                question: 'Lengkapi output Y pada gerbang AND jika Input A = 1 dan Input B = 0:',
+                correct: 0,
+                explanation: 'Pada gerbang AND: 1 · 0 = 0. Output akan bernilai 0.'
+            },
+            {
+                id: 12,
+                act: 3,
+                type: 'truth_table',
+                title: 'Tabel Kebenaran OR (A=0, B=1)',
+                gate: 'OR',
+                inA: 0,
+                inB: 1,
+                question: 'Lengkapi output Y pada gerbang OR jika Input A = 0 dan Input B = 1:',
+                correct: 1,
+                explanation: 'Pada gerbang OR: 0 + 1 = 1. Karena salah satu input bernilai 1, output bernilai 1.'
+            },
+            {
+                id: 13,
+                act: 3,
+                type: 'truth_table',
+                title: 'Tabel Kebenaran NOT (A=0)',
+                gate: 'NOT',
+                inA: 0,
+                inB: null,
+                question: 'Lengkapi output Y pada gerbang NOT jika Input A = 0:',
+                correct: 1,
+                explanation: 'Gerbang NOT membalik input. Jika A = 0, maka Y = 1.'
+            },
+            {
+                id: 14,
+                act: 3,
+                type: 'truth_table',
+                title: 'Tabel Kebenaran AND (A=1, B=1)',
+                gate: 'AND',
+                inA: 1,
+                inB: 1,
+                question: 'Lengkapi output Y pada gerbang AND jika Input A = 1 dan Input B = 1:',
+                correct: 1,
+                explanation: 'Pada gerbang AND: 1 · 1 = 1. Karena kedua input 1, output bernilai 1.'
+            },
+            {
+                id: 15,
+                act: 3,
+                type: 'truth_table',
+                title: 'Tabel Kebenaran OR (A=0, B=0)',
+                gate: 'OR',
+                inA: 0,
+                inB: 0,
+                question: 'Lengkapi output Y pada gerbang OR jika Input A = 0 dan Input B = 0:',
+                correct: 0,
+                explanation: 'Pada gerbang OR: 0 + 0 = 0. Karena kedua input 0, output bernilai 0.'
+            },
+
+            // AKTIVITAS 4: Simulasi Rangkaian Sakelar & Lampu (Soal 16-22)
+            {
+                id: 16,
+                act: 4,
+                type: 'mcq',
+                title: 'Analogi Rangkaian Sakelar Seri',
+                question: 'Dua buah sakelar listrik yang dipasang secara SERI (berurutan pada satu jalur) menganalogikan cara kerja gerbang...',
+                options: ['OR', 'AND', 'NOT', 'NOR'],
+                correct: 1,
+                explanation: 'Rangkaian Seri membutuhkan kedua sakelar tertutup (ON) agar arus listrik mengalir ke lampu, persis seperti gerbang AND.'
+            },
+            {
+                id: 17,
+                act: 4,
+                type: 'mcq',
+                title: 'Analogi Rangkaian Sakelar Paralel',
+                question: 'Dua buah sakelar listrik yang dipasang secara PARALEL (bercabang) menganalogikan cara kerja gerbang...',
+                options: ['AND', 'NOT', 'OR', 'NAND'],
+                correct: 2,
+                explanation: 'Rangkaian Paralel memungkinkan arus mengalir jika salah satu atau kedua sakelar tertutup (ON), persis seperti gerbang OR.'
+            },
+            {
+                id: 18,
+                act: 4,
+                type: 'switch_sim',
+                title: 'Simulasi Sakelar Seri (AND)',
+                mode: 'SERI',
+                targetA: 1,
+                targetB: 0,
+                question: 'Atur Sakelar A = 1 (Tutup) dan Sakelar B = 0 (Buka) pada rangkaian SERI di bawah ini. Apakah lampu menyala (1) / mati (0)?',
+                correct: 0,
+                explanation: 'Pada Rangkaian Seri (AND), jika salah satu sakelar terbuka (0), aliran arus terputus sehingga lampu MATI (0).'
+            },
+            {
+                id: 19,
+                act: 4,
+                type: 'switch_sim',
+                title: 'Simulasi Sakelar Paralel (OR)',
+                mode: 'PARALEL',
+                targetA: 0,
+                targetB: 1,
+                question: 'Atur Sakelar A = 0 (Buka) dan Sakelar B = 1 (Tutup) pada rangkaian PARALEL di bawah ini. Berapakah status lampu?',
+                correct: 1,
+                explanation: 'Pada Rangkaian Paralel (OR), arus dapat melewati jalur Sakelar B yang tertutup (1), sehingga lampu MENYALA (1).'
+            },
+            {
+                id: 20,
+                act: 4,
+                type: 'switch_sim',
+                title: 'Simulasi Seri Maksimal',
+                mode: 'SERI',
+                targetA: 1,
+                targetB: 1,
+                question: 'Jika Sakelar A = 1 dan Sakelar B = 1 dihubungkan secara SERI, apakah lampu akan menyala?',
+                correct: 1,
+                explanation: 'Kedua sakelar tertutup (1 AND 1 = 1), arus listrik mengalir sempurna dan lampu MENYALA (1).'
+            },
+            {
+                id: 21,
+                act: 4,
+                type: 'mcq',
+                title: 'Kondisi Sakelar Pembalik (Inverter)',
+                question: 'Pada sakelar pembalik otomatis (Relay NOT), ketika tombol sakelar TIDAK DITEKAN (0), maka lampu akan...',
+                options: ['Tetap Mati (0)', 'Menyala (1)', 'Beredup perlahan', 'Korsleting'],
+                correct: 1,
+                explanation: 'Prinsip Inverter (NOT): input 0 menghasilkan output 1 (Lampu Menyala).'
+            },
+            {
+                id: 22,
+                act: 4,
+                type: 'mcq',
+                title: 'Kondisi Lampu Mati pada OR',
+                question: 'Agar lampu indikator pada gerbang OR bernilai MATI (0), kondisi Sakelar A dan B harus...',
+                options: ['A = 1, B = 0', 'A = 0, B = 1', 'Keduanya Terputus (A = 0, B = 0)', 'Keduanya Terhubung (A = 1, B = 1)'],
+                correct: 2,
+                explanation: 'Gerbang OR hanya bernilai 0 jika seluruh inputnya bernilai 0.'
+            },
+
+            // AKTIVITAS 5: Studi Kasus & Microchip Prosesor (Soal 23-25)
+            {
+                id: 23,
+                act: 5,
+                type: 'mcq',
+                title: 'Studi Kasus 1: Lampu Otomatis Pintar',
+                question: 'Sebuah lampu taman pintar dirancang menyala JIKA kondisi "Malam Hari" (Sensor A=1) DAN ada "Deteksi Gerakan Manusia" (Sensor B=1). Gerbang logika yang paling tepat digunakan adalah...',
+                options: ['Gerbang OR', 'Gerbang AND', 'Gerbang NOT', 'Gerbang Buffer'],
+                correct: 1,
+                explanation: 'Karena membutuhkan KEDUA syarat terpenuhi bersamaan (Malam DAN Ada Gerakan), maka digunakan gerbang AND.'
+            },
+            {
+                id: 24,
+                act: 5,
+                type: 'mcq',
+                title: 'Studi Kasus 2: System Alarm Keamanan Brankas',
+                question: 'Alarm brankas bank akan berbunyi (1) JIKA "Pintu Dipaksa Buka" (Sensor A=1) ATAU "Sensor Getaran Aktif" (Sensor B=1). Gerbang logika yang sesuai adalah...',
+                options: ['Gerbang AND', 'Gerbang NOT', 'Gerbang OR', 'Gerbang NAND'],
+                correct: 2,
+                explanation: 'Sistem alarm yang cukup dipicu oleh SALAH SATU sensor aktif menggunakan prinsip gerbang OR.'
+            },
+            {
+                id: 25,
+                act: 5,
+                type: 'circuit_calc',
+                title: 'Analisis Microchip Rangkaian Kombinasi',
+                question: 'Diberikan Rangkaian Kombinasi: Y = (A AND B) OR C. Jika nilai input A = 1, B = 1, dan C = 0, berapakah nilai output akhir Y?',
+                options: ['0', '1', '2', 'Tidak pasti'],
+                correct: 1,
+                explanation: 'Langkah analisis: (1 AND 1) = 1. Lalu (1 OR 0) = 1. Jadi output akhir Y = 1.'
+            }
+        ];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            updateUIHeader();
+        });
+
+        function loadUserData() {
+            try {
+                const saved = localStorage.getItem('lkpd_logic_gate_user');
+                if (saved) {
+                    currentUser = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error("LocalStorage load error:", e);
+            }
+        }
+
+        function saveUserData() {
+            try {
+                localStorage.setItem('lkpd_logic_gate_user', JSON.stringify(currentUser));
+            } catch (e) {
+                console.error("LocalStorage save error:", e);
+            }
+        }
+
+        function switchView(viewId) {
+            const views = ['viewLanding', 'viewInstructions', 'viewDashboard', 'viewPembahasan', 'viewCertificate'];
+            views.forEach(v => {
+                const el = document.getElementById(v);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(viewId);
+            if (target) target.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function startInstructions() {
+            const nama = document.getElementById('inputNama').value.trim();
+            const kelas = document.getElementById('inputKelas').value;
+            const absen = document.getElementById('inputAbsen').value.trim();
+
+            if (!nama || !absen) {
+                showCustomModal("Input Belum Lengkap", "Harap isi Nama Lengkap dan Nomor Absen Anda sebelum melanjutkan!");
+                return;
+            }
+
+            currentUser.nama = nama;
+            currentUser.kelas = kelas;
+            currentUser.absen = absen;
+            saveUserData();
+
+            updateUIHeader();
+            switchView('viewInstructions');
+        }
+
+        function updateUIHeader() {
+            if (currentUser.nama) {
+                document.getElementById('headerUserInfo').classList.remove('hidden');
+                document.getElementById('dispHeaderName').innerText = currentUser.nama;
+                document.getElementById('dispHeaderClass').innerText = `${currentUser.kelas} • Absen ${currentUser.absen}`;
+            }
+        }
+
+        function startLKPD() {
+            switchView('viewDashboard');
+            renderActivityNavTabs();
+            renderQuestion();
+            updateProgressStats();
+        }
+
+        const ACTIVITIES = [
+            { id: 1, title: 'Konsep Biner', icon: 'fa-bolt', color: 'bg-electric', hex: '#2563eb' },
+            { id: 2, title: 'Gerbang Logic', icon: 'fa-diagram-project', color: 'bg-tosca', hex: '#0891b2' },
+            { id: 3, title: 'Tabel Kebenaran', icon: 'fa-table-cells', color: 'bg-amberAccent', hex: '#f59e0b' },
+            { id: 4, title: 'Simulasi Sakelar', icon: 'fa-toggle-on', color: 'bg-electric', hex: '#2563eb' },
+            { id: 5, title: 'Microchip & Case', icon: 'fa-microchip', color: 'bg-tosca', hex: '#0891b2' }
+        ];
+
+        function renderActivityNavTabs() {
+            const container = document.getElementById('activityTabsNav');
+            container.innerHTML = '';
+
+            const currentAct = MASTER_QUESTIONS[currentQuestionIdx].act;
+
+            ACTIVITIES.forEach(act => {
+                const isActive = act.id === currentAct;
+                const tab = document.createElement('button');
+                tab.className = `p-2.5 rounded-xl border text-left flex items-center space-x-2 transition ${
+                    isActive 
+                    ? `${act.color} text-white border-white/30 shadow-lg` 
+                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                }`;
+                tab.onclick = () => jumpToActivity(act.id);
+                tab.innerHTML = `
+                    <i class="fa-solid ${act.icon} text-sm"></i>
+                    <div class="truncate text-xs">
+                        <p class="font-bold leading-none">Akt. ${act.id}</p>
+                        <p class="text-[10px] opacity-80 truncate hidden sm:block">${act.title}</p>
+                    </div>
+                `;
+                container.appendChild(tab);
+            });
+
+            // Update user details in dashboard view
+            document.getElementById('dispStudentName').innerText = currentUser.nama;
+            document.getElementById('dispStudentDetail').innerText = `${currentUser.kelas} • Absen ${currentUser.absen} • SMPN 1 Tinggimoncong`;
+            document.getElementById('dispAttemptBadge').innerText = `Percobaan ke-${currentUser.attempt}`;
+
+            // Load best score
+            const best = getBestScore();
+            document.getElementById('dispBestScore').innerText = `${best} / 100`;
+        }
+
+        function jumpToActivity(actId) {
+            const firstIdx = MASTER_QUESTIONS.findIndex(q => q.act === actId);
+            if (firstIdx !== -1) {
+                currentQuestionIdx = firstIdx;
+                renderQuestion();
+                renderActivityNavTabs();
+            }
+        }
+
+        function updateProgressStats() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const total = MASTER_QUESTIONS.length;
+            const pct = Math.round((answeredCount / total) * 100);
+
+            document.getElementById('dispProgressText').innerText = `${answeredCount} / ${total} Terjawab`;
+            document.getElementById('dispProgressBar').style.width = `${pct}%`;
+
+            // Update quick bullets
+            const bullets = document.getElementById('quickNavBullets');
+            bullets.innerHTML = '';
+            MASTER_QUESTIONS.forEach((q, idx) => {
+                const b = document.createElement('button');
+                const isAns = userAnswers[q.id] !== undefined;
+                const isCurr = idx === currentQuestionIdx;
+                
+                b.className = `w-6 h-6 rounded-md text-[10px] font-bold font-mono transition flex items-center justify-center ${
+                    isCurr ? 'ring-2 ring-amberAccent bg-electric text-white' :
+                    isAns ? 'bg-emerald-600/80 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                }`;
+                b.innerText = idx + 1;
+                b.onclick = () => {
+                    currentQuestionIdx = idx;
+                    renderQuestion();
+                    renderActivityNavTabs();
+                };
+                bullets.appendChild(b);
+            });
+        }
+
+        function renderQuestion() {
+            const q = MASTER_QUESTIONS[currentQuestionIdx];
+            const container = document.getElementById('questionContainer');
+            
+            // Prev / Next button state
+            document.getElementById('btnPrevQ').disabled = (currentQuestionIdx === 0);
+            
+            if (currentQuestionIdx === MASTER_QUESTIONS.length - 1) {
+                document.getElementById('btnNextQ').classList.add('hidden');
+                document.getElementById('btnSubmitLKPD').classList.remove('hidden');
+            } else {
+                document.getElementById('btnNextQ').classList.remove('hidden');
+                document.getElementById('btnSubmitLKPD').classList.add('hidden');
+            }
+
+            const actInfo = ACTIVITIES.find(a => a.id === q.act);
+
+            let html = `
+                <div>
+                    <!-- Header Soal -->
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold text-white ${actInfo.color}">
+                                Soal ${currentQuestionIdx + 1} dari 25
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono hidden sm:inline">Aktivitas ${q.act}: ${actInfo.title}</span>
+                        </div>
+                        <span class="text-xs font-semibold text-amberAccent bg-amberAccent/10 px-2.5 py-1 rounded-md border border-amberAccent/20">
+                            4 Poin
+                        </span>
+                    </div>
+
+                    <!-- Judul & Pertanyaan -->
+                    <h3 class="text-base md:text-lg font-bold text-white mb-2">${q.title}</h3>
+                    <p class="text-slate-300 text-sm mb-6 leading-relaxed">${q.question}</p>
+            `;
+
+            // Render specific component based on question type
+            if (q.type === 'mcq' || q.type === 'fast_calc' || q.type === 'circuit_calc') {
+                html += renderMCQOptions(q);
+            } else if (q.type === 'interactive_binary') {
+                html += renderInteractiveBinaryWidget(q);
+            } else if (q.type === 'drag_drop_gate') {
+                html += renderDragDropGateWidget(q);
+            } else if (q.type === 'truth_table') {
+                html += renderTruthTableWidget(q);
+            } else if (q.type === 'switch_sim') {
+                html += renderSwitchSimulatorWidget(q);
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+
+            // Re-bind interactive events if drag-drop or interactive widget
+            if (q.type === 'drag_drop_gate') {
+                initDragAndDropEvents(q);
+            }
+
+            updateProgressStats();
+        }
+
+        function renderMCQOptions(q) {
+            const currentAns = userAnswers[q.id];
+            let out = `<div class="space-y-3">`;
+            q.options.forEach((opt, idx) => {
+                const isSelected = currentAns === idx;
+                out += `
+                    <button onclick="selectMCQAnswer(${q.id}, ${idx})" 
+                            class="w-full text-left p-3.5 rounded-xl border text-sm font-medium transition flex items-center justify-between ${
+                                isSelected 
+                                ? 'bg-electric/20 border-electric text-white shadow-md ring-1 ring-electric' 
+                                : 'bg-slate-800/60 border-slate-700/80 text-slate-300 hover:bg-slate-800 hover:border-slate-600'
+                            }">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-7 h-7 rounded-lg font-mono text-xs font-bold flex items-center justify-center ${
+                                isSelected ? 'bg-electric text-white' : 'bg-slate-700 text-slate-400'
+                            }">${String.fromCharCode(65 + idx)}</span>
+                            <span>${opt}</span>
+                        </div>
+                        ${isSelected ? '<i class="fa-solid fa-circle-check text-electric"></i>' : '<i class="fa-regular fa-circle text-slate-600"></i>'}
+                    </button>
+                `;
+            });
+            out += `</div>`;
+            return out;
+        }
+
+        function selectMCQAnswer(qId, optionIdx) {
+            userAnswers[qId] = optionIdx;
+            renderQuestion();
+        }
+
+        // Interactive Binary Switch Widget
+        function renderInteractiveBinaryWidget(q) {
+            const currentAns = userAnswers[q.id] !== undefined ? userAnswers[q.id] : 0;
+            const isOn = currentAns === 1;
+
+            return `
+                <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center space-y-6 max-w-md mx-auto">
+                    <div class="flex justify-center items-center space-x-8">
+                        <!-- Switch Toggle -->
+                        <div class="text-center space-y-2">
+                            <span class="text-xs text-slate-400 block font-mono">SAKELAR BINER</span>
+                            <button onclick="toggleBinaryWidget(${q.id})" class="w-16 h-28 rounded-2xl p-2 transition-all duration-300 relative flex flex-col justify-between items-center ${
+                                isOn ? 'bg-emerald-600 shadow-lg shadow-emerald-500/40' : 'bg-slate-800 border border-slate-700'
+                            }">
+                                <span class="text-xs font-bold font-mono text-white">${isOn ? '1' : '0'}</span>
+                                <div class="w-12 h-12 rounded-xl bg-white shadow-md transform transition duration-200 ${isOn ? 'translate-y-0' : 'translate-y-2'}"></div>
+                                <span class="text-[10px] text-slate-300 font-mono">${isOn ? 'HIGH' : 'LOW'}</span>
+                            </button>
+                        </div>
+
+                        <!-- Indicator Lamp -->
+                        <div class="text-center space-y-2">
+                            <span class="text-xs text-slate-400 block font-mono">INDIKATOR LAMPU</span>
+                            <div class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 ${
+                                isOn ? 'bg-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.9)] text-slate-900' : 'bg-slate-800 text-slate-600 border border-slate-700'
+                            }">
+                                <i class="fa-solid fa-lightbulb text-3xl"></i>
+                            </div>
+                            <span class="text-xs font-mono font-bold ${isOn ? 'text-amber-400' : 'text-slate-500'}">
+                                ${isOn ? 'MENYALA (1)' : 'PADAM (0)'}
+                            </span>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-slate-400 italic">Klik tombol sakelar di atas untuk mengubah posisi (0 ↔ 1).</p>
+                </div>
+            `;
+        }
+
+        function toggleBinaryWidget(qId) {
+            const curr = userAnswers[qId] !== undefined ? userAnswers[qId] : 0;
+            userAnswers[qId] = curr === 1 ? 0 : 1;
+            renderQuestion();
+        }
+
+        // Truth Table Question Widget
+        function renderTruthTableWidget(q) {
+            const currentAns = userAnswers[q.id];
+
+            return `
+                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 max-w-md mx-auto space-y-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-center border-collapse text-xs font-mono">
+                            <thead>
+                                <tr class="bg-slate-800 text-slate-300">
+                                    <th class="p-2 border border-slate-700">Input A</th>
+                                    ${q.inB !== null ? '<th class="p-2 border border-slate-700">Input B</th>' : ''}
+                                    <th class="p-2 border border-slate-700 bg-electric/30 text-white">Gerbang ${q.gate}</th>
+                                    <th class="p-2 border border-slate-700 bg-amberAccent/20 text-amberAccent">Output Y</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-slate-900/80 text-white">
+                                    <td class="p-3 border border-slate-800 font-bold text-cyan-400">${q.inA}</td>
+                                    ${q.inB !== null ? `<td class="p-3 border border-slate-800 font-bold text-cyan-400">${q.inB}</td>` : ''}
+                                    <td class="p-3 border border-slate-800 text-slate-300 font-sans font-semibold">${q.gate}</td>
+                                    <td class="p-3 border border-slate-800 font-bold text-amberAccent text-base">?</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="block text-xs font-medium text-slate-300 mb-2">Pilih nilai Output Y yang tepat:</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="selectTruthTableOutput(${q.id}, 0)" 
+                                    class="py-2.5 rounded-xl border text-sm font-bold font-mono transition ${
+                                        currentAns === 0 ? 'bg-electric border-electric text-white shadow-lg' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                                    }">
+                                Output Y = 0 (LOW)
+                            </button>
+                            <button onclick="selectTruthTableOutput(${q.id}, 1)" 
+                                    class="py-2.5 rounded-xl border text-sm font-bold font-mono transition ${
+                                        currentAns === 1 ? 'bg-electric border-electric text-white shadow-lg' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                                    }">
+                                Output Y = 1 (HIGH)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectTruthTableOutput(qId, val) {
+            userAnswers[qId] = val;
+            renderQuestion();
+        }
+
+        // Switch Simulator Interactive Widget
+        function renderSwitchSimulatorWidget(q) {
+            if (!userAnswers[`swA_${q.id}`]) userAnswers[`swA_${q.id}`] = 0;
+            if (!userAnswers[`swB_${q.id}`]) userAnswers[`swB_${q.id}`] = 0;
+
+            const swA = userAnswers[`swA_${q.id}`];
+            const swB = userAnswers[`swB_${q.id}`];
+
+            // Evaluate lamp status based on mode
+            let lampState = 0;
+            if (q.mode === 'SERI') {
+                lampState = (swA === 1 && swB === 1) ? 1 : 0;
+            } else if (q.mode === 'PARALEL') {
+                lampState = (swA === 1 || swB === 1) ? 1 : 0;
+            }
+
+            // Check if current setup matches target prompt for user response selection
+            const isMatchTarget = (swA === q.targetA && swB === q.targetB);
+            const userChosenLampState = userAnswers[q.id];
+
+            return `
+                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-5 max-w-lg mx-auto">
+                    <div class="flex justify-between items-center text-xs font-mono text-slate-400 border-b border-slate-800 pb-2">
+                        <span>MODEL RANGKAIAN: <strong class="text-tosca">${q.mode}</strong></span>
+                        <span>TARGET SIMULASI: Sakelar A=${q.targetA}, B=${q.targetB}</span>
+                    </div>
+
+                    <!-- Simulator Controls -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-center space-y-2">
+                            <span class="text-xs font-mono text-slate-400">SAKELAR A</span>
+                            <button onclick="toggleSwitchState(${q.id}, 'A')" class="w-full py-2 px-3 rounded-lg font-bold font-mono text-xs transition ${
+                                swA === 1 ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 border border-slate-700'
+                            }">
+                                ${swA === 1 ? 'TERHUBUNG (1)' : 'TERPUTUS (0)'}
+                            </button>
+                        </div>
+
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-center space-y-2">
+                            <span class="text-xs font-mono text-slate-400">SAKELAR B</span>
+                            <button onclick="toggleSwitchState(${q.id}, 'B')" class="w-full py-2 px-3 rounded-lg font-bold font-mono text-xs transition ${
+                                swB === 1 ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 border border-slate-700'
+                            }">
+                                ${swB === 1 ? 'TERHUBUNG (1)' : 'TERPUTUS (0)'}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Output Simulation Display -->
+                    <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+                        <div class="text-xs space-y-1">
+                            <p class="text-slate-400">Status Sirkuit saat ini:</p>
+                            <p class="font-mono font-bold text-white">
+                                ${q.mode === 'SERI' ? `A (${swA}) AND B (${swB})` : `A (${swA}) OR B (${swB})`}
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center ${
+                                lampState === 1 ? 'bg-amber-400 text-slate-900 shadow-[0_0_20px_rgba(251,191,36,0.8)]' : 'bg-slate-800 text-slate-600'
+                            }">
+                                <i class="fa-solid fa-lightbulb text-xl"></i>
+                            </div>
+                            <span class="font-mono font-bold text-xs ${lampState === 1 ? 'text-amber-400' : 'text-slate-500'}">
+                                ${lampState === 1 ? 'LAMPU (1)' : 'LAMPU (0)'}
+                            </span>
+                        </div>
+                    </div>
+
+                    ${!isMatchTarget ? `
+                        <p class="text-[11px] text-amber-400/90 bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/20 text-center">
+                            ⚠️ Silakan atur posisi Sakelar A = ${q.targetA} dan Sakelar B = ${q.targetB} terlebih dahulu!
+                        </p>
+                    ` : `
+                        <div class="pt-2 border-t border-slate-800 space-y-2">
+                            <label class="block text-xs font-semibold text-slate-300">Berdasarkan hasil simulasi di atas, apakah status lampu?</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="selectSwitchSimAnswer(${q.id}, 0)" class="py-2 rounded-xl text-xs font-bold font-mono border transition ${
+                                    userChosenLampState === 0 ? 'bg-electric text-white border-electric shadow-md' : 'bg-slate-800 text-slate-300 border-slate-700'
+                                }">
+                                    0 (Lampu Mati)
+                                </button>
+                                <button onclick="selectSwitchSimAnswer(${q.id}, 1)" class="py-2 rounded-xl text-xs font-bold font-mono border transition ${
+                                    userChosenLampState === 1 ? 'bg-electric text-white border-electric shadow-md' : 'bg-slate-800 text-slate-300 border-slate-700'
+                                }">
+                                    1 (Lampu Menyala)
+                                </button>
+                            </div>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function toggleSwitchState(qId, key) {
+            const current = userAnswers[`sw${key}_${qId}`] || 0;
+            userAnswers[`sw${key}_${qId}`] = current === 1 ? 0 : 1;
+            renderQuestion();
+        }
+
+        function selectSwitchSimAnswer(qId, val) {
+            userAnswers[qId] = val;
+            renderQuestion();
+        }
+
+        function renderDragDropGateWidget(q) {
+            const savedAns = userAnswers[q.id] || {};
+
+            return `
+                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4 max-w-lg mx-auto">
+                    <p class="text-xs text-slate-400">Tarik (Drag) kotak konsep di sebelah kiri dan lepas (Drop) pada target pasangan yang cocok di sebelah kanan!</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <!-- Source Draggables -->
+                        <div class="space-y-2">
+                            <span class="text-[11px] font-mono text-slate-400 block mb-1">GERBANG LOGIKA</span>
+                            ${q.pairs.map(p => `
+                                <div draggable="true" id="drag_${p.key}" data-key="${p.key}" 
+                                     class="draggable p-3 rounded-xl bg-electric/20 border border-electric/40 text-electric font-bold font-mono text-xs flex items-center justify-between">
+                                    <span>${p.key}</span>
+                                    <i class="fa-solid fa-grip-vertical opacity-60"></i>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Drop Targets -->
+                        <div class="space-y-2">
+                            <span class="text-[11px] font-mono text-slate-400 block mb-1">OPERASI / FUNGSIONAL</span>
+                            ${q.pairs.map(p => {
+                                const matchedKey = savedAns[p.val];
+                                return `
+                                    <div data-val="${p.val}" 
+                                         class="dropzone p-3 rounded-xl border-2 border-dashed border-slate-700 bg-slate-900 text-xs font-mono flex items-center justify-between min-h-[46px]">
+                                        <span class="text-slate-300 text-[11px]">${p.val}</span>
+                                        <span id="target_label_${p.val.replace(/[^a-zA-Z0-9]/g, '')}" class="px-2 py-0.5 bg-amberAccent/20 text-amberAccent rounded text-[10px] font-bold">
+                                            ${matchedKey ? matchedKey : 'DROP DI SINI'}
+                                        </span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initDragAndDropEvents(q) {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropzones = document.querySelectorAll('.dropzone');
+
+            draggables.forEach(d => {
+                d.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', d.getAttribute('data-key'));
+                });
+            });
+
+            dropzones.forEach(dz => {
+                dz.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dz.classList.add('dragover');
+                });
+
+                dz.addEventListener('dragleave', () => {
+                    dz.classList.remove('dragover');
+                });
+
+                dz.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dz.classList.remove('dragover');
+                    const key = e.dataTransfer.getData('text/plain');
+                    const targetVal = dz.getAttribute('data-val');
+
+                    if (!userAnswers[q.id]) userAnswers[q.id] = {};
+                    userAnswers[q.id][targetVal] = key;
+
+                    // Form serialized answer string for evaluation
+                    const keys = Object.keys(userAnswers[q.id]).sort();
+                    const serialized = keys.map(k => `${userAnswers[q.id][k]}:${k}`).join('|');
+
+                    if (keys.length === q.pairs.length) {
+                        userAnswers[q.id + "_full"] = serialized;
+                    }
+
+                    renderQuestion();
+                });
+            });
+        }
+
+        function navigateQuestion(step) {
+            const nextIdx = currentQuestionIdx + step;
+            if (nextIdx >= 0 && nextIdx < MASTER_QUESTIONS.length) {
+                currentQuestionIdx = nextIdx;
+                renderQuestion();
+                renderActivityNavTabs();
+            }
+        }
+
+        function confirmSubmitLKPD() {
+            const total = MASTER_QUESTIONS.length;
+            const answered = Object.keys(userAnswers).filter(k => !k.includes('swA_') && !k.includes('swB_')).length;
+
+            if (answered < total) {
+                showCustomModal("Soal Belum Selesai", `Anda baru menjawab ${answered} dari ${total} soal. Harap periksa dan lengkapi seluruh soal sebelum mengirim!`);
+                return;
+            }
+
+            // Calculate Score
+            let correctCount = 0;
+
+            MASTER_QUESTIONS.forEach(q => {
+                if (q.type === 'drag_drop_gate') {
+                    const ansObj = userAnswers[q.id] || {};
+                    const serialized = Object.keys(ansObj).map(k => `${ansObj[k]}:${k}`).sort().join('|');
+                    const correctSorted = q.correct.split('|').sort().join('|');
+                    if (serialized === correctSorted) {
+                        correctCount++;
+                    }
+                } else {
+                    const userVal = userAnswers[q.id];
+                    if (userVal === q.correct) {
+                        correctCount++;
+                    }
+                }
+            });
+
+            const finalScore = correctCount * 4; // 25 x 4 = 100
+            const predicate = getPredicateInfo(finalScore);
+
+            // Record History
+            saveAttemptRecord(finalScore, correctCount, predicate.label);
+
+            // Switch to Pembahasan
+            renderPembahasanView(correctCount, finalScore, predicate);
+        }
+
+        function getPredicateInfo(score) {
+            if (score >= 90) return { label: '🏆 SANGAT BAIK', color: 'text-amberAccent', certColor: '#f59e0b' };
+            if (score >= 80) return { label: '🥇 BAIK', color: 'text-blue-400', certColor: '#2563eb' };
+            if (score >= 70) return { label: '🥈 CUKUP', color: 'text-cyan-400', certColor: '#0891b2' };
+            return { label: '🌱 PERLU BERLATIH', color: 'text-emerald-400', certColor: '#10b981' };
+        }
+
+        function saveAttemptRecord(score, correctCount, predicateLabel) {
+            try {
+                let history = JSON.parse(localStorage.getItem('lkpd_logic_gate_history') || '[]');
+                const record = {
+                    attempt: currentUser.attempt,
+                    nama: currentUser.nama,
+                    kelas: currentUser.kelas,
+                    score: score,
+                    correct: correctCount,
+                    predicate: predicateLabel,
+                    date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                };
+                history.push(record);
+                localStorage.setItem('lkpd_logic_gate_history', JSON.stringify(history));
+            } catch (e) {
+                console.error("History save error:", e);
+            }
+        }
+
+        function getBestScore() {
+            try {
+                let history = JSON.parse(localStorage.getItem('lkpd_logic_gate_history') || '[]');
+                if (history.length === 0) return 0;
+                return Math.max(...history.map(h => h.score));
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function renderPembahasanView(correctCount, score, predicate) {
+            switchView('viewPembahasan');
+
+            document.getElementById('summaryCorrect').innerText = `${correctCount} / 25`;
+            document.getElementById('summaryScore').innerText = score;
+            document.getElementById('summaryPredicate').innerText = predicate.label;
+            document.getElementById('summaryPredicate').className = `text-sm font-bold block mt-0.5 ${predicate.color}`;
+
+            renderPembahasanList();
+        }
+
+        function filterPembahasan(filter) {
+            activeFilter = filter;
+
+            document.getElementById('btnFilterAll').className = `px-3 py-1.5 rounded-lg text-xs font-semibold ${filter === 'all' ? 'bg-electric text-white border border-electric' : 'bg-slate-800 text-slate-300 border border-slate-700'}`;
+            document.getElementById('btnFilterCorrect').className = `px-3 py-1.5 rounded-lg text-xs font-semibold ${filter === 'correct' ? 'bg-emerald-600 text-white border border-emerald-600' : 'bg-slate-800 text-slate-300 border border-slate-700'}`;
+            document.getElementById('btnFilterIncorrect').className = `px-3 py-1.5 rounded-lg text-xs font-semibold ${filter === 'incorrect' ? 'bg-red-600 text-white border border-red-600' : 'bg-slate-800 text-slate-300 border border-slate-700'}`;
+
+            renderPembahasanList();
+        }
+
+        function renderPembahasanList() {
+            const container = document.getElementById('pembahasanList');
+            container.innerHTML = '';
+
+            MASTER_QUESTIONS.forEach((q, idx) => {
+                let isCorrect = false;
+
+                if (q.type === 'drag_drop_gate') {
+                    const ansObj = userAnswers[q.id] || {};
+                    const serialized = Object.keys(ansObj).map(k => `${ansObj[k]}:${k}`).sort().join('|');
+                    const correctSorted = q.correct.split('|').sort().join('|');
+                    isCorrect = (serialized === correctSorted);
+                } else {
+                    isCorrect = (userAnswers[q.id] === q.correct);
+                }
+
+                if (activeFilter === 'correct' && !isCorrect) return;
+                if (activeFilter === 'incorrect' && isCorrect) return;
+
+                const item = document.createElement('div');
+                item.className = `p-4 rounded-xl border ${
+                    isCorrect ? 'bg-emerald-950/20 border-emerald-800/60' : 'bg-red-950/20 border-red-800/60'
+                } space-y-2 text-xs`;
+
+                let userAnsText = '';
+                let correctAnsText = '';
+
+                if (q.type === 'mcq' || q.type === 'fast_calc' || q.type === 'circuit_calc') {
+                    userAnsText = userAnswers[q.id] !== undefined ? q.options[userAnswers[q.id]] : 'Tidak dijawab';
+                    correctAnsText = q.options[q.correct];
+                } else if (q.type === 'drag_drop_gate') {
+                    const ansObj = userAnswers[q.id] || {};
+                    userAnsText = Object.keys(ansObj).map(k => `${ansObj[k]} ➔ ${k}`).join(', ') || 'Belum dipasangkan';
+                    correctAnsText = q.pairs.map(p => `${p.key} ➔ ${p.val}`).join(', ');
+                } else {
+                    userAnsText = userAnswers[q.id] !== undefined ? (userAnswers[q.id] === 1 ? '1 (HIGH / ON)' : '0 (LOW / OFF)') : 'Tidak dijawab';
+                    correctAnsText = q.correct === 1 ? '1 (HIGH / ON)' : '0 (LOW / OFF)';
+                }
+
+                item.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                        <span class="font-bold text-white">Soal No. ${idx + 1} (${q.title})</span>
+                        <span class="px-2 py-0.5 rounded font-bold text-[10px] ${
+                            isCorrect ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                        }">
+                            ${isCorrect ? 'BENAR (+4)' : 'SALAH (0)'}
+                        </span>
+                    </div>
+                    <p class="text-slate-300 font-medium">${q.question}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 font-mono text-[11px]">
+                        <div class="p-2 rounded bg-slate-900/80 border border-slate-800">
+                            <span class="text-slate-400 block text-[10px]">Jawaban Anda:</span>
+                            <span class="${isCorrect ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold'}">${userAnsText}</span>
+                        </div>
+                        <div class="p-2 rounded bg-slate-900/80 border border-slate-800">
+                            <span class="text-slate-400 block text-[10px]">Kunci Jawaban Benar:</span>
+                            <span class="text-amberAccent font-bold">${correctAnsText}</span>
+                        </div>
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-slate-900/60 text-slate-400 text-[11px] border border-slate-800">
+                        <strong class="text-slate-200">💡 Penjelasan:</strong> ${q.explanation}
+                    </div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        function generateAndShowCertificate() {
+            switchView('viewCertificate');
+
+            const canvas = document.getElementById('certCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Dimensions 900 x 1200 px (3:4 ratio)
+            const W = 900;
+            const H = 1200;
+
+            // Compute metrics
+            const score = Object.keys(userAnswers).filter(k => !k.includes('swA_') && !k.includes('swB_')).reduce((acc, qId) => {
+                const q = MASTER_QUESTIONS.find(m => m.id == qId);
+                if (!q) return acc;
+                if (q.type === 'drag_drop_gate') {
+                    const ansObj = userAnswers[qId] || {};
+                    const serialized = Object.keys(ansObj).map(k => `${ansObj[k]}:${k}`).sort().join('|');
+                    return serialized === q.correct.split('|').sort().join('|') ? acc + 4 : acc;
+                }
+                return userAnswers[qId] === q.correct ? acc + 4 : acc;
+            }, 0);
+
+            const pred = getPredicateInfo(score);
+            const dateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            // 1. Background Gradient
+            const bgGradient = ctx.createLinearGradient(0, 0, W, H);
+            bgGradient.addColorStop(0, '#0f172a');
+            bgGradient.addColorStop(0.5, '#0b132b');
+            bgGradient.addColorStop(1, '#1e1b4b');
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, W, H);
+
+            // 2. Decorative Tech Circuits
+            ctx.strokeStyle = 'rgba(37, 99, 235, 0.2)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            // Corner lines
+            ctx.moveTo(40, 100); ctx.lineTo(120, 100); ctx.lineTo(180, 40);
+            ctx.moveTo(W - 40, 100); ctx.lineTo(W - 120, 100); ctx.lineTo(W - 180, 40);
+            ctx.moveTo(40, H - 100); ctx.lineTo(120, H - 100); ctx.lineTo(180, H - 40);
+            ctx.moveTo(W - 40, H - 100); ctx.lineTo(W - 120, H - 100); ctx.lineTo(W - 180, H - 40);
+            ctx.stroke();
+
+            // 3. Elegant Outer Border
+            ctx.strokeStyle = pred.certColor;
+            ctx.lineWidth = 8;
+            ctx.strokeRect(30, 30, W - 60, H - 60);
+
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(42, 42, W - 84, H - 84);
+
+            // 4. Header Badge / Emblem
+            ctx.fillStyle = '#2563eb';
+            ctx.beginPath();
+            ctx.arc(W / 2, 130, 45, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Microchip Icon in center (rendered cleanly)
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 36px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('⚡', W / 2, 142);
+
+            // 5. School & Certificate Title
+            ctx.fillStyle = '#0891b2';
+            ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('SMPN 1 TINGGIMONCONG', W / 2, 210);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '800 38px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('SERTIFIKAT PENYELESAIAN LKPD', W / 2, 260);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '16px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('Diberikan kepada peserta didik atas pencapaian evaluasi interaktif:', W / 2, 300);
+
+            // 6. Student Name Card
+            ctx.fillStyle = 'rgba(30, 41, 59, 0.8)';
+            ctx.roundRect(100, 330, W - 200, 110, 20);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.stroke();
+
+            ctx.fillStyle = '#f59e0b';
+            ctx.font = '800 36px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(currentUser.nama.toUpperCase(), W / 2, 385);
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '600 18px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(`Kelas: ${currentUser.kelas}  •  No. Absen: ${currentUser.absen}`, W / 2, 420);
+
+            // 7. Topic Name Banner (WAJIB TAMPIL JELAS)
+            ctx.fillStyle = 'rgba(8, 145, 178, 0.15)';
+            ctx.fillRect(80, 470, W - 160, 90);
+            ctx.strokeStyle = '#0891b2';
+            ctx.strokeRect(80, 470, W - 160, 90);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = 'bold 14px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('MATA PELAJARAN INFORMATIKA — MATERI UTAMA:', W / 2, 500);
+
+            ctx.fillStyle = '#60a5fa';
+            ctx.font = '800 32px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('GERBANG LOGIKA DASAR', W / 2, 542);
+
+            // 8. Score & Predicate Card
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+            ctx.roundRect(150, 590, W - 300, 160, 20);
+            ctx.fill();
+            ctx.strokeStyle = pred.certColor;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '15px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('NILAI AKHIR EVALUASI', W / 2 - 120, 630);
+            ctx.fillText('PREDIKAT KELULUSAN', W / 2 + 120, 630);
+
+            ctx.fillStyle = pred.certColor;
+            ctx.font = '800 52px "JetBrains Mono", monospace';
+            ctx.fillText(`${score}`, W / 2 - 120, 690);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(pred.label, W / 2 + 120, 685);
+
+            // 9. Additional Details
+            ctx.fillStyle = '#64748b';
+            ctx.font = '14px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(`Percobaan Ke: ${currentUser.attempt}  |  Tanggal Terbit: ${dateStr}`, W / 2, 790);
+
+            // 10. Signature Section
+            const sigY = 920;
+
+            // School Seal graphic
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(200, sigY + 50, 45, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.1)';
+            ctx.fill();
+            ctx.fillStyle = '#f59e0b';
+            ctx.font = 'bold 12px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('SMPN 1', 200, sigY + 45);
+            ctx.fillText('TINGGIMONCONG', 200, sigY + 62);
+
+            // Teacher Signature Area
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '15px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('Tinggimoncong, ' + dateStr, W - 220, sigY);
+            ctx.fillText('Guru Pengampu Informatika,', W - 220, sigY + 25);
+
+            // Stylized Teacher Signature SVG/Draw
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(W - 280, sigY + 70);
+            ctx.bezierCurveTo(W - 250, sigY + 40, W - 200, sigY + 100, W - 160, sigY + 55);
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 18px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('Syarifuddin, S. Pd., M. Si.', W - 220, sigY + 115);
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(W - 320, sigY + 122);
+            ctx.lineTo(W - 120, sigY + 122);
+            ctx.stroke();
+
+            // Footer note
+            ctx.fillStyle = '#475569';
+            ctx.font = '12px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('Sertifikat ini diterbitkan secara otomatis melalui LKPD Interaktif Informatika.', W / 2, H - 50);
+        }
+
+        function downloadCertificatePNG() {
+            const canvas = document.getElementById('certCanvas');
+            const cleanNama = currentUser.nama.replace(/[^a-zA-Z0-9]/g, '_');
+            const fileName = `Sertifikat_${cleanNama}_GerbangLogikaDasar_Percobaan${currentUser.attempt}.png`;
+
+            const image = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = image;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function printCertificate() {
+            const canvas = document.getElementById('certCanvas');
+            const dataUrl = canvas.toDataURL('image/png');
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Cetak Sertifikat - ${currentUser.nama}</title>
+                    <style>
+                        body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #000; }
+                        img { max-width: 100%; max-height: 100%; }
+                    </style>
+                </head>
+                <body>
+                    <img src="${dataUrl}" onload="window.print(); window.close();" />
+                </body>
+                </html>
+            `);
+            win.document.close();
+        }
+
+        function retakeLKPD() {
+            currentUser.attempt += 1;
+            saveUserData();
+
+            // Reset Answers
+            userAnswers = {};
+            currentQuestionIdx = 0;
+
+            // Shuffle questions or options
+            shuffleArray(MASTER_QUESTIONS);
+
+            switchView('viewDashboard');
+            renderActivityNavTabs();
+            renderQuestion();
+            updateProgressStats();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function showCustomModal(title, bodyHtml) {
+            document.getElementById('modalTitle').querySelector('span').innerText = title;
+            document.getElementById('modalBody').innerHTML = bodyHtml;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+        function closeCustomModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+
+        function openHistoryModal() {
+            let history = [];
+            try {
+                history = JSON.parse(localStorage.getItem('lkpd_logic_gate_history') || '[]');
+            } catch (e) {}
+
+            if (history.length === 0) {
+                showCustomModal("Riwayat Pengerjaan", "<p class='text-center py-4 text-slate-400'>Belum ada riwayat pengerjaan LKPD yang tersimpan.</p>");
+                return;
+            }
+
+            let tableHtml = `
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-800 text-slate-300 font-mono">
+                                <th class="p-2 border border-slate-700">Perc.</th>
+                                <th class="p-2 border border-slate-700">Tanggal</th>
+                                <th class="p-2 border border-slate-700">Benar</th>
+                                <th class="p-2 border border-slate-700">Nilai</th>
+                                <th class="p-2 border border-slate-700">Predikat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            history.forEach(h => {
+                tableHtml += `
+                    <tr class="border-b border-slate-800 text-slate-300 hover:bg-slate-800/40 font-mono">
+                        <td class="p-2 border border-slate-800 font-bold text-electric">#${h.attempt}</td>
+                        <td class="p-2 border border-slate-800 text-[11px] text-slate-400">${h.date}</td>
+                        <td class="p-2 border border-slate-800 text-emerald-400">${h.correct}/25</td>
+                        <td class="p-2 border border-slate-800 font-bold text-amberAccent">${h.score}</td>
+                        <td class="p-2 border border-slate-800 text-[11px]">${h.predicate}</td>
+                    </tr>
+                `;
+            });
+
+            tableHtml += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <button onclick="clearHistory()" class="px-3 py-1.5 bg-red-600/20 text-red-400 border border-red-600/30 rounded-lg text-xs hover:bg-red-600/30">
+                        🗑️ Reset Riwayat
+                    </button>
+                </div>
+            `;
+
+            showCustomModal("📊 Riwayat Pengerjaan LKPD", tableHtml);
+        }
+
+        function clearHistory() {
+            if (confirm("Apakah Anda yakin ingin menghapus seluruh riwayat pengerjaan?")) {
+                localStorage.removeItem('lkpd_logic_gate_history');
+                closeCustomModal();
+                showCustomModal("Riwayat Dihapus", "Riwayat pengerjaan telah berhasil dibersihkan.");
+                document.getElementById('dispBestScore').innerText = "0 / 100";
+            }
+        }
+    </script>
+</body>
+</html>
+```
