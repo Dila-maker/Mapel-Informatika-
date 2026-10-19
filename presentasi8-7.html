@@ -1,0 +1,1110 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Sistem Jaringan Komputer & Internet - SMPN 1 Tinggimoncong</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandPink: '#FCA3FF',
+                        brandCyan: '#8FF6FF',
+                        brandDark: '#0d061f',
+                        brandCard: '#1E113A',
+                        brandAccent: '#7000FF'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        fun: ['Fredoka', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d061f 0%, #1a0b36 50%, #0f172a 100%);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(30, 17, 58, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(143, 246, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glow-text {
+            text-shadow: 0 0 15px rgba(252, 163, 255, 0.6), 0 0 30px rgba(143, 246, 255, 0.4);
+        }
+        .glow-box {
+            box-shadow: 0 0 25px rgba(112, 0, 255, 0.4), inset 0 0 15px rgba(143, 246, 255, 0.2);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+        .pulse-glow {
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #120826;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7000FF;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brandCyan selection:text-brandDark">
+
+    <!-- Top Presentation Header -->
+    <header class="glass-panel sticky top-0 z-50 px-6 py-3 flex items-center justify-between border-b border-white/10">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="goToView('map')">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brandAccent to-brandCyan flex items-center justify-center text-brandDark font-bold text-xl shadow-lg">
+                <i class="fa-solid fa-network-wired"></i>
+            </div>
+            <div>
+                <h1 class="font-fun font-bold text-base md:text-lg text-brandCyan tracking-wide">SMPN 1 TINGGIMONCONG</h1>
+                <p class="text-xs text-brandPink">Informatika Kelas 7 | Guru: Syarifuddin, S. Pd., M. Si.</p>
+            </div>
+        </div>
+
+        <!-- Center: Slide / Chapter Indicator -->
+        <div id="header-indicator" class="hidden md:flex items-center space-x-2 bg-black/40 px-4 py-1.5 rounded-full border border-white/10 text-xs font-semibold">
+            <span id="current-chapter-title" class="text-brandPink">Gerbang Utama</span>
+            <span class="text-gray-500">|</span>
+            <span id="slide-dots" class="flex space-x-1.5">
+                <span class="w-2 h-2 rounded-full bg-brandCyan"></span>
+            </span>
+        </div>
+
+        <!-- Right Controls -->
+        <div class="flex items-center space-x-2">
+            <button onclick="goToView('map')" title="Peta Petualangan" class="px-3 py-2 rounded-xl bg-purple-900/50 hover:bg-purple-800 text-brandCyan border border-brandCyan/30 text-xs font-semibold transition flex items-center space-x-1">
+                <i class="fa-solid fa-map"></i> <span class="hidden sm:inline">Peta</span>
+            </button>
+            <button onclick="toggleFullScreen()" title="Fullscreen" class="px-3 py-2 rounded-xl bg-purple-900/50 hover:bg-purple-800 text-brandPink border border-brandPink/30 text-xs font-semibold transition">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="main-container" class="flex-grow flex flex-col items-center justify-center p-4 md:p-6 max-w-6xl mx-auto w-full relative">
+        <!-- Dynamically injected views will appear here -->
+    </main>
+
+    <!-- Bottom Presentation Control Bar -->
+    <footer id="bottom-controls" class="glass-panel px-6 py-3 flex items-center justify-between border-t border-white/10 hidden">
+        <button onclick="prevSlide()" id="btn-prev" class="px-5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold flex items-center space-x-2 transition border border-white/10 text-sm">
+            <i class="fa-solid fa-arrow-left"></i> <span>Sebelumnya</span>
+        </button>
+        <div id="quick-status" class="text-xs text-gray-300 font-mono hidden md:block">
+            Gunakan tombol ← → pada keyboard atau tombol navigasi di samping
+        </div>
+        <button onclick="nextSlide()" id="btn-next" class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-bold flex items-center space-x-2 transition shadow-lg text-sm">
+            <span>Berikutnya</span> <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </footer>
+
+    <!-- Custom Modal Dialog (Instead of alert) -->
+    <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden">
+        <div class="glass-panel p-6 rounded-3xl max-w-md w-full mx-4 border border-brandCyan/40 text-center shadow-2xl relative">
+            <div id="modal-icon" class="w-16 h-16 rounded-full bg-brandCyan/20 text-brandCyan flex items-center justify-center text-3xl mx-auto mb-4 border border-brandCyan/40">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 id="modal-title" class="text-xl font-fun font-bold text-white mb-2">Informasi</h3>
+            <p id="modal-message" class="text-gray-300 text-sm mb-6 leading-relaxed">Pesan interaktif.</p>
+            <button onclick="closeModal()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-brandAccent to-brandCyan text-brandDark font-bold hover:opacity-90 transition shadow-lg">
+                Mengerti / Lanjutkan
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let currentView = 'welcome'; 
+        let currentChapterIndex = 0; 
+        let currentSlideIndex = 0;
+
+        // Chapter definitions corresponding to curriculum & custom interactive games
+        const chapters = [
+            {
+                id: 1,
+                title: "Bab 1: Perangkat Keras & Perangkat Lunak",
+                icon: "💻",
+                color: "from-purple-600 to-pink-600",
+                slides: [
+                    {
+                        type: "material",
+                        title: "Mengenal Perangkat Keras (Hardware)",
+                        content: "Perangkat keras adalah komponen fisik komputer yang dapat dilihat dan diraba. Contohnya: <b>CPU, Monitor, Keyboard, Mouse, dan Harddisk</b>. Tanpa perangkat keras, komputer hanyalah benda mati."
+                    },
+                    {
+                        type: "material",
+                        title: "Mengenal Perangkat Lunak (Software)",
+                        content: "Perangkat lunak adalah program atau sekumpulan instruksi yang mengarahkan komputer untuk bekerja. Contohnya: <b>Sistem Operasi (Windows, Android), Browser (Chrome), dan Aplikasi Pengolah Kata</b>."
+                    },
+                    {
+                        type: "game-memory",
+                        title: "🎮 Game Mini: Tebak Hardware & Software",
+                        subtitle: "Tentukan apakah perangkat di bawah ini termasuk Keras (Hardware) atau Lunak (Software)!"
+                    },
+                    {
+                        type: "quiz",
+                        title: "🎯 Contoh Soal Interaktif — Bab 1",
+                        question: "Manakah di bawah ini yang merupakan contoh perangkat lunak (software) sistem operasi?",
+                        options: [
+                            "A. Monitor Komputer",
+                            "B. Windows 11 / Android",
+                            "C. Keyboard Mekanik",
+                            "D. Flashdisk USB"
+                        ],
+                        correct: 1,
+                        explanation: "Windows 11 dan Android adalah sistem operasi utama yang mengelola seluruh sumber daya komputer dan smartphone."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Bab 2: Interaksi & Topologi Jaringan",
+                icon: "🛜",
+                color: "from-blue-600 to-cyan-600",
+                slides: [
+                    {
+                        type: "material",
+                        title: "Bagaimana Perangkat Saling Berkomunikasi?",
+                        content: "Komputer saling berinteraksi mengirim dan menerima data melalui jalur kabel atau gelombang radio. Contohnya laptop mengirim dokumen ke printer jaringan atau berbagi file antar komputer lab."
+                    },
+                    {
+                        type: "game-circuit",
+                        title: "🔌 Game 1: Circuit & Wire Connection Puzzle (Hubungkan Jaringan)",
+                        subtitle: "Putar atau aktifkan jalur kabel antar perangkat (PC ➡ Switch ➡ Router ➡ Server) agar jaringan terhubung sempurna!"
+                    },
+                    {
+                        type: "quiz",
+                        title: "🎯 Contoh Soal Interaktif — Bab 2",
+                        question: "Apa fungsi utama perangkat Switch atau Hub dalam sebuah jaringan komputer lokal?",
+                        options: [
+                            "A. Menyambungkan banyak komputer dalam satu jaringan lokal (LAN)",
+                            "B. Memasak makanan di laboratorium",
+                            "C. Menghapus virus secara otomatis",
+                            "D. Memperberat pengiriman data"
+                        ],
+                        correct: 0,
+                        explanation: "Switch menghubungkan berbagai perangkat komputer dalam satu jaringan lokal (LAN) sehingga dapat saling bertukar data."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Bab 3: Kodifikasi Data (Biner & Desimal)",
+                icon: "🔢",
+                color: "from-emerald-600 to-teal-600",
+                slides: [
+                    {
+                        type: "material",
+                        title: "Bahasa Komputer: Angka Biner (0 dan 1)",
+                        content: "Komputer hanya mengerti dua keadaan arus listrik: Nyala (1) dan Mati (0). Semua huruf, gambar, dan video diterjemahkan ke dalam kode angka <b>Biner (Basis 2)</b>."
+                    },
+                    {
+                        type: "simulation-binary",
+                        title: "🔬 Lab Interaktif: Konversi Biner ke Desimal",
+                        subtitle: "Uji coba mengonversi bilangan biner (misal: 1011) ke angka desimal bersama seluruh kelas!"
+                    },
+                    {
+                        type: "puzzle",
+                        title: "🧩 Puzzle Misteri: Tebak Kode Biner Huruf",
+                        subtitle: "Pecahkan kode biner rahasia yang dikirimkan melalui jaringan komputer!"
+                    },
+                    {
+                        type: "quiz",
+                        title: "🎯 Contoh Soal Interaktif — Bab 3",
+                        question: "Berapa nilai desimal dari bilangan biner 3-bit: 101?",
+                        options: [
+                            "A. 3",
+                            "B. 5 (4 + 0 + 1)",
+                            "C. 6",
+                            "D. 7"
+                        ],
+                        correct: 1,
+                        explanation: "Biner 101 dihitung dari kanan: (1 x 2⁰ = 1) + (0 x 2¹ = 0) + (1 x 2² = 4) = 5 dalam desimal."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Bab 4: Internet, Jaringan Lokal & Paket Data",
+                icon: "🌐",
+                color: "from-amber-600 to-orange-600",
+                slides: [
+                    {
+                        type: "material",
+                        title: "Jaringan Lokal (LAN) vs Internet (WAN)",
+                        content: "<b>Jaringan Lokal (LAN)</b> menghubungkan komputer dalam satu area terbatas (lab sekolah/rumah). <b>Internet</b> adalah jaringan komputer raksasa global yang menghubungkan miliaran perangkat di seluruh dunia."
+                    },
+                    {
+                        type: "game-packet",
+                        title: "🚀 Game 2: Paket Data Express (Packet Delivery Simulator)",
+                        subtitle: "Kendalikan paket data melewati rute router yang benar menuju server tujuan sambil menghindari rintangan hacker!"
+                    },
+                    {
+                        type: "game-sorting",
+                        title: "📦 Game 3: Drag & Drop Sorting (Kabel vs Nirkabel)",
+                        subtitle: "Kelompokkan perangkat dan media transmisi ke keranjang yang tepat: Kabel (Wired) atau Nirkabel (Wireless)!"
+                    },
+                    {
+                        type: "quiz",
+                        title: "🎯 Contoh Soal Interaktif — Bab 4",
+                        question: "Bagaimana cara internet mengirimkan file atau video berukuran besar antar negara?",
+                        options: [
+                            "A. Dikirim utuh sekali jalan tanpa proses",
+                            "B. Dipecah menjadi paket-paket data kecil melalui router",
+                            "C. Dikirim lewat kurir motor pos",
+                            "D. Disimpan di dalam flashdisk udara"
+                        ],
+                        correct: 1,
+                        explanation: "Data di internet dipecah menjadi paket-paket kecil yang dikirim secara terpisah melalui router dan disatukan kembali di tujuan."
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Bab 5: Koneksi Nirkabel & Enkripsi Data",
+                icon: "📡",
+                color: "from-rose-600 to-purple-600",
+                slides: [
+                    {
+                        type: "material",
+                        title: "Konektivitas Nirkabel (Wi-Fi & Bluetooth)",
+                        content: "Koneksi nirkabel memanfaatkan gelombang radio. <b>Wi-Fi</b> menghubungkan perangkat ke internet jarak menengah/luas, sedangkan <b>Bluetooth</b> untuk transfer data jarak dekat (HP ke speaker)."
+                    },
+                    {
+                        type: "studio-encrypt",
+                        title: "🎬 Studio Kreatif: Enkripsi Pesan Rahasia",
+                        subtitle: "Simulasikan cara menyandikan teks pesan biasa menjadi kode aman (Cipher) agar tidak dibaca peretas."
+                    },
+                    {
+                        type: "quiz",
+                        title: "🎯 Contoh Soal Interaktif — Bab 5",
+                        question: "Apa fungsi utama dari enkripsi data saat kita mengirim pesan melalui internet?",
+                        options: [
+                            "A. Agar ukuran file menjadi sangat besar",
+                            "B. Melindungi kerahasiaan data agar aman dari peretas",
+                            "C. Mempercepat koneksi internet",
+                            "D. Menghapus virus komputer"
+                        ],
+                        correct: 1,
+                        explanation: "Enkripsi mengamankan data dengan mengubahnya menjadi sandi rahasia yang hanya bisa dibuka dengan kunci dekripsi yang benar."
+                    }
+                ]
+            }
+        ];
+
+        // Boss Battle challenges database
+        const bossChallenges = [
+            {
+                q: "1. Komponen fisik komputer yang dapat disentuh dan dilihat disebut...",
+                options: ["Software", "Hardware", "Brainware", "Shareware"],
+                correct: 1
+            },
+            {
+                q: "2. Berapa nilai desimal dari bilangan biner 1010?",
+                options: ["8", "10", "12", "15"],
+                correct: 1
+            },
+            {
+                q: "3. Perangkat jaringan apa yang berfungsi menghubungkan jaringan lokal ke internet global?",
+                options: ["Router", "Kabel UTP", "Printer", "Mouse"],
+                correct: 0
+            },
+            {
+                q: "4. Teknologi nirkabel jarak dekat yang sering dipakai untuk menghubungkan HP ke speaker tanpa kabel adalah...",
+                options: ["Bluetooth", "Fiber Optic", "Kabel LAN", "Satelit GPS"],
+                correct: 0
+            },
+            {
+                q: "5. Proses mengacak pesan teks agar aman dari pihak tak berwenang disebut...",
+                options: ["Kompresi", "Enkripsi", "Download", "Streaming"],
+                correct: 1
+            },
+            {
+                q: "6. Mengapa data digital di internet harus dipecah menjadi paket-paket kecil?",
+                options: ["Agar lebih mudah dan efisien melalui router", "Agar file rusak", "Supaya kuota habis", "Tidak ada gunanya"],
+                correct: 0
+            }
+        ];
+        let currentBossIndex = 0;
+        let bossScore = 0;
+
+        // Initialize App on Load
+        window.onload = function() {
+            goToView('welcome');
+            setupKeyboardListeners();
+        };
+
+        // View Management
+        function goToView(viewName, chapterIdx = 0) {
+            currentView = viewName;
+            currentChapterIndex = chapterIdx;
+            currentSlideIndex = 0;
+            render();
+        }
+
+        function startChapter(idx) {
+            currentChapterIndex = idx;
+            currentSlideIndex = 0;
+            currentView = 'chapter';
+            render();
+        }
+
+        function nextSlide() {
+            if (currentView === 'chapter') {
+                const chap = chapters[currentChapterIndex];
+                if (currentSlideIndex < chap.slides.length - 1) {
+                    currentSlideIndex++;
+                    render();
+                } else {
+                    if (currentChapterIndex < chapters.length - 1) {
+                        showModal("Hebat! 🎉", `Bab ${currentChapterIndex + 1} selesai! Mari lanjut ke petualangan berikutnya.`, "fa-solid fa-flag-checkered");
+                        goToView('map');
+                    } else {
+                        goToView('boss');
+                    }
+                }
+            } else if (currentView === 'boss') {
+                if (currentBossIndex < bossChallenges.length - 1) {
+                    currentBossIndex++;
+                    render();
+                } else {
+                    goToView('celebration');
+                }
+            }
+        }
+
+        function prevSlide() {
+            if (currentView === 'chapter') {
+                if (currentSlideIndex > 0) {
+                    currentSlideIndex--;
+                    render();
+                } else {
+                    goToView('map');
+                }
+            } else if (currentView === 'map') {
+                goToView('welcome');
+            } else if (currentView === 'boss') {
+                if (currentBossIndex > 0) {
+                    currentBossIndex--;
+                    render();
+                } else {
+                    goToView('map');
+                }
+            }
+        }
+
+        // Keyboard Navigation
+        function setupKeyboardListeners() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                }
+            });
+        }
+
+        // Fullscreen Toggle
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    showModal("Info", "Mode fullscreen aktif.", "fa-solid fa-expand");
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Modal Helper
+        function showModal(title, message, iconClass = "fa-solid fa-circle-check") {
+            const mTitle = document.getElementById('modal-title');
+            const mMsg = document.getElementById('modal-message');
+            const mIcon = document.getElementById('modal-icon');
+            if (mTitle) mTitle.innerText = title;
+            if (mMsg) mMsg.innerHTML = message;
+            if (mIcon) mIcon.innerHTML = `<i class="${iconClass}"></i>`;
+            const modalEl = document.getElementById('custom-modal');
+            if (modalEl) modalEl.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            const modalEl = document.getElementById('custom-modal');
+            if (modalEl) modalEl.classList.add('hidden');
+        }
+
+        // Core Render Function
+        function render() {
+            const container = document.getElementById('main-container');
+            const headerIndicator = document.getElementById('header-indicator');
+            const bottomControls = document.getElementById('bottom-controls');
+
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (currentView === 'welcome') {
+                if (headerIndicator) headerIndicator.classList.add('hidden');
+                if (bottomControls) bottomControls.classList.add('hidden');
+                container.innerHTML = renderWelcomeView();
+            } else if (currentView === 'map') {
+                if (headerIndicator) headerIndicator.classList.remove('hidden');
+                const cTitle = document.getElementById('current-chapter-title');
+                const sDots = document.getElementById('slide-dots');
+                if (cTitle) cTitle.innerText = "Peta Petualangan Utama";
+                if (sDots) sDots.innerHTML = '<span class="text-xs text-brandCyan font-semibold">Pilih Wilayah Bab</span>';
+                if (bottomControls) bottomControls.classList.add('hidden');
+                container.innerHTML = renderMapView();
+            } else if (currentView === 'chapter') {
+                if (headerIndicator) headerIndicator.classList.remove('hidden');
+                if (bottomControls) bottomControls.classList.remove('hidden');
+                const chap = chapters[currentChapterIndex];
+                const cTitle = document.getElementById('current-chapter-title');
+                if (cTitle) cTitle.innerText = chap.title;
+                
+                let dotsHtml = '';
+                chap.slides.forEach((s, idx) => {
+                    let active = idx === currentSlideIndex ? 'bg-brandCyan w-6' : 'bg-white/30 w-2';
+                    dotsHtml += `<span class="h-2 rounded-full transition-all duration-300 ${active}"></span>`;
+                });
+                const sDots = document.getElementById('slide-dots');
+                if (sDots) sDots.innerHTML = dotsHtml;
+
+                container.innerHTML = renderChapterSlideView(chap, currentSlideIndex);
+                
+                // Initialize specific game scripts if slide requires it
+                const slide = chap.slides[currentSlideIndex];
+                if (slide.type === 'game-circuit') {
+                    setTimeout(initCircuitGame, 100);
+                } else if (slide.type === 'game-packet') {
+                    setTimeout(initPacketGame, 100);
+                }
+            } else if (currentView === 'boss') {
+                if (headerIndicator) headerIndicator.classList.remove('hidden');
+                const cTitle = document.getElementById('current-chapter-title');
+                const sDots = document.getElementById('slide-dots');
+                if (cTitle) cTitle.innerText = "⚔️ Arena: Boss Battle (Ujian Akhir)";
+                if (sDots) sDots.innerHTML = `<span class="text-xs text-brandPink font-semibold">Soal ${currentBossIndex + 1} dari ${bossChallenges.length}</span>`;
+                if (bottomControls) bottomControls.classList.add('hidden');
+                container.innerHTML = renderBossView();
+            } else if (currentView === 'celebration') {
+                if (headerIndicator) headerIndicator.classList.add('hidden');
+                if (bottomControls) bottomControls.classList.add('hidden');
+                container.innerHTML = renderCelebrationView();
+            }
+        }
+
+        // View 1: Welcome
+        function renderWelcomeView() {
+            return `
+                <div class="text-center max-w-3xl mx-auto py-10 px-4 floating">
+                    <div class="inline-flex items-center space-x-3 px-5 py-2 rounded-full bg-brandPink/10 border border-brandPink/30 text-brandPink mb-6 text-sm font-semibold">
+                        <span>🏫 SMPN 1 Tinggimoncong</span>
+                        <span>•</span>
+                        <span>Informatika Kelas 7</span>
+                    </div>
+                    <h1 class="text-3xl md:text-5xl font-extrabold font-fun mb-6 glow-text leading-tight">
+                        🌟 PETUALANGAN SISTEM JARINGAN KOMPUTER & INTERNET 🌟
+                    </h1>
+                    <p class="text-gray-300 text-base md:text-lg mb-8 leading-relaxed">
+                        Media Pembelajaran Interaktif Bersama Guru: <span class="text-brandCyan font-bold">Syarifuddin, S. Pd., M. Si.</span>
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4 text-3xl mb-8">
+                        <span class="p-3 bg-white/5 rounded-2xl border border-white/10">🛜</span>
+                        <span class="p-3 bg-white/5 rounded-2xl border border-white/10">🌐</span>
+                        <span class="p-3 bg-white/5 rounded-2xl border border-white/10">💻</span>
+                        <span class="p-3 bg-white/5 rounded-2xl border border-white/10">📡</span>
+                        <span class="p-3 bg-white/5 rounded-2xl border border-white/10">📳</span>
+                    </div>
+                    <button onclick="goToView('map')" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-brandPink to-brandCyan text-brandDark font-extrabold text-lg hover:scale-105 transition shadow-2xl flex items-center space-x-3 mx-auto">
+                        <i class="fa-solid fa-rocket"></i>
+                        <span>MULAI PETUALANGAN KELAS</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        // View 2: Map
+        function renderMapView() {
+            let chaptersHtml = '';
+            chapters.forEach((c, idx) => {
+                chaptersHtml += `
+                    <div onclick="startChapter(${idx})" class="glass-panel p-5 rounded-3xl border border-white/10 hover:border-brandCyan cursor-pointer transition transform hover:-translate-y-1.5 flex items-center space-x-4 group glow-box">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr ${c.color} flex items-center justify-center text-2xl text-white shadow-lg flex-shrink-0">
+                            ${c.icon}
+                        </div>
+                        <div class="flex-grow">
+                            <span class="text-xs font-semibold text-brandCyan uppercase tracking-wider">Bab ${idx + 1}</span>
+                            <h3 class="text-lg font-fun font-bold text-white group-hover:text-brandPink transition">${c.title}</h3>
+                            <p class="text-xs text-gray-300 mt-0.5">Materi & Game Interaktif</p>
+                        </div>
+                        <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-brandCyan group-hover:text-brandDark transition">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                    </div>
+                `;
+            });
+
+            return `
+                <div class="w-full max-w-4xl py-4">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl md:text-3xl font-fun font-bold text-brandCyan mb-1">🗺️ Peta Wilayah Petualangan</h2>
+                        <p class="text-gray-300 text-sm">Pilih bab materi untuk memulai pembelajaran interaktif bersama di kelas.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        ${chaptersHtml}
+                        <div onclick="goToView('boss')" class="glass-panel p-5 rounded-3xl border border-brandPink/40 hover:border-brandPink cursor-pointer transition transform hover:-translate-y-1.5 flex items-center space-x-4 group bg-gradient-to-r from-purple-900/40 to-pink-900/40">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-yellow-500 to-red-600 flex items-center justify-center text-2xl text-white shadow-lg flex-shrink-0">
+                                🏆
+                            </div>
+                            <div class="flex-grow">
+                                <span class="text-xs font-semibold text-brandPink uppercase tracking-wider">Ujian Akhir</span>
+                                <h3 class="text-lg font-fun font-bold text-white group-hover:text-brandCyan transition">Boss Battle Arena</h3>
+                                <p class="text-xs text-gray-300 mt-0.5">Uji pemahaman seluruh bab secara seru!</p>
+                            </div>
+                            <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-brandPink group-hover:text-brandDark transition">
+                                <i class="fa-solid fa-sword"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // View 3: Chapter Slide View
+        function renderChapterSlideView(chap, slideIdx) {
+            const slide = chap.slides[slideIdx];
+            let contentHtml = '';
+
+            if (slide.type === 'material') {
+                contentHtml = `
+                    <div class="glass-panel p-6 md:p-10 rounded-3xl border border-brandCyan/30 max-w-3xl w-full mx-auto shadow-2xl">
+                        <div class="inline-block px-4 py-1.5 rounded-full bg-brandCyan/20 text-brandCyan text-xs font-bold mb-4 uppercase tracking-wider">
+                            ${chap.title}
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-fun font-bold mb-6 text-white">${slide.title}</h2>
+                        <div class="text-gray-200 text-base md:text-lg leading-relaxed mb-6 bg-black/30 p-6 rounded-2xl border border-white/10">
+                            ${slide.content}
+                        </div>
+                        <div class="flex items-center space-x-3 text-xs text-brandPink">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span>Diskusikan bersama guru di depan kelas (20% Penjelasan & 80% Aktivitas).</span>
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === 'game-memory') {
+                contentHtml = `
+                    <div class="glass-panel p-6 md:p-8 rounded-3xl border border-brandPink/30 max-w-3xl w-full mx-auto text-center">
+                        <div class="inline-block px-4 py-1.5 rounded-full bg-pink-500/20 text-brandPink text-xs font-bold mb-3 uppercase tracking-wider">
+                            ${slide.title}
+                        </div>
+                        <p class="text-gray-300 text-sm mb-6">${slide.subtitle}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div onclick="checkGameChoice(this, 'hardware')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:bg-brandCyan/20 transition border border-white/10">
+                                <div class="text-3xl mb-2">🖨️</div>
+                                <div class="font-bold text-sm">Printer Komputer</div>
+                                <div class="text-xs text-gray-400 mt-1">Klik untuk Kategori</div>
+                            </div>
+                            <div onclick="checkGameChoice(this, 'software')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:bg-brandCyan/20 transition border border-white/10">
+                                <div class="text-3xl mb-2">🌐</div>
+                                <div class="font-bold text-sm">Google Chrome</div>
+                                <div class="text-xs text-gray-400 mt-1">Klik untuk Kategori</div>
+                            </div>
+                            <div onclick="checkGameChoice(this, 'hardware')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:bg-brandCyan/20 transition border border-white/10">
+                                <div class="text-3xl mb-2">⌨️</div>
+                                <div class="font-bold text-sm">Keyboard Mekanik</div>
+                                <div class="text-xs text-gray-400 mt-1">Klik untuk Kategori</div>
+                            </div>
+                        </div>
+                        <div id="game-feedback" class="text-sm font-semibold text-brandCyan h-8">Klik salah satu kartu perangkat di atas!</div>
+                    </div>
+                `;
+            } else if (slide.type === 'game-circuit') {
+                // Game 1: Circuit & Wire Connection Puzzle
+                contentHtml = `
+                    <div class="glass-panel p-6 md:p-8 rounded-3xl border border-brandCyan/30 max-w-3xl w-full mx-auto text-center">
+                        <div class="inline-block px-4 py-1.5 rounded-full bg-cyan-500/20 text-brandCyan text-xs font-bold mb-3 uppercase tracking-wider">
+                            ${slide.title}
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4">${slide.subtitle}</p>
+                        <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-6 bg-black/40 p-4 rounded-2xl border border-white/10" id="circuit-grid">
+                            <!-- Generated dynamically via JS -->
+                        </div>
+                        <div class="flex justify-center gap-3">
+                            <button onclick="rotateCircuitTiles()" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition shadow">
+                                🔄 Putar Jalur Kabel
+                            </button>
+                            <button onclick="verifyCircuit()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brandAccent to-brandCyan text-brandDark font-bold text-xs transition shadow">
+                                ⚡ Uji Koneksi Jaringan
+                            </button>
+                        </div>
+                        <div id="circuit-status" class="text-xs font-semibold text-yellow-400 mt-3 h-6">Status: Kabel belum terhubung sempurna. Putar ubin!</div>
+                    </div>
+                `;
+            } else if (slide.type === 'simulation-binary') {
+                contentHtml = `
+                    <div class="glass-panel p-6 md:p-8 rounded-3xl border border-emerald-500/30 max-w-3xl w-full mx-auto text-center">
+                        <div class="inline-block px-4 py-1.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold mb-3 uppercase tracking-wider">
+                            ${slide.title}
+                        </div>
+                        <p class="text-gray-300 text-sm mb-6">${slide.subtitle}</p>
+                        <div class="flex justify-center items-center space-x-2 mb-6">
+                            <input id="binary-input" type="text" maxlength="4" value="1011" class="px-4 py-3 rounded-2xl bg-black/50 border border-emerald-400/50 text-center text-xl font-mono text-emerald-300 w-36 outline-none focus:border-brandCyan">
+                            <button onclick="convertBinary()" class="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition">
+                                Konversi 🔢
+                            </button>
+                        </div>
+                        <div id="binary-result" class="text-lg font-bold text-brandCyan bg-black/30 p-4 rounded-2xl border border-white/10">
+                            Hasil Desimal: 11
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === 'puzzle') {
+                contentHtml = `
+                    <div class="glass-panel p-6 md:p-8 rounded-3xl border border-brandCyan/30 max-w-3xl w-full mx-auto text-center">
+                        <div class="inline-block px-4 py-1.5 rounded-full bg-brandCyan/20 text-brandCyan text-xs font-bold mb-3 uppercase tracking-wider">
+                            ${slide.title}
+                        </div>
+                        <p class="text-gray-300 text-sm mb-6">${slide.subtitle}</p>
+                        <div class="bg-black/40 p-6 rounded-2xl border border-white/10 mb-6">
+                            <div class="text-2xl font-mono text-brandPink mb-2">01001001 01010011 01010100</div>
+                            <p class="text-xs text-gray-400">Pecahkan kode ASCII di atas menjadi huruf alphabet!</p>
+                        </div>
+                        <button onclick="showModal('Pecahan Misteri! 🧩', 'Kode biner tersebut merepresentasikan kata: <b>I S T</b> (Informatika Sistem Terpadu SMPN 1 Tinggimoncong). Hebat!', 'fa-solid fa-puzzle-piece')" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-sm hover:scale-105 transition">
+                            🔍 Buka Kunci Jawaban
+                        </button>
+                    </div>
+                `;
+            } else if (slide.type === 'game-packet') {
+                // Game 2: Packet Delivery Express (Arcade Simulator)
+                contentHtml = `
+                    <div class="glass-panel p-6 rounded-3xl border border-amber-500/30 max-w-3xl w-full mx-auto text-center">
+                        <div class="inline-block px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold mb-2 uppercase tracking-wider">
+                            ${slide.title}
+                        </div>
+                        <p class="text-gray-300 text-xs mb-3">${slide.subtitle}</p>
+                        <div class="relative bg-black/60 rounded-2xl border border-amber-400/40 overflow-hidden mb-4 mx-auto w-full max-w-lg h-56 flex flex-col items-center justify-center">
+                            <canvas id="packetCanvas" width="480" height="200" class="w-full h-full block cursor-pointer"></canvas>
+                        </div>
+                        <div class="flex justify-center gap-3">
+                            <button onclick="movePacketUp()" class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs transition">⬆️ Pindah Jalur Atas</button>
+                            <button onclick="movePacketDown()" class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs transition">⬇️ Pindah Jalur Bawah</button>
+                            <button onclick="startPacketGame()" class="px-5 py-2.5 rounded-xl bg-brandCyan text-brandDark font-bold text-xs transition">▶️ Mulai / Reset</button>
+                        </div>
+                        <div id="packet-score" class="text-xs font-mono text-brandCyan mt-2">Skor Paket Terkirim: 0 | Hindari Malware (👾)!</div>
+                    </div>
+                `;
+            } else if (slide.type === 'game-sorting') {
+                // Game 3: Drag-and-Drop Sorting (Kabel vs Nirkabel)
+                contentHtml = `
+                    <div class="glass-panel p-6 rounded-3xl border border-brandPink/30 max-w-3xl w-full mx-auto text-center">
+                        <div class="inline-block px-4 py-1.5 rounded-full bg-pink-500/20 text-brandPink text-xs font-bold mb-2 uppercase tracking-wider">
+                            ${slide.title}
+                        </div>
+                        <p class="text-gray-300 text-xs mb-4">${slide.subtitle}</p>
+                        <div id="sorting-card-container" class="bg-black/40 p-4 rounded-2xl border border-white/10 mb-4 min-h-[90px] flex items-center justify-center">
+                            <div id="current-sort-item" class="text-lg font-bold text-brandCyan bg-purple-900/60 px-6 py-3 rounded-xl border border-brandCyan/40 shadow">
+                                🔌 Kabel UTP (LAN)
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 max-w-md mx-auto mb-3">
+                            <button onclick="sortItemAnswer('wired')" class="p-4 rounded-2xl bg-blue-900/60 hover:bg-blue-800 text-brandCyan border border-blue-400/40 font-bold text-sm transition">
+                                🔌 Keranjang Kabel (Wired)
+                            </button>
+                            <button onclick="sortItemAnswer('wireless')" class="p-4 rounded-2xl bg-pink-900/60 hover:bg-pink-800 text-brandPink border border-pink-400/40 font-bold text-sm transition">
+                                📶 Keranjang Nirkabel (Wireless)
+                            </button>
+                        </div>
+                        <div id="sorting-score" class="text-xs font-mono text-yellow-300">Skor Benar: 0 / 5 | Ketuk keranjang yang sesuai!</div>
+                    </div>
+                `;
+            } else if (slide.type === 'studio-encrypt') {
+                contentHtml = `
+                    <div class="glass-panel p-6 md:p-8 rounded-3xl border border-rose-500/30 max-w-3xl w-full mx-auto text-center">
+                        <div class="inline-block px-4 py-1.5 rounded-full bg-rose-500/20 text-rose-400 text-xs font-bold mb-3 uppercase tracking-wider">
+                            ${slide.title}
+                        </div>
+                        <p class="text-gray-300 text-sm mb-6">${slide.subtitle}</p>
+                        <div class="flex flex-col gap-4 mb-6">
+                            <input id="plain-text" type="text" placeholder="Ketik pesan rahasia..." value="JaringanAman" class="px-4 py-3 rounded-2xl bg-black/50 border border-rose-400/50 text-center text-white outline-none">
+                            <button onclick="encryptText()" class="px-6 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm transition">
+                                Enkripsi Pesan 🔐
+                            </button>
+                        </div>
+                        <div id="encrypt-result" class="text-sm font-mono text-brandCyan bg-black/30 p-4 rounded-2xl border border-white/10">
+                            Hasil Sandi: [Klik Enkripsi untuk Mengacak Pesan]
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === 'quiz') {
+                let optionsHtml = '';
+                slide.options.forEach((opt, oIdx) => {
+                    optionsHtml += `
+                        <div onclick="checkQuizAnswer(${oIdx}, ${slide.correct}, '${slide.explanation}')" id="opt-${oIdx}" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:bg-brandCyan/20 transition border border-white/10 text-left text-sm font-medium">
+                            ${opt}
+                        </div>
+                    `;
+                });
+
+                contentHtml = `
+                    <div class="glass-panel p-6 md:p-8 rounded-3xl border border-brandCyan/30 max-w-3xl w-full mx-auto">
+                        <div class="inline-block px-4 py-1.5 rounded-full bg-brandCyan/20 text-brandCyan text-xs font-bold mb-3 uppercase tracking-wider">
+                            ${slide.title}
+                        </div>
+                        <h3 class="text-lg md:text-xl font-bold mb-5 text-white">${slide.question}</h3>
+                        <div class="grid grid-cols-1 gap-2.5 mb-5">
+                            ${optionsHtml}
+                        </div>
+                        <div id="quiz-feedback" class="text-sm font-semibold text-gray-300 h-8"></div>
+                    </div>
+                `;
+            }
+
+            return `<div class="w-full flex flex-col items-center justify-center py-4">${contentHtml}</div>`;
+        }
+
+        // --- Game 1: Circuit Puzzle Logic ---
+        let circuitTiles = [
+            { id: 0, icon: "💻", name: "Client PC", rotated: false },
+            { id: 1, icon: "🛜", name: "Switch LAN", rotated: true },
+            { id: 2, icon: "🌐", name: "Router Utama", rotated: false },
+            { id: 3, icon: "📡", name: "Access Point", rotated: true },
+            { id: 4, icon: "🖧", name: "Hub Lokal", rotated: true },
+            { id: 5, icon: "🖥️", name: "Server Cloud", rotated: false }
+        ];
+
+        function initCircuitGame() {
+            const grid = document.getElementById('circuit-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            circuitTiles.forEach((tile, i) => {
+                let statusColor = tile.rotated ? 'border-red-500/60 bg-red-950/30' : 'border-emerald-400/80 bg-emerald-950/30 glow-box';
+                let indicator = tile.rotated ? '🔴 Terputus' : '🟢 Terhubung';
+                grid.innerHTML += `
+                    <div onclick="toggleTile(${i})" class="glass-panel p-3 rounded-2xl cursor-pointer transition border ${statusColor} text-center flex flex-col items-center justify-center hover:scale-105">
+                        <div class="text-2xl mb-1">${tile.icon}</div>
+                        <div class="text-xs font-bold text-white">${tile.name}</div>
+                        <div class="text-[10px] mt-1 font-mono">${indicator}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleTile(idx) {
+            circuitTiles[idx].rotated = !circuitTiles[idx].rotated;
+            initCircuitGame();
+        }
+
+        function rotateCircuitTiles() {
+            circuitTiles.forEach(t => t.rotated = Math.random() < 0.5);
+            initCircuitGame();
+            const statusEl = document.getElementById('circuit-status');
+            if (statusEl) statusEl.innerText = "Status: Jalur diacak! Putar ubin yang merah menjadi hijau.";
+        }
+
+        function verifyCircuit() {
+            let allConnected = circuitTiles.every(t => !t.rotated);
+            const statusEl = document.getElementById('circuit-status');
+            if (allConnected) {
+                if (statusEl) statusEl.innerHTML = "<span class='text-emerald-400 font-bold'>🎉 Jaringan Sukses Terhubung Sempurna! Paket data siap mengalir ke internet.</span>";
+                showModal("Topologi Jaringan Berhasil! 🛜", "Seluruh perangkat (Client, Switch, Router, Server) telah terhubung tanpa ada kabel yang putus.", "fa-solid fa-network-wired");
+            } else {
+                if (statusEl) statusEl.innerHTML = "<span class='text-rose-400 font-bold'>⚠️ Masih ada lampu merah (kabel terputus). Ketuk ubin untuk memutarnya!</span>";
+            }
+        }
+
+        // --- Game 2: Packet Delivery Express (Arcade Simulator) ---
+        let packetGameInterval = null;
+        let packetPos = { x: 50, y: 100, lane: 1 }; // lane 0: top, 1: mid, 2: bot
+        let packetScore = 0;
+        let obstacles = [];
+
+        function startPacketGame() {
+            const canvas = document.getElementById('packetCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            packetScore = 0;
+            packetPos.lane = 1;
+            obstacles = [
+                { x: 250, lane: 0, speed: 2 },
+                { x: 380, lane: 2, speed: 2.5 }
+            ];
+
+            if (packetGameInterval) clearInterval(packetGameInterval);
+
+            packetGameInterval = setInterval(() => {
+                // Update obstacles
+                obstacles.forEach(obs => {
+                    obs.x -= 3;
+                    if (obs.x < -20) {
+                        obs.x = canvas.width + Math.random() * 100;
+                        obs.lane = Math.floor(Math.random() * 3);
+                        packetScore += 5;
+                    }
+                    // Collision check
+                    if (Math.abs(obs.x - packetPos.x) < 25 && obs.lane === packetPos.lane) {
+                        packetScore = Math.max(0, packetScore - 10);
+                        obs.x = canvas.width + 50; // reset on hit
+                    }
+                });
+
+                // Render Canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw lanes
+                ctx.strokeStyle = 'rgba(143, 246, 255, 0.2)';
+                ctx.lineWidth = 2;
+                [40, 100, 160].forEach(y => {
+                    ctx.beginPath();
+                    ctx.setLineDash([5, 5]);
+                    ctx.moveTo(20, y);
+                    ctx.lineTo(canvas.width - 20, y);
+                    ctx.stroke();
+                });
+
+                // Draw packet (Player)
+                let targetY = 40 + packetPos.lane * 60;
+                ctx.fillStyle = '#8FF6FF';
+                ctx.shadowColor = '#8FF6FF';
+                ctx.shadowBlur = 12;
+                ctx.fillRect(packetPos.x, targetY - 15, 30, 30);
+                ctx.fillStyle = '#120826';
+                ctx.font = '14px sans-serif';
+                ctx.fillText('📦', packetPos.x + 5, targetY + 5);
+
+                // Draw Malware (Obstacles)
+                ctx.shadowColor = '#FCA3FF';
+                obstacles.forEach(obs => {
+                    let obsY = 40 + obs.lane * 60;
+                    ctx.fillStyle = '#FCA3FF';
+                    ctx.fillRect(obs.x, obsY - 15, 26, 26);
+                    ctx.fillStyle = '#120826';
+                    ctx.fillText('👾', obs.x + 3, obsY + 5);
+                });
+                ctx.shadowBlur = 0;
+
+                const scoreEl = document.getElementById('packet-score');
+                if (scoreEl) scoreEl.innerText = `Skor Paket Terkirim: ${packetScore} | Hindari Malware (👾)!`;
+            }, 30);
+        }
+
+        function movePacketUp() {
+            if (packetPos.lane > 0) packetPos.lane--;
+        }
+
+        function movePacketDown() {
+            if (packetPos.lane < 2) packetPos.lane++;
+        }
+
+        // --- Game 3: Sorting Game (Kabel vs Nirkabel) ---
+        const sortingItems = [
+            { name: "🔌 Kabel UTP (LAN RJ45)", type: "wired" },
+            { name: "📶 Wi-Fi Router Rumah", type: "wireless" },
+            { name: "📡 Bluetooth Mouse & Speaker", type: "wireless" },
+            { name: "🧵 Kabel Serat Optik (Fiber Optic)", type: "wired" },
+            { name: "📳 Hotspot Seluler HP (Tethering)", type: "wireless" },
+            { name: "🔗 Kabel Coaxial TV", type: "wired" }
+        ];
+        let sortingIndex = 0;
+        let sortingCorrectCount = 0;
+
+        function sortItemAnswer(chosenType) {
+            const current = sortingItems[sortingIndex];
+            const scoreEl = document.getElementById('sorting-score');
+            const itemEl = document.getElementById('current-sort-item');
+
+            if (current.type === chosenType) {
+                sortingCorrectCount++;
+                if (scoreEl) scoreEl.innerHTML = `<span class='text-emerald-400'>✅ Benar! Kategori tepat.</span> Skor: ${sortingCorrectCount} / ${sortingItems.length}`;
+            } else {
+                if (scoreEl) scoreEl.innerHTML = `<span class='text-rose-400'>❌ Kurang tepat. Perhatikan jenis medianya.</span>`;
+            }
+
+            sortingIndex++;
+            if (sortingIndex < sortingItems.length) {
+                setTimeout(() => {
+                    if (itemEl) itemEl.innerText = sortingItems[sortingIndex].name;
+                }, 600);
+            } else {
+                if (itemEl) itemEl.innerText = "🎉 Selesai! Semua media transmisi berhasil diklasifikasikan.";
+                showModal("Klasifikasi Selesai! 📦", `Hebat! Anda berhasil mengelompokkan seluruh perangkat kabel dan nirkabel dengan benar.`, "fa-solid fa-trophy");
+            }
+        }
+
+        // Interactive Helper Functions
+        function checkGameChoice(el, type) {
+            const feedback = document.getElementById('game-feedback');
+            if (type === 'hardware') {
+                if (feedback) feedback.innerHTML = `<span class="text-emerald-400">✅ Tepat! Ini adalah Perangkat Keras (Hardware) nyata.</span>`;
+            } else {
+                if (feedback) feedback.innerHTML = `<span class="text-brandPink">✅ Tepat! Ini adalah Perangkat Lunak (Software) aplikasi.</span>`;
+            }
+            el.classList.add('border-brandCyan', 'bg-brandCyan/20');
+        }
+
+        function convertBinary() {
+            const inputEl = document.getElementById('binary-input');
+            const resEl = document.getElementById('binary-result');
+            if (!inputEl || !resEl) return;
+            const val = inputEl.value.trim();
+            try {
+                const dec = parseInt(val, 2);
+                if (isNaN(dec)) {
+                    resEl.innerText = "❌ Masukkan hanya angka 0 dan 1!";
+                } else {
+                    resEl.innerText = `Hasil Desimal dari biner ${val} adalah: ${dec}`;
+                }
+            } catch (e) {
+                resEl.innerText = "Format biner tidak valid.";
+            }
+        }
+
+        function encryptText() {
+            const plainEl = document.getElementById('plain-text');
+            const resEl = document.getElementById('encrypt-result');
+            if (!plainEl || !resEl) return;
+            const text = plainEl.value;
+            let encrypted = '';
+            for (let i = 0; i < text.length; i++) {
+                let code = text.charCodeAt(i);
+                encrypted += String.fromCharCode(code + 3);
+            }
+            resEl.innerHTML = `Hasil Sandi Terenkripsi: <span class="text-brandPink font-bold">${encrypted}</span>`;
+        }
+
+        function checkQuizAnswer(selectedIdx, correctIdx, explanation) {
+            const feedback = document.getElementById('quiz-feedback');
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`opt-${i}`);
+                if (btn) {
+                    btn.classList.remove('bg-emerald-600/40', 'bg-rose-600/40');
+                    if (i === correctIdx) btn.classList.add('bg-emerald-600/40', 'border-emerald-400');
+                    if (i === selectedIdx && i !== correctIdx) btn.classList.add('bg-rose-600/40', 'border-rose-400');
+                }
+            }
+            if (selectedIdx === correctIdx) {
+                if (feedback) feedback.innerHTML = `<span class="text-emerald-400">🎉 Benar sekali! ${explanation}</span>`;
+            } else {
+                if (feedback) feedback.innerHTML = `<span class="text-rose-400">❌ Kurang tepat. ${explanation}</span>`;
+            }
+        }
+
+        // View 4: Boss Battle View
+        function renderBossView() {
+            const currentB = bossChallenges[currentBossIndex];
+            let optionsHtml = '';
+            currentB.options.forEach((opt, oIdx) => {
+                optionsHtml += `
+                    <div onclick="checkBossAnswer(${oIdx}, ${currentB.correct})" id="boss-opt-${oIdx}" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:bg-brandCyan/20 transition border border-white/10 text-left text-sm font-medium">
+                        ${opt}
+                    </div>
+                `;
+            });
+
+            return `
+                <div class="glass-panel p-6 md:p-8 rounded-3xl border border-yellow-500/40 max-w-3xl w-full mx-auto text-center shadow-2xl">
+                    <div class="inline-block px-4 py-1.5 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold mb-3 uppercase tracking-wider">
+                        ⚔️ Tantangan Boss Battle (${currentBossIndex + 1} / ${bossChallenges.length})
+                    </div>
+                    <h3 class="text-lg md:text-xl font-fun font-bold text-white mb-5">${currentB.q}</h3>
+                    <div class="grid grid-cols-1 gap-2.5 mb-5">
+                        ${optionsHtml}
+                    </div>
+                    <div id="boss-feedback" class="text-sm font-semibold text-brandCyan h-8"></div>
+                </div>
+            `;
+        }
+
+        function checkBossAnswer(selectedIdx, correctIdx) {
+            const feedback = document.getElementById('boss-feedback');
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`boss-opt-${i}`);
+                if (btn) {
+                    if (i === correctIdx) btn.classList.add('bg-emerald-600/40', 'border-emerald-400');
+                    if (i === selectedIdx && i !== correctIdx) btn.classList.add('bg-rose-600/40', 'border-rose-400');
+                }
+            }
+            if (selectedIdx === correctIdx) {
+                bossScore += 10;
+                if (feedback) feedback.innerHTML = `<span class="text-emerald-400">✅ Jawaban Tepat! Melanjutkan...</span>`;
+            } else {
+                if (feedback) feedback.innerHTML = `<span class="text-rose-400">❌ Kurang tepat. Perhatikan kembali materinya!</span>`;
+            }
+
+            setTimeout(() => {
+                if (currentBossIndex < bossChallenges.length - 1) {
+                    currentBossIndex++;
+                    render();
+                } else {
+                    goToView('celebration');
+                }
+            }, 1400);
+        }
+
+        // View 5: Celebration & Reflection
+        function renderCelebrationView() {
+            return `
+                <div class="text-center max-w-3xl mx-auto py-10 px-4 glass-panel rounded-3xl border border-brandCyan/40 shadow-2xl">
+                    <div class="text-5xl mb-3">🎉🏆🎉</div>
+                    <h2 class="text-2xl md:text-4xl font-extrabold font-fun mb-3 text-brandCyan glow-text">
+                        PETUALANGAN SELESAI!
+                    </h2>
+                    <p class="text-gray-300 text-sm md:text-base mb-5">
+                        Hebat! Seluruh materi Sistem Jaringan Komputer dan Internet telah sukses dieksplorasi bersama seluruh siswa SMPN 1 Tinggimoncong.
+                    </p>
+                    <div class="bg-black/40 p-5 rounded-2xl border border-white/10 text-left mb-6 space-y-2">
+                        <h4 class="font-bold text-brandPink text-xs uppercase tracking-wider mb-2">📝 Rangkuman Poin Utama:</h4>
+                        <div class="text-xs md:text-sm text-gray-200 space-y-1">
+                            <div>1. <b>Hardware & Software:</b> Komponen fisik dan aplikasi penggerak komputer.</div>
+                            <div>2. <b>Interaksi & Topologi:</b> Penghubung antar perangkat (Switch, Router, Kabel).</div>
+                            <div>3. <b>Kodifikasi Data:</b> Komputer memproses data menggunakan bilangan biner (0 dan 1).</div>
+                            <div>4. <b>Internet & Paket Data:</b> Jaringan global yang mengirim data terpecah lewat router.</div>
+                            <div>5. <b>Koneksi & Enkripsi:</b> Wi-Fi/Bluetooth serta pengamanan data dengan sandi rahasia.</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-3">
+                        <button onclick="goToView('map')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition border border-white/10">
+                            🔁 Ulangi Petualangan
+                        </button>
+                        <button onclick="showModal('Refleksi Kelas 🌟', 'Bagaimana kesan kalian mengikuti pembelajaran Informatika hari ini bersama Pak Syarifuddin? Sampaikan pendapatmu di depan kelas!', 'fa-solid fa-face-smile-beam')" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brandPink to-brandCyan text-brandDark font-extrabold text-xs hover:scale-105 transition shadow-lg">
+                            💬 Refleksi Bersama
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
+```
