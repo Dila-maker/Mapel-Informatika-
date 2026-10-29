@@ -1,0 +1,1177 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEMBUAT LABEL PERPUSTAKAAN SMPN 1 TINGGIMONCONG</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS (XLSX) CDN untuk Import/Export Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+        /* Styling khusus untuk cetak A4 presisi */
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #print-container, #print-container * {
+                visibility: visible !important;
+            }
+            #print-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+            .page-break {
+                page-break-after: always;
+                break-after: page;
+            }
+        }
+        .landscape-print @page {
+            size: A4 landscape !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col">
+
+    <!-- Modal Notifikasi Kustom (Pengganti Alert) -->
+    <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-slate-100 transform transition-all">
+            <div class="flex items-center space-x-3 mb-4">
+                <div id="modal-icon-container" class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg">i</div>
+                <h3 id="modal-title" class="text-lg font-bold text-slate-900">Informasi Sistem</h3>
+            </div>
+            <p id="modal-message" class="text-slate-600 mb-6 leading-relaxed">Pesan sistem akan muncul di sini.</p>
+            <div class="flex justify-end space-x-3" id="modal-actions">
+                <button onclick="closeModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-medium rounded-xl transition-all shadow-sm">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Pulihkan Data -->
+    <div id="restore-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-slate-100">
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Pulihkan Data Sebelumnya?</h3>
+            <p class="text-slate-600 mb-6 text-sm">Aplikasi mendeteksi data perpustakaan yang tersimpan di memori lokal perangkat Anda. Apakah Anda ingin memulihkannya?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="startFreshData()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium rounded-xl transition-all text-sm">Mulai Baru (Kosong)</button>
+                <button onclick="confirmRestoreData()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition-all text-sm">Pulihkan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Buku -->
+    <div id="edit-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl p-6 max-w-xl w-full mx-4 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-lg font-bold text-slate-900 mb-4">Edit Data Buku</h3>
+            <form id="edit-form" onsubmit="saveEditBook(event)" class="space-y-4">
+                <input type="hidden" id="edit-index">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nama Pengarang</label>
+                    <input type="text" id="edit-author" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Tajuk Entri Utama (Tiga Huruf Kode)</label>
+                    <input type="text" id="edit-custom-entry" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm uppercase" placeholder="Otomatis dari pengarang jika kosong">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nomor Klasifikasi (DDC)</label>
+                        <input type="text" id="edit-classification" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Jumlah Eksemplar</label>
+                        <input type="number" id="edit-copies" min="1" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Judul Buku</label>
+                    <input type="text" id="edit-title" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm">
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium rounded-xl text-sm transition-all">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl text-sm transition-all shadow-sm">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header Utama -->
+    <header class="bg-slate-900 text-white shadow-xl no-print sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center font-black text-2xl text-slate-900 shadow-lg shadow-emerald-500/30">
+                    LB
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-tight">PEMBUAT LABEL PERPUSTAKAAN</h1>
+                    <p class="text-xs sm:text-sm text-emerald-400 font-medium tracking-wide">SMPN 1 TINGGIMONCONG • Standar Nasional Perpustakaan (SNP) 2024</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700 text-xs text-slate-300">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Mode Offline Aktif • localStorage Ready</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigasi Langkah / Wizard -->
+    <nav class="bg-white border-b border-slate-200 no-print shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center sm:justify-start space-x-4 sm:space-x-8 overflow-x-auto">
+            <button onclick="switchTab('input')" id="tab-btn-input" class="py-4 px-3 border-b-2 font-semibold text-sm transition-all flex items-center space-x-2 border-emerald-600 text-emerald-600 whitespace-nowrap">
+                <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">1</span>
+                <span>Input & Kelola Buku</span>
+            </button>
+            <button onclick="switchTab('settings')" id="tab-btn-settings" class="py-4 px-3 border-b-2 font-medium text-sm transition-all flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">
+                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-bold">2</span>
+                <span>Pengaturan Label & A4</span>
+            </button>
+            <button onclick="switchTab('preview')" id="tab-btn-preview" class="py-4 px-3 border-b-2 font-medium text-sm transition-all flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">
+                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-bold">3</span>
+                <span>Preview & Cetak A4</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Konten Utama -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- STATISTIK KARTU -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8 no-print">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Total Judul Buku</p>
+                    <h3 id="stat-total-judul" class="text-2xl font-bold text-slate-800">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl font-bold">📚</div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Total Eksemplar</p>
+                    <h3 id="stat-total-eksemplar" class="text-2xl font-bold text-slate-800">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-xl font-bold">📦</div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Total Label Tercetak</p>
+                    <h3 id="stat-total-label" class="text-2xl font-bold text-emerald-600">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl font-bold">🏷️</div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 1: INPUT & KELOLA BUKU ================= -->
+        <div id="tab-content-input" class="space-y-8 no-print">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Form Input -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-1 h-fit sticky top-24">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                        <span>➕ Tambah Buku Baru</span>
+                    </h2>
+                    <form id="book-form" onsubmit="addBook(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nama Pengarang</label>
+                            <input type="text" id="input-author" placeholder="Contoh: Syafuddin" required oninput="updateRealtimePreview()" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Tajuk Utama (3 Huruf Kode Khusus)</label>
+                            <input type="text" id="input-custom-entry" placeholder="Kosongkan = Ambil dari pengarang" oninput="updateRealtimePreview()" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm uppercase">
+                            <span class="text-[11px] text-slate-400 mt-1 block">Sesuai SNP 2024: 3 huruf pertama tajuk utama/nama keluarga.</span>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nomor Klasifikasi (DDC)</label>
+                            <input type="text" id="input-classification" placeholder="Contoh: 611" required oninput="updateRealtimePreview()" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Judul Buku</label>
+                            <input type="text" id="input-title" placeholder="Contoh: Anatomi Fisiologi" required oninput="updateRealtimePreview()" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Jumlah Eksemplar (Label)</label>
+                            <input type="number" id="input-copies" min="1" value="1" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-sm">
+                        </div>
+
+                        <!-- Realtime Preview Kotak Kecil -->
+                        <div class="bg-slate-900 text-white p-4 rounded-xl text-center shadow-inner mt-4">
+                            <p class="text-[10px] uppercase tracking-widest text-emerald-400 font-semibold mb-2">Real-time Call Number Preview</p>
+                            <div id="realtime-call-preview" class="font-mono text-base font-bold tracking-widest leading-tight">
+                                611<br>SYA<br>A
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shadow-lg shadow-emerald-600/20 transition-all text-sm">
+                            Simpan ke Daftar Buku
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Tabel Data & Toolbar -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2 flex flex-col">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                        <div class="w-full sm:w-72">
+                            <input type="text" id="search-box" oninput="renderTable()" placeholder="Cari pengarang, judul, klasifikasi..." class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                        </div>
+                        <div class="flex flex-wrap gap-2 w-full sm:w-auto justify-end">
+                            <button onclick="document.getElementById('excel-file-input').click()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1">
+                                <span>📥 Import Excel/CSV</span>
+                            </button>
+                            <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="importFile(event)">
+                            
+                            <button onclick="exportExcel()" class="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-xs font-semibold transition-all">
+                                📤 Export Excel
+                            </button>
+                            <button onclick="exportCSV()" class="px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-xs font-semibold transition-all">
+                                📤 Export CSV
+                            </button>
+                            <button onclick="backupJSON()" class="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-semibold transition-all">
+                                💾 Backup JSON
+                            </button>
+                            <button onclick="document.getElementById('json-file-input').click()" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-xl text-xs font-semibold transition-all">
+                                📂 Restore JSON
+                            </button>
+                            <input type="file" id="json-file-input" accept=".json" class="hidden" onchange="restoreJSON(event)">
+                        </div>
+                    </div>
+
+                    <!-- Tabel Buku -->
+                    <div class="overflow-x-auto flex-grow rounded-xl border border-slate-100">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider font-semibold border-b border-slate-200">
+                                    <th class="p-3">No</th>
+                                    <th class="p-3">Pengarang & Tajuk Utama</th>
+                                    <th class="p-3">Klasifikasi</th>
+                                    <th class="p-3">Judul Buku</th>
+                                    <th class="p-3 text-center">Nomor Panggil</th>
+                                    <th class="p-3 text-center">Eksemplar</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="book-table-body" class="divide-y divide-slate-100 text-sm">
+                                <!-- Data terisi secara dinamis -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tombol Lanjut ke Preview -->
+                    <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-100">
+                        <button onclick="clearAllData()" class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-semibold transition-all">
+                            🗑️ Hapus Semua Data
+                        </button>
+                        <button onclick="switchTab('settings')" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold text-sm transition-all shadow-md flex items-center space-x-2">
+                            <span>Selanjutnya: Pengaturan Label & A4</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: PENGATURAN LABEL & A4 ================= -->
+        <div id="tab-content-settings" class="space-y-8 hidden no-print">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 max-w-4xl mx-auto space-y-8">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 mb-1">Konfigurasi Label & Kertas A4 Presisi</h2>
+                    <p class="text-xs text-slate-500">Sesuaikan ukuran fisik label stiker dan margin cetak agar hasil pas presisi di atas kertas A4.</p>
+                </div>
+
+                <!-- Peringatan Kepatuhan Perpusnas -->
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs text-amber-800 leading-relaxed">
+                    <strong>Catatan Regulasi (Perpusnas No. 4 Tahun 2024):</strong> Ukuran label merupakan pengaturan teknis pencetakan dan dapat disesuaikan dengan media/stiker serta kebijakan perpustakaan sekolah. Peraturan Perpusnas tidak menetapkan satu ukuran fisik label yang berlaku kaku untuk semua perpustakaan sekolah.
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Ukuran Label -->
+                    <div class="space-y-4 p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                        <h3 class="font-bold text-sm text-slate-900 flex items-center space-x-2">🏷️ Ukuran Label (mm)</h3>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Preset Ukuran Label</label>
+                            <select id="preset-size" onchange="applyPresetSize(this.value)" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium">
+                                <option value="custom">Custom (Bebas)</option>
+                                <option value="50x30" selected>50 × 30 mm (Standar Sedang)</option>
+                                <option value="30x50">30 × 50 mm (Vertikal Panjang)</option>
+                                <option value="40x25">40 × 25 mm (Kecil Buku Saku)</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Lebar Label (mm)</label>
+                                <input type="number" id="label-width" value="50" min="10" oninput="saveSettings(); updateLivePreviewBox()" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Tinggi Label (mm)</label>
+                                <input type="number" id="label-height" value="30" min="10" oninput="saveSettings(); updateLivePreviewBox()" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm">
+                            </div>
+                        </div>
+
+                        <div class="pt-2 space-y-2 border-t border-slate-200">
+                            <label class="flex items-center space-x-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="show-library" checked onchange="saveSettings()" class="rounded text-emerald-600 focus:ring-emerald-500">
+                                <span>Tampilkan Nama Perpustakaan / Sekolah</span>
+                            </label>
+                            <label class="flex items-center space-x-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="show-border" checked onchange="saveSettings()" class="rounded text-emerald-600 focus:ring-emerald-500">
+                                <span>Tampilkan Garis / Border Label</span>
+                            </label>
+                            <label class="flex items-center space-x-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="show-serial" onchange="saveSettings()" class="rounded text-emerald-600 focus:ring-emerald-500">
+                                <span>Tampilkan Nomor Urut Label Internal (Contoh: Label 001)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Pengaturan Kertas A4 & Margins -->
+                    <div class="space-y-4 p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                        <h3 class="font-bold text-sm text-slate-900 flex items-center space-x-2">📄 Tata Letak Kertas A4 & Margin (mm)</h3>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Orientasi Kertas</label>
+                            <select id="page-orientation" onchange="saveSettings()" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium">
+                                <option value="portrait" selected>Portrait (Vertikal)</option>
+                                <option value="landscape">Landscape (Horizontal)</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Margin Atas (mm)</label>
+                                <input type="number" id="margin-top" value="10" min="0" oninput="saveSettings()" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Margin Bawah (mm)</label>
+                                <input type="number" id="margin-bottom" value="10" min="0" oninput="saveSettings()" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Margin Kiri (mm)</label>
+                                <input type="number" id="margin-left" value="10" min="0" oninput="saveSettings()" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Margin Kanan (mm)</label>
+                                <input type="number" id="margin-right" value="10" min="0" oninput="saveSettings()" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-200">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Jarak Antar Label Horisontal (mm)</label>
+                                <input type="number" id="gap-h" value="3" min="0" oninput="saveSettings()" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Jarak Antar Label Vertikal (mm)</label>
+                                <input type="number" id="gap-v" value="3" min="0" oninput="saveSettings()" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulasi Render Kotak Label Tunggal -->
+                <div class="p-6 bg-slate-900 rounded-2xl text-white text-center space-y-3">
+                    <p class="text-xs uppercase tracking-widest text-emerald-400 font-semibold">Contoh Tampilan Label Sesuai Pengaturan</p>
+                    <div class="flex justify-center">
+                        <div id="live-label-box" class="bg-white text-slate-900 p-2 flex flex-col justify-between items-center shadow-lg border border-slate-300 rounded font-bold" style="width: 50mm; height: 30mm;">
+                            <div class="text-[9px] uppercase tracking-tighter text-slate-600 text-center leading-none">PERPUSTAKAAN<br>SMPN 1 TINGGIMONCONG</div>
+                            <div class="font-mono text-sm leading-tight text-center my-auto">
+                                611<br>SYA<br>A
+                            </div>
+                            <div class="text-[8px] text-slate-400">Label 001</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tombol Navigasi Bawah -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-200">
+                    <button onclick="switchTab('input')" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl text-sm transition-all">
+                        ← Kembali ke Input Data
+                    </button>
+                    <button onclick="switchToPreviewTab()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition-all shadow-md flex items-center space-x-2">
+                        <span>Selanjutnya → Preview A4</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: PREVIEW & CETAK A4 ================= -->
+        <div id="tab-content-preview" class="space-y-6 hidden">
+            <!-- Toolbar Preview (No Print) -->
+            <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4 no-print">
+                <div class="flex items-center space-x-3">
+                    <button onclick="switchTab('settings')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition-all flex items-center space-x-2">
+                        <span>← Kembali / Edit Pengaturan</span>
+                    </button>
+                    <div class="text-sm font-medium text-slate-600">
+                        Total Halaman A4: <span id="total-pages-count" class="font-bold text-slate-900">0</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="printTestPage()" class="px-4 py-2.5 bg-amber-100 hover:bg-amber-200 text-amber-800 font-semibold rounded-xl text-sm transition-all flex items-center space-x-2">
+                        <span>🖨️ Cetak 1 Halaman Uji</span>
+                    </button>
+                    <button onclick="triggerPrint()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition-all shadow-lg shadow-emerald-600/30 flex items-center space-x-2">
+                        <span>🖨 SIAP PRINT / Simpan PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instruksi Presisi Print -->
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs text-blue-800 leading-relaxed no-print">
+                <strong>Panduan Cetak Presisi:</strong> Pada dialog printer browser, pastikan memilih <strong>Paper Size = A4</strong>, <strong>Scale = 100% / Actual Size</strong>, dan matikan <em>Fit to Page / Shrink to Fit</em> agar ukuran label di stiker persis akurat.
+            </div>
+
+            <!-- Area Container Cetak & Preview A4 -->
+            <div id="print-container" class="flex flex-col items-center space-y-8 py-4">
+                <!-- Halaman-halaman A4 dirender otomatis oleh JS di sini -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500 no-print">
+        <p>PEMBUAT LABEL PERPUSTAKAAN SMPN 1 TINGGIMONCONG &bull; Berdasarkan Standar Nasional Perpustakaan (SNP) Perpusnas RI No. 4 Tahun 2024</p>
+    </footer>
+
+    <!-- JavaScript Logika Aplikasi -->
+    <script>
+        // State Aplikasi
+        let books = [];
+        let settings = {
+            labelWidth: 50,
+            labelHeight: 30,
+            showLibrary: true,
+            showBorder: true,
+            showSerial: false,
+            orientation: 'portrait',
+            marginTop: 10,
+            marginBottom: 10,
+            marginLeft: 10,
+            marginRight: 10,
+            gapH: 3,
+            gapV: 3,
+            preset: '50x30'
+        };
+
+        // Inisialisasi awal saat halaman dimuat
+        window.onload = function() {
+            loadFromLocalStorage();
+            if (books.length === 0) {
+                // Contoh Data default sesuai instruksi soal
+                books = [
+                    {
+                        id: generateId(),
+                        author: "Syafuddin",
+                        customEntry: "",
+                        classification: "611",
+                        title: "Anatomi Fisiologi",
+                        copies: 5
+                    },
+                    {
+                        id: generateId(),
+                        author: "Budi Santoso",
+                        customEntry: "",
+                        classification: "510",
+                        title: "Matematika Dasar",
+                        copies: 3
+                    }
+                ];
+                saveToLocalStorage();
+            }
+            renderTable();
+            updateStats();
+            loadSettingsToUI();
+            updateRealtimePreview();
+            updateLivePreviewBox();
+        };
+
+        function generateId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // --- SISTEM LOCAL STORAGE & RESTORE PROMPT ---
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('smpn1_perpus_books', JSON.stringify(books));
+                localStorage.setItem('smpn1_perpus_settings', JSON.stringify(settings));
+            } catch (e) {
+                console.error("Gagal menyimpan ke localStorage", e);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const savedBooks = localStorage.getItem('smpn1_perpus_books');
+                const savedSettings = localStorage.getItem('smpn1_perpus_settings');
+                if (savedBooks) {
+                    books = JSON.parse(savedBooks);
+                }
+                if (savedSettings) {
+                    settings = JSON.parse(savedSettings);
+                }
+            } catch (e) {
+                console.error("Gagal membaca localStorage", e);
+            }
+        }
+
+        // --- NAVIGASI TAB ---
+        function switchTab(tabName) {
+            document.getElementById('tab-content-input').classList.add('hidden');
+            document.getElementById('tab-content-settings').classList.add('hidden');
+            document.getElementById('tab-content-preview').classList.add('hidden');
+
+            document.getElementById('tab-btn-input').className = "py-4 px-3 border-b-2 font-medium text-sm transition-all flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap";
+            document.getElementById('tab-btn-settings').className = "py-4 px-3 border-b-2 font-medium text-sm transition-all flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap";
+            document.getElementById('tab-btn-preview').className = "py-4 px-3 border-b-2 font-medium text-sm transition-all flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap";
+
+            if (tabName === 'input') {
+                document.getElementById('tab-content-input').classList.remove('hidden');
+                document.getElementById('tab-btn-input').className = "py-4 px-3 border-b-2 font-semibold text-sm transition-all flex items-center space-x-2 border-emerald-600 text-emerald-600 whitespace-nowrap";
+            } else if (tabName === 'settings') {
+                document.getElementById('tab-content-settings').classList.remove('hidden');
+                document.getElementById('tab-btn-settings').className = "py-4 px-3 border-b-2 font-semibold text-sm transition-all flex items-center space-x-2 border-emerald-600 text-emerald-600 whitespace-nowrap";
+                updateLivePreviewBox();
+            } else if (tabName === 'preview') {
+                document.getElementById('tab-content-preview').classList.remove('hidden');
+                document.getElementById('tab-btn-preview').className = "py-4 px-3 border-b-2 font-semibold text-sm transition-all flex items-center space-x-2 border-emerald-600 text-emerald-600 whitespace-nowrap";
+                generateA4Preview();
+            }
+        }
+
+        function switchToPreviewTab() {
+            switchTab('preview');
+        }
+
+        // --- PENGAMBILAN & PEMBUATAN NOMOR PANGGIL ---
+        function parseCallNumber(book) {
+            let classNum = (book.classification || "").trim().toUpperCase();
+            let author = (book.author || "").trim();
+            let title = (book.title || "").trim();
+            let customEntry = (book.customEntry || "").trim();
+
+            let line2 = "";
+            if (customEntry) {
+                line2 = customEntry.substring(0, 3).toUpperCase();
+            } else if (author) {
+                if (author.includes(",")) {
+                    let surname = author.split(",")[0].trim();
+                    line2 = surname.substring(0, 3).toUpperCase();
+                } else {
+                    let parts = author.split(/\s+/);
+                    let mainPart = parts.length > 1 ? parts[parts.length - 1] : parts[0];
+                    line2 = (mainPart || "").substring(0, 3).toUpperCase();
+                }
+            } else {
+                line2 = "XXX";
+            }
+            while (line2.length < 3) line2 += "X";
+
+            let line3 = (title.substring(0, 1) || "X").toUpperCase();
+
+            return {
+                line1: classNum || "000",
+                line2: line2,
+                line3: line3
+            };
+        }
+
+        function updateRealtimePreview() {
+            let author = document.getElementById('input-author').value;
+            let customEntry = document.getElementById('input-custom-entry').value;
+            let classification = document.getElementById('input-classification').value;
+            let title = document.getElementById('input-title').value;
+
+            let dummyBook = { author, customEntry, classification, title };
+            let cn = parseCallNumber(dummyBook);
+
+            document.getElementById('realtime-call-preview').innerHTML = `${cn.line1}<br>${cn.line2}<br>${cn.line3}`;
+        }
+
+        // --- MANIPULASI DATA BUKU ---
+        function addBook(event) {
+            event.preventDefault();
+            let author = document.getElementById('input-author').value.trim();
+            let customEntry = document.getElementById('input-custom-entry').value.trim();
+            let classification = document.getElementById('input-classification').value.trim();
+            let title = document.getElementById('input-title').value.trim();
+            let copies = parseInt(document.getElementById('input-copies').value) || 1;
+
+            // Validasi sesuai instruksi
+            if (!author) {
+                showModal("Peringatan Validasi", "Tajuk entri utama / pengarang belum diisi.", "warning");
+                return;
+            }
+            if (!classification) {
+                showModal("Peringatan Validasi", "Nomor klasifikasi belum diisi.", "warning");
+                return;
+            }
+            if (!title) {
+                showModal("Peringatan Validasi", "Judul buku belum diisi.", "warning");
+                return;
+            }
+            if (copies < 1) {
+                showModal("Peringatan Validasi", "Jumlah eksemplar minimal 1.", "warning");
+                return;
+            }
+
+            let newBook = {
+                id: generateId(),
+                author,
+                customEntry,
+                classification,
+                title,
+                copies
+            };
+
+            books.push(newBook);
+            saveToLocalStorage();
+            renderTable();
+            updateStats();
+
+            // Reset form
+            document.getElementById('book-form').reset();
+            document.getElementById('input-copies').value = "1";
+            updateRealtimePreview();
+            showModal("Sukses", "Data buku berhasil ditambahkan ke sistem.", "success");
+        }
+
+        function renderTable() {
+            let tbody = document.getElementById('book-table-body');
+            tbody.innerHTML = "";
+
+            let searchQuery = document.getElementById('search-box').value.toLowerCase();
+            let filteredBooks = books.filter(b => 
+                b.author.toLowerCase().includes(searchQuery) ||
+                b.title.toLowerCase().includes(searchQuery) ||
+                b.classification.toLowerCase().includes(searchQuery)
+            );
+
+            if (filteredBooks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Belum ada data buku atau pencarian tidak ditemukan.</td></tr>`;
+                return;
+            }
+
+            filteredBooks.forEach((book, index) => {
+                let cn = parseCallNumber(book);
+                let tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-all border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="p-3 text-slate-500 font-medium">${index + 1}</td>
+                    <td class="p-3">
+                        <div class="font-bold text-slate-800">${book.author}</div>
+                        ${book.customEntry ? `<span class="text-[10px] bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono">Kode: ${book.customEntry}</span>` : ''}
+                    </td>
+                    <td class="p-3 font-mono font-semibold text-emerald-700">${book.classification}</td>
+                    <td class="p-3 font-medium text-slate-700">${book.title}</td>
+                    <td class="p-3 text-center font-mono font-bold text-xs bg-slate-50 leading-tight">
+                        ${cn.line1}<br>${cn.line2}<br>${cn.line3}
+                    </td>
+                    <td class="p-3 text-center font-semibold text-slate-800">${book.copies}</td>
+                    <td class="p-3 text-center">
+                        <div class="flex items-center justify-center space-x-1">
+                            <button onclick="openEditModal('${book.id}')" title="Edit" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs">✏️</button>
+                            <button onclick="duplicateBook('${book.id}')" title="Duplikat" class="p-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg text-xs">📋</button>
+                            <button onclick="deleteBook('${book.id}')" title="Hapus" class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs">🗑️</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            updateStats();
+        }
+
+        function updateStats() {
+            let totalTitles = books.length;
+            let totalCopies = books.reduce((sum, b) => sum + parseInt(b.copies || 0), 0);
+            let totalLabels = totalCopies;
+
+            document.getElementById('stat-total-judul').innerText = totalTitles;
+            document.getElementById('stat-total-eksemplar').innerText = totalCopies;
+            document.getElementById('stat-total-label').innerText = totalLabels;
+        }
+
+        function duplicateBook(id) {
+            let book = books.find(b => b.id === id);
+            if (book) {
+                let dup = {
+                    ...book,
+                    id: generateId(),
+                    title: book.title + " (Copy)"
+                };
+                books.push(dup);
+                saveToLocalStorage();
+                renderTable();
+                showModal("Sukses", "Data buku berhasil diduplikasi.", "success");
+            }
+        }
+
+        function deleteBook(id) {
+            books = books.filter(b => b.id !== id);
+            saveToLocalStorage();
+            renderTable();
+            showModal("Sukses", "Data buku berhasil dihapus.", "success");
+        }
+
+        function clearAllData() {
+            if (confirm("Apakah Anda yakin ingin menghapus seluruh data buku?")) {
+                books = [];
+                saveToLocalStorage();
+                renderTable();
+                showModal("Sukses", "Semua data berhasil dibersihkan.", "success");
+            }
+        }
+
+        // --- EDIT MODAL LOGIC ---
+        function openEditModal(id) {
+            let book = books.find(b => b.id === id);
+            if (book) {
+                document.getElementById('edit-index').value = book.id;
+                document.getElementById('edit-author').value = book.author;
+                document.getElementById('edit-custom-entry').value = book.customEntry || '';
+                document.getElementById('edit-classification').value = book.classification;
+                document.getElementById('edit-title').value = book.title;
+                document.getElementById('edit-copies').value = book.copies;
+                document.getElementById('edit-modal').classList.remove('hidden');
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        function saveEditBook(event) {
+            event.preventDefault();
+            let id = document.getElementById('edit-index').value;
+            let book = books.find(b => b.id === id);
+            if (book) {
+                book.author = document.getElementById('edit-author').value.trim();
+                book.customEntry = document.getElementById('edit-custom-entry').value.trim();
+                book.classification = document.getElementById('edit-classification').value.trim();
+                book.title = document.getElementById('edit-title').value.trim();
+                book.copies = parseInt(document.getElementById('edit-copies').value) || 1;
+
+                saveToLocalStorage();
+                renderTable();
+                closeEditModal();
+                showModal("Sukses", "Perubahan data buku berhasil disimpan.", "success");
+            }
+        }
+
+        // --- PENGATURAN LABEL & PREVIEW TAMPILAN ---
+        function applyPresetSize(val) {
+            settings.preset = val;
+            if (val === '50x30') {
+                settings.labelWidth = 50;
+                settings.labelHeight = 30;
+            } else if (val === '30x50') {
+                settings.labelWidth = 30;
+                settings.labelHeight = 50;
+            } else if (val === '40x25') {
+                settings.labelWidth = 40;
+                settings.labelHeight = 25;
+            }
+            document.getElementById('label-width').value = settings.labelWidth;
+            document.getElementById('label-height').value = settings.labelHeight;
+            saveSettings();
+            updateLivePreviewBox();
+        }
+
+        function saveSettings() {
+            settings.labelWidth = parseFloat(document.getElementById('label-width').value) || 50;
+            settings.labelHeight = parseFloat(document.getElementById('label-height').value) || 30;
+            settings.showLibrary = document.getElementById('show-library').checked;
+            settings.showBorder = document.getElementById('show-border').checked;
+            settings.showSerial = document.getElementById('show-serial').checked;
+            settings.orientation = document.getElementById('page-orientation').value;
+            settings.marginTop = parseFloat(document.getElementById('margin-top').value) || 10;
+            settings.marginBottom = parseFloat(document.getElementById('margin-bottom').value) || 10;
+            settings.marginLeft = parseFloat(document.getElementById('margin-left').value) || 10;
+            settings.marginRight = parseFloat(document.getElementById('margin-right').value) || 10;
+            settings.gapH = parseFloat(document.getElementById('gap-h').value) || 3;
+            settings.gapV = parseFloat(document.getElementById('gap-v').value) || 3;
+
+            saveToLocalStorage();
+            updateLivePreviewBox();
+        }
+
+        function loadSettingsToUI() {
+            document.getElementById('preset-size').value = settings.preset || '50x30';
+            document.getElementById('label-width').value = settings.labelWidth;
+            document.getElementById('label-height').value = settings.labelHeight;
+            document.getElementById('show-library').checked = settings.showLibrary;
+            document.getElementById('show-border').checked = settings.showBorder;
+            document.getElementById('show-serial').checked = settings.showSerial;
+            document.getElementById('page-orientation').value = settings.orientation;
+            document.getElementById('margin-top').value = settings.marginTop;
+            document.getElementById('margin-bottom').value = settings.marginBottom;
+            document.getElementById('margin-left').value = settings.marginLeft;
+            document.getElementById('margin-right').value = settings.marginRight;
+            document.getElementById('gap-h').value = settings.gapH;
+            document.getElementById('gap-v').value = settings.gapV;
+        }
+
+        function updateLivePreviewBox() {
+            let box = document.getElementById('live-label-box');
+            box.style.width = settings.labelWidth + 'mm';
+            box.style.height = settings.labelHeight + 'mm';
+            box.style.border = settings.showBorder ? '1px solid #cbd5e1' : 'none';
+        }
+
+        // --- PERHITUNGAN DAN GENERATE PREVIEW A4 PRESISI ---
+        function generateA4Preview(testPageOnly = false) {
+            let container = document.getElementById('print-container');
+            container.innerHTML = "";
+
+            // Dimensi A4 dalam mm
+            let a4Width = settings.orientation === 'landscape' ? 297 : 210;
+            let a4Height = settings.orientation === 'landscape' ? 210 : 297;
+
+            let usableWidth = a4Width - settings.marginLeft - settings.marginRight;
+            let usableHeight = a4Height - settings.marginTop - settings.marginBottom;
+
+            let colWidth = settings.labelWidth + settings.gapH;
+            let rowHeight = settings.labelHeight + settings.gapV;
+
+            let cols = Math.max(1, Math.floor((usableWidth + settings.gapH) / colWidth));
+            let rows = Math.max(1, Math.floor((usableHeight + settings.gapV) / rowHeight));
+            let labelsPerPage = cols * rows;
+
+            // Kumpulkan semua item label berdasarkan eksemplar
+            let labelQueue = [];
+            let globalSerial = 1;
+
+            books.forEach(book => {
+                let cn = parseCallNumber(book);
+                for (let i = 0; i < (book.copies || 1); i++) {
+                    labelQueue.push({
+                        line1: cn.line1,
+                        line2: cn.line2,
+                        line3: cn.line3,
+                        title: book.title,
+                        serial: globalSerial++
+                    });
+                }
+            });
+
+            if (labelQueue.length === 0) {
+                container.innerHTML = `<div class="bg-white p-8 rounded-2xl shadow-sm text-center text-slate-400">Belum ada data buku untuk dicetak. Tambahkan data di tab pertama.</div>`;
+                document.getElementById('total-pages-count').innerText = 0;
+                return;
+            }
+
+            if (testPageOnly) {
+                labelQueue = labelQueue.slice(0, labelsPerPage);
+            }
+
+            let totalPages = Math.ceil(labelQueue.length / labelsPerPage);
+            document.getElementById('total-pages-count').innerText = totalPages;
+
+            for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
+                let pageLabels = labelQueue.slice(pageIdx * labelsPerPage, (pageIdx + 1) * labelsPerPage);
+
+                let sheet = document.createElement('div');
+                sheet.className = `a4-sheet bg-white shadow-xl relative box-border ${settings.orientation === 'landscape' ? 'a4-landscape' : ''}`;
+                sheet.style.width = a4Width + 'mm';
+                sheet.style.height = a4Height + 'mm';
+                sheet.style.minWidth = a4Width + 'mm';
+                sheet.style.minHeight = a4Height + 'mm';
+                sheet.style.paddingTop = settings.marginTop + 'mm';
+                sheet.style.paddingBottom = settings.marginBottom + 'mm';
+                sheet.style.paddingLeft = settings.marginLeft + 'mm';
+                sheet.style.paddingRight = settings.marginRight + 'mm';
+                sheet.style.pageBreakAfter = 'always';
+
+                let grid = document.createElement('div');
+                grid.style.display = 'grid';
+                grid.style.gridTemplateColumns = `repeat(${cols}, ${settings.labelWidth}mm)`;
+                grid.style.gridTemplateRows = `repeat(${rows}, ${settings.labelHeight}mm)`;
+                grid.style.gap = `${settings.gapV}mm ${settings.gapH}mm`;
+                grid.style.width = '100%';
+                grid.style.height = '100%';
+
+                pageLabels.forEach(item => {
+                    let lbl = document.createElement('div');
+                    lbl.className = "flex flex-col justify-between items-center bg-white box-border select-none overflow-hidden";
+                    lbl.style.width = settings.labelWidth + 'mm';
+                    lbl.style.height = settings.labelHeight + 'mm';
+                    lbl.style.padding = '2mm';
+                    lbl.style.border = settings.showBorder ? '1px dashed #64748b' : 'none';
+
+                    let libHeader = settings.showLibrary ? `<div class="text-[7pt] uppercase tracking-tighter text-slate-700 text-center font-bold leading-none">PERPUSTAKAAN<br>SMPN 1 TINGGIMONCONG</div>` : `<div></div>`;
+                    let serialFooter = settings.showSerial ? `<div class="text-[6pt] text-slate-500 font-mono">Label ${String(item.serial).padStart(3, '0')}</div>` : `<div></div>`;
+
+                    lbl.innerHTML = `
+                        ${libHeader}
+                        <div class="font-mono font-black text-xs sm:text-sm text-center leading-tight my-auto">
+                            ${item.line1}<br>${item.line2}<br>${item.line3}
+                        </div>
+                        ${serialFooter}
+                    `;
+                    grid.appendChild(lbl);
+                });
+
+                // Jika grid kosong di halaman terakhir, isi dengan placeholder transparan agar grid stabil
+                let remainingSlots = labelsPerPage - pageLabels.length;
+                for (let r = 0; r < remainingSlots; r++) {
+                    let emptyLbl = document.createElement('div');
+                    emptyLbl.style.width = settings.labelWidth + 'mm';
+                    emptyLbl.style.height = settings.labelHeight + 'mm';
+                    grid.appendChild(emptyLbl);
+                }
+
+                sheet.appendChild(grid);
+                container.appendChild(sheet);
+            }
+        }
+
+        function printTestPage() {
+            generateA4Preview(true);
+            setTimeout(() => {
+                window.print();
+                generateA4Preview(false); // Kembalikan ke preview penuh
+            }, 300);
+        }
+
+        function triggerPrint() {
+            generateA4Preview(false);
+            setTimeout(() => {
+                window.print();
+            }, 300);
+        }
+
+        // --- IMPORT & EXPORT EXCEL / CSV / JSON ---
+        function exportExcel() {
+            if (books.length === 0) {
+                showModal("Informasi", "Tidak ada data buku untuk diexport.", "warning");
+                return;
+            }
+
+            let dataToExport = books.map((b, idx) => {
+                let cn = parseCallNumber(b);
+                return {
+                    "No": idx + 1,
+                    "Nama Pengarang": b.author,
+                    "Tajuk Entri Utama": b.customEntry || b.author,
+                    "Nomor Klasifikasi": b.classification,
+                    "Judul Buku": b.title,
+                    "Nomor Panggil": `${cn.line1} ${cn.line2} ${cn.line3}`,
+                    "Jumlah Eksemplar": b.copies
+                };
+            });
+
+            let worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            let workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Daftar Buku Perpustakaan");
+            XLSX.writeFile(workbook, "Label_Perpustakaan_SMPN1_Tinggimoncong.xlsx");
+        }
+
+        function exportCSV() {
+            if (books.length === 0) {
+                showModal("Informasi", "Tidak ada data buku untuk diexport.", "warning");
+                return;
+            }
+
+            let csvContent = "\uFEFFNo,Nama Pengarang,Tajuk Utama,Klasifikasi,Judul Buku,Nomor Panggil,Eksemplar\n";
+            books.forEach((b, idx) => {
+                let cn = parseCallNumber(b);
+                let row = [
+                    idx + 1,
+                    `"${b.author}"`,
+                    `"${b.customEntry || b.author}"`,
+                    `"${b.classification}"`,
+                    `"${b.title}"`,
+                    `"${cn.line1} ${cn.line2} ${cn.line3}"`,
+                    b.copies
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+
+            let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = "Label_Perpustakaan_SMPN1_Tinggimoncong.csv";
+            a.click();
+        }
+
+        function importFile(event) {
+            let file = event.target.files[0];
+            if (!file) return;
+
+            let reader = new FileReader();
+            let fileName = file.name.toLowerCase();
+
+            if (fileName.endsWith('.csv')) {
+                reader.onload = function(e) {
+                    parseCSV(e.target.result);
+                };
+                reader.readAsText(file, 'UTF-8');
+            } else {
+                reader.onload = function(e) {
+                    try {
+                        let data = new Uint8Array(e.target.result);
+                        let workbook = XLSX.read(data, { type: 'array' });
+                        let firstSheetName = workbook.SheetNames[0];
+                        let worksheet = workbook.Sheets[firstSheetName];
+                        let json = XLSX.utils.sheet_to_json(worksheet);
+
+                        processImportedData(json);
+                    } catch (err) {
+                        showModal("Error", "Gagal membaca file Excel. Pastikan format benar.", "error");
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+            event.target.value = "";
+        }
+
+        function parseCSV(text) {
+            let lines = text.split('\n');
+            if (lines.length < 2) {
+                showModal("Error", "File CSV kosong atau format tidak valid.", "error");
+                return;
+            }
+
+            let headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+            let imported = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                let row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(val => val.trim().replace(/^"|"$/g, ''));
+                if (row.length >= 4) {
+                    imported.push({
+                        author: row[1] || row[0] || "Tanpa Pengarang",
+                        customEntry: "",
+                        classification: row[3] || row[2] || "000",
+                        title: row[4] || row[1] || "Tanpa Judul",
+                        copies: parseInt(row[6] || row[5] || 1) || 1
+                    });
+                }
+            }
+            processImportedData(imported);
+        }
+
+        function processImportedData(dataArray) {
+            let count = 0;
+            dataArray.forEach(item => {
+                let author = item["Nama Pengarang"] || item["Pengarang"] || item.author;
+                let classification = item["Nomor Klasifikasi"] || item["Klasifikasi"] || item.classification;
+                let title = item["Judul Buku"] || item["Judul"] || item.title;
+                let copies = parseInt(item["Jumlah Eksemplar"] || item["Eksemplar"] || item.copies) || 1;
+                let customEntry = item["Tajuk Entri Utama"] || item["Tajuk Utama"] || item.customEntry || "";
+
+                if (author && classification && title) {
+                    books.push({
+                        id: generateId(),
+                        author: String(author).trim(),
+                        customEntry: String(customEntry).trim(),
+                        classification: String(classification).trim(),
+                        title: String(title).trim(),
+                        copies: copies
+                    });
+                    count++;
+                }
+            });
+
+            saveToLocalStorage();
+            renderTable();
+            showModal("Sukses Berhasil", `Berhasil mengimpor ${count} data buku baru ke dalam sistem.`, "success");
+        }
+
+        function backupJSON() {
+            let backupData = {
+                books: books,
+                settings: settings
+            };
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+            let a = document.createElement('a');
+            a.href = dataStr;
+            a.download = `Backup_Perpus_SMPN1_Tinggimoncong_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+        }
+
+        function restoreJSON(event) {
+            let file = event.target.files[0];
+            if (!file) return;
+
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    let parsed = JSON.parse(e.target.result);
+                    if (parsed.books && Array.isArray(parsed.books)) {
+                        books = parsed.books;
+                        if (parsed.settings) settings = parsed.settings;
+                        saveToLocalStorage();
+                        renderTable();
+                        loadSettingsToUI();
+                        updateLivePreviewBox();
+                        showModal("Sukses", "Data dan pengaturan berhasil dipulihkan dari file JSON.", "success");
+                    } else {
+                        showModal("Error", "Format file JSON cadangan tidak valid.", "error");
+                    }
+                } catch (err) {
+                    showModal("Error", "Gagal mengurai file JSON.", "error");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = "";
+        }
+
+        // --- MODAL KUSTOM HELPERS ---
+        function showModal(title, message, type = "info") {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            let iconContainer = document.getElementById('modal-icon-container');
+            
+            if (type === "success") {
+                iconContainer.className = "w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg";
+                iconContainer.innerText = "✓";
+            } else if (type === "warning") {
+                iconContainer.className = "w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-lg";
+                iconContainer.innerText = "!";
+            } else if (type === "error") {
+                iconContainer.className = "w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-lg";
+                iconContainer.innerText = "✕";
+            } else {
+                iconContainer.className = "w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg";
+                iconContainer.innerText = "i";
+            }
+
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        function startFreshData() {
+            books = [];
+            saveToLocalStorage();
+            renderTable();
+            document.getElementById('restore-modal').classList.add('hidden');
+        }
+
+        function confirmRestoreData() {
+            loadFromLocalStorage();
+            renderTable();
+            loadSettingsToUI();
+            document.getElementById('restore-modal').classList.add('hidden');
+            showModal("Sukses", "Data lokal berhasil dimuat kembali.", "success");
+        }
+    </script>
+</body>
+</html>
+```
