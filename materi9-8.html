@@ -1,0 +1,1017 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Informatika Chibi - Evaluasi Seru & Beranimasi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka for cute playful look -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', cursive, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-slow {
+            animation: bounce-slow 2s infinite;
+        }
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-wave {
+            animation: wave 4s linear infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(168, 85, 247, 0.8); }
+        }
+        .glow-effect {
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes pop-in {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-700 flex flex-col justify-between overflow-x-hidden">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white/90 backdrop-blur-md shadow-lg py-4 px-6 sticky top-0 z-50 border-b-4 border-purple-200">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-gradient-to-tr from-pink-400 to-purple-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-md animate-bounce-slow transform hover:rotate-12 transition-transform">
+                    🐱
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">Misi Kiko & Koko: Informatika Ceria</h1>
+                    <p class="text-xs text-slate-500 font-medium">Belajar & Minigame Beranimasi Interaktif Kelas</p>
+                </div>
+            </div>
+            <div id="user-badge" class="hidden bg-purple-100 px-4 py-2 rounded-2xl text-purple-700 font-bold text-sm border-2 border-purple-300 shadow-sm animate-pop flex items-center space-x-2">
+                <span>👤 <span id="display-name">-</span></span>
+                <span class="bg-purple-600 text-white px-2.5 py-0.5 rounded-xl text-xs">Skor: <span id="display-score">0</span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl w-full mx-auto p-4 sm:p-6 my-auto">
+
+        <!-- SCREEN 1: WELCOME SCREEN -->
+        <div id="screen-welcome" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 text-center border-4 border-pink-300 transition-all duration-500 animate-pop">
+            <div class="w-32 h-32 mx-auto bg-gradient-to-tr from-pink-100 to-purple-100 rounded-3xl flex items-center justify-center mb-6 shadow-inner animate-float text-7xl border-2 border-pink-200">
+                🧁
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-purple-700 mb-3">Selamat Datang di Petualangan Informatika!</h2>
+            <p class="text-slate-600 max-w-lg mx-auto mb-8 text-sm sm:text-base leading-relaxed">
+                Jelajahi materi Berpikir Komputasional, Sistem Bilangan, dan Struktur Data Stack dengan minigame interaktif penuh animasi warna-warni!
+            </p>
+            
+            <div class="max-w-sm mx-auto space-y-4">
+                <input type="text" id="student-name" placeholder="Ketik nama siswa atau kelompok..." class="w-full px-5 py-4 rounded-2xl border-3 border-purple-200 focus:outline-none focus:border-purple-500 text-center text-lg font-bold bg-purple-50/50 shadow-inner transition-all">
+                <button onclick="startEvaluation()" class="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:opacity-95 text-white font-extrabold py-4 px-6 rounded-2xl shadow-xl transform hover:-translate-y-1 transition-all text-lg flex items-center justify-center space-x-3 glow-effect">
+                    <span>Mulai Petualangan</span>
+                    <span class="text-2xl animate-bounce">🚀</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN: MATERIAL 1 (Berpikir Komputasional) -->
+        <div id="screen-mat1" class="hidden bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 border-4 border-purple-300 animate-pop">
+            <div class="flex items-center space-x-3 mb-4 border-b-2 border-purple-100 pb-4">
+                <div class="text-4xl animate-bounce-slow">🤖</div>
+                <div>
+                    <span class="bg-purple-100 text-purple-700 text-xs font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider">Materi 1</span>
+                    <h3 class="text-2xl font-extrabold text-slate-800">Berpikir Komputasional & Algoritma</h3>
+                </div>
+            </div>
+            <div class="bg-purple-50/80 p-6 rounded-2xl border-2 border-purple-200 space-y-4 mb-6 text-sm sm:text-base text-slate-700 shadow-inner">
+                <p class="flex items-start space-x-2"><span>🧩</span><span><strong>Dekomposisi:</strong> Memecah masalah besar & rumit menjadi bagian-bagian kecil yang sederhana agar mudah dikelola.</span></p>
+                <p class="flex items-start space-x-2"><span>🔍</span><span><strong>Pengenalan Pola:</strong> Mengamati kesamaan, tren, atau keteraturan data untuk menemukan solusi seragam.</span></p>
+                <p class="flex items-start space-x-2"><span>🎨</span><span><strong>Abstraksi:</strong> Menyaring informasi penting dan mengabaikan detail kecil yang tidak relevan.</span></p>
+                <p class="flex items-start space-x-2"><span>📋</span><span><strong>Algoritma:</strong> Urutan langkah-langkah logis, teratur, dan sistematis untuk menyelesaikan masalah.</span></p>
+            </div>
+            <button onclick="startMod1Quiz()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-95 text-white font-extrabold py-4 rounded-2xl shadow-lg transition-all text-base flex items-center justify-center space-x-2 transform hover:scale-[1.01]">
+                <span>Mulai Kuis Modul 1 🎯</span>
+            </button>
+        </div>
+
+        <!-- SCREEN 2: MODULE 1 QUIZ (Berpikir Komputasional) -->
+        <div id="screen-mod1" class="hidden bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 border-4 border-purple-300 animate-pop">
+            <div class="flex justify-between items-center mb-6 border-b-2 border-purple-100 pb-4">
+                <span class="bg-purple-100 text-purple-700 text-xs font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider">Kuis Modul 1</span>
+                <span class="text-sm font-extrabold text-purple-600 bg-purple-50 px-3 py-1 rounded-full" id="mod1-counter">Pertanyaan 1 dari 3</span>
+            </div>
+            <div class="flex items-start space-x-4 mb-6">
+                <div class="text-4xl animate-bounce">🤖</div>
+                <div>
+                    <h3 id="mod1-question" class="text-lg sm:text-xl font-bold text-slate-800 mb-2"></h3>
+                    <p class="text-xs text-purple-600 font-bold">Pilihlah jawaban yang paling tepat di bawah ini!</p>
+                </div>
+            </div>
+            <div id="mod1-options" class="space-y-3 mb-6"></div>
+            <div id="mod1-feedback" class="hidden p-4 rounded-2xl mb-4 font-medium text-sm animate-pop"></div>
+            <button id="mod1-next" onclick="nextMod1()" class="hidden w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-2xl transition-all shadow-md transform hover:scale-[1.01]">
+                Lanjut ke Pertanyaan Berikutnya ➡️
+            </button>
+        </div>
+
+        <!-- SCREEN 3: MINI GAME 1 (Misi Menyeberang Sungai Beranimasi Chibi) -->
+        <div id="screen-game1" class="hidden bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 border-4 border-yellow-300 text-center animate-pop">
+            <div class="inline-block bg-yellow-100 text-yellow-800 text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider mb-2 shadow-sm">Minigame Istirahat Interaktif 🛶</div>
+            <h3 class="text-2xl font-extrabold text-slate-800 mb-1">Misi Menyeberang Sungai: Pendeta & Goblin</h3>
+            <p class="text-slate-600 text-sm mb-4">Pindahkan 3 Pendeta (🧘‍♂️) dan 3 Goblin (👺) ke seberang kanan. <strong>Aturan:</strong> Goblin tidak boleh lebih banyak dari pendeta jika pendeta hadir!</p>
+            
+            <div id="river-msg" class="text-xs font-bold text-purple-700 bg-purple-50 border border-purple-200 p-3 rounded-2xl mb-4 shadow-inner animate-pulse">Klik karakter untuk menaikkan/menurunkan perahu, lalu klik "Seberangkan Perahu"!</div>
+
+            <!-- Animated River Container -->
+            <div class="grid grid-cols-3 gap-2 bg-gradient-to-b from-sky-50 to-blue-100 border-3 border-blue-300 rounded-3xl p-4 mb-4 items-center min-h-[200px] relative overflow-hidden shadow-inner">
+                
+                <!-- Left Bank -->
+                <div class="flex flex-col items-center justify-center bg-white/90 p-3 rounded-2xl border-2 border-blue-200 shadow-md z-10">
+                    <span class="text-xs font-extrabold text-slate-600 mb-2">Daratan Kiri</span>
+                    <div id="left-bank-chars" class="flex flex-wrap gap-2 justify-center min-h-[70px] cursor-pointer"></div>
+                </div>
+
+                <!-- River & Moving Boat Animation -->
+                <div class="flex flex-col items-center justify-center bg-blue-300/40 p-3 rounded-2xl border-2 border-dashed border-blue-400 relative z-10 overflow-hidden">
+                    <div class="absolute inset-0 bg-blue-400/10 animate-wave pointer-events-none"></div>
+                    <span class="text-xs font-extrabold text-blue-800 mb-1">Perahu 🛶 (<span id="boat-side">Kiri</span>)</span>
+                    <div id="boat-chars" class="flex flex-wrap gap-1 justify-center min-h-[50px] bg-white/95 p-2 rounded-2xl w-full mb-2 shadow-sm border border-blue-200 transition-all transform duration-500"></div>
+                    <button onclick="sailBoat()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold py-2.5 px-5 rounded-2xl text-xs shadow-lg transition-all transform hover:scale-105">Seberangkan 🌊</button>
+                </div>
+
+                <!-- Right Bank -->
+                <div class="flex flex-col items-center justify-center bg-white/90 p-3 rounded-2xl border-2 border-blue-200 shadow-md z-10">
+                    <span class="text-xs font-extrabold text-slate-600 mb-2">Daratan Kanan</span>
+                    <div id="right-bank-chars" class="flex flex-wrap gap-2 justify-center min-h-[70px] cursor-pointer"></div>
+                </div>
+            </div>
+
+            <div class="flex space-x-3">
+                <button onclick="resetGame1()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3.5 rounded-2xl transition-all text-sm shadow-sm">Ulangi Misi 🔄</button>
+                <button id="game1-next" onclick="finishGame1()" class="hidden w-1/2 bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-95 text-white font-extrabold py-3.5 rounded-2xl transition-all shadow-lg text-sm glow-effect">Lanjut ke Materi 2 🚀</button>
+            </div>
+        </div>
+
+        <!-- SCREEN: MATERIAL 2 (Sistem Bilangan & Abstraksi) -->
+        <div id="screen-mat2" class="hidden bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 border-4 border-blue-300 animate-pop">
+            <div class="flex items-center space-x-3 mb-4 border-b-2 border-blue-100 pb-4">
+                <div class="text-4xl animate-bounce-slow">🔢</div>
+                <div>
+                    <span class="bg-blue-100 text-blue-700 text-xs font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider">Materi 2</span>
+                    <h3 class="text-2xl font-extrabold text-slate-800">Abstraksi Data & Sistem Bilangan</h3>
+                </div>
+            </div>
+            <div class="bg-blue-50/80 p-6 rounded-2xl border-2 border-blue-200 space-y-4 mb-6 text-sm sm:text-base text-slate-700 shadow-inner">
+                <p class="flex items-start space-x-2"><span>💻</span><span><strong>Abstraksi Data:</strong> Representasi data dunia nyata (teks, angka, warna, suara) ke dalam format digital komputer.</span></p>
+                <p class="flex items-start space-x-2"><span>⚡</span><span><strong>Bilangan Biner (Basis 2):</strong> Sistem bilangan digital yang hanya terdiri dari angka <code class="bg-blue-200 px-2 py-0.5 rounded text-blue-900 font-bold">0</code> dan <code class="bg-blue-200 px-2 py-0.5 rounded text-blue-900 font-bold">1</code>.</span></p>
+                <p class="flex items-start space-x-2"><span>🔄</span><span><strong>Desimal & Biner:</strong> Konversi desimal ke biner dengan sisa bagi 2, dan biner ke desimal dengan penjumlahan nilai perpangkatan 2.</span></p>
+                <p class="flex items-start space-x-2"><span>🔢</span><span><strong>Sistem Oktal (Basis 8):</strong> Menggunakan angka 0–7, dikonversi dari biner dengan mengelompokkan 3 bit dari kanan.</span></p>
+            </div>
+            <button onclick="startMod2Quiz()" class="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:opacity-95 text-white font-extrabold py-4 rounded-2xl shadow-lg transition-all text-base flex items-center justify-center space-x-2 transform hover:scale-[1.01]">
+                <span>Mulai Kuis Modul 2 🎯</span>
+            </button>
+        </div>
+
+        <!-- SCREEN 4: MODULE 2 QUIZ (Sistem Bilangan & Abstraksi) -->
+        <div id="screen-mod2" class="hidden bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 border-4 border-blue-300 animate-pop">
+            <div class="flex justify-between items-center mb-6 border-b-2 border-blue-100 pb-4">
+                <span class="bg-blue-100 text-blue-700 text-xs font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider">Kuis Modul 2</span>
+                <span class="text-sm font-extrabold text-blue-600 bg-blue-50 px-3 py-1 rounded-full" id="mod2-counter">Pertanyaan 1 dari 4</span>
+            </div>
+            <div class="flex items-start space-x-4 mb-6">
+                <div class="text-4xl animate-bounce">🔢</div>
+                <div>
+                    <h3 id="mod2-question" class="text-lg sm:text-xl font-bold text-slate-800 mb-2"></h3>
+                    <p class="text-xs text-blue-600 font-bold">Pilihlah jawaban yang paling tepat di bawah ini!</p>
+                </div>
+            </div>
+            <div id="mod2-options" class="space-y-3 mb-6"></div>
+            <div id="mod2-feedback" class="hidden p-4 rounded-2xl mb-4 font-medium text-sm animate-pop"></div>
+            <button id="mod2-next" onclick="nextMod2()" class="hidden w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-2xl transition-all shadow-md transform hover:scale-[1.01]">
+                Lanjut ke Pertanyaan Berikutnya ➡️
+            </button>
+        </div>
+
+        <!-- SCREEN 5: MINI GAME 2 (Teka-Teki Saklar Lampu Biner Beranimasi) -->
+        <div id="screen-game2" class="hidden bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 border-4 border-pink-300 text-center animate-pop">
+            <div class="inline-block bg-pink-100 text-pink-800 text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider mb-2 shadow-sm">Minigame Istirahat 💡</div>
+            <h3 class="text-2xl font-extrabold text-slate-800 mb-1">Teka-Teki Saklar Lampu Biner Chibi!</h3>
+            <p class="text-slate-600 text-sm mb-4">Nyalakan saklar (0 / 1) hingga total bobot nilainya tepat sama dengan angka <strong>Target Desimal</strong>!</p>
+            
+            <div class="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 p-6 rounded-3xl border-3 border-purple-200 max-w-md mx-auto mb-6 shadow-inner">
+                <p class="text-xs font-extrabold text-slate-500 uppercase mb-1">Target Angka Desimal</p>
+                <div id="binary-target" class="text-6xl font-extrabold text-purple-700 mb-4 animate-bounce-slow">6</div>
+                
+                <div class="grid grid-cols-4 gap-3 mb-5">
+                    <!-- Bit 3 (8) -->
+                    <div class="bg-white p-3 rounded-2xl border-2 border-slate-200 text-center shadow-md">
+                        <span class="text-xs text-slate-400 font-bold block mb-1">8</span>
+                        <div id="bulb-3" class="text-2xl mb-1 transition-transform transform duration-300">🌑</div>
+                        <button onclick="toggleBit(3)" id="bit-3" class="w-full py-2 rounded-xl font-extrabold text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 transition-all shadow">0</button>
+                    </div>
+                    <!-- Bit 2 (4) -->
+                    <div class="bg-white p-3 rounded-2xl border-2 border-slate-200 text-center shadow-md">
+                        <span class="text-xs text-slate-400 font-bold block mb-1">4</span>
+                        <div id="bulb-2" class="text-2xl mb-1 transition-transform transform duration-300">🌑</div>
+                        <button onclick="toggleBit(2)" id="bit-2" class="w-full py-2 rounded-xl font-extrabold text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 transition-all shadow">0</button>
+                    </div>
+                    <!-- Bit 1 (2) -->
+                    <div class="bg-white p-3 rounded-2xl border-2 border-slate-200 text-center shadow-md">
+                        <span class="text-xs text-slate-400 font-bold block mb-1">2</span>
+                        <div id="bulb-1" class="text-2xl mb-1 transition-transform transform duration-300">🌑</div>
+                        <button onclick="toggleBit(1)" id="bit-1" class="w-full py-2 rounded-xl font-extrabold text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 transition-all shadow">0</button>
+                    </div>
+                    <!-- Bit 0 (1) -->
+                    <div class="bg-white p-3 rounded-2xl border-2 border-slate-200 text-center shadow-md">
+                        <span class="text-xs text-slate-400 font-bold block mb-1">1</span>
+                        <div id="bulb-0" class="text-2xl mb-1 transition-transform transform duration-300">🌑</div>
+                        <button onclick="toggleBit(0)" id="bit-0" class="w-full py-2 rounded-xl font-extrabold text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 transition-all shadow">0</button>
+                    </div>
+                </div>
+
+                <div class="text-sm font-bold text-slate-700 bg-white/80 py-3 px-4 rounded-2xl border border-purple-100 shadow-sm">
+                    Nilai Saat Ini: <span id="binary-current-sum" class="text-purple-600 font-extrabold text-xl">0</span> | Biner: <span id="binary-string" class="font-mono bg-purple-50 px-2.5 py-1 rounded-xl text-pink-600 font-bold">0000</span>
+                </div>
+            </div>
+
+            <div id="binary-message" class="text-sm font-extrabold text-purple-700 mb-4 h-6">Nyalakan saklar agar jumlahnya sesuai target!</div>
+            
+            <button id="binary-next-btn" onclick="nextBinaryLevel()" class="hidden w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-95 text-white font-extrabold py-4 rounded-2xl shadow-xl transition-all glow-effect">
+                Lanjut ke Materi 3 🚀
+            </button>
+        </div>
+
+        <!-- SCREEN: MATERIAL 3 (Struktur Data Tumpukan / Stack) -->
+        <div id="screen-mat3" class="hidden bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 border-4 border-emerald-300 animate-pop">
+            <div class="flex items-center space-x-3 mb-4 border-b-2 border-emerald-100 pb-4">
+                <div class="text-4xl animate-bounce-slow">🥞</div>
+                <div>
+                    <span class="bg-emerald-100 text-emerald-700 text-xs font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider">Materi 3</span>
+                    <h3 class="text-2xl font-extrabold text-slate-800">Struktur Data Tumpukan (Stack)</h3>
+                </div>
+            </div>
+            <div class="bg-emerald-50/80 p-6 rounded-2xl border-2 border-emerald-200 space-y-4 mb-6 text-sm sm:text-base text-slate-700 shadow-inner">
+                <p class="flex items-start space-x-2"><span>📚</span><span><strong>Konsep Stack:</strong> Struktur data linear di mana penambahan dan penghapusan data hanya lewat satu ujung (puncak).</span></p>
+                <p class="flex items-start space-x-2"><span>🔄</span><span><strong>Prinsip LIFO (Last In, First Out):</strong> Data yang terakhir masuk akan menjadi data yang pertama kali keluar.</span></p>
+                <p class="flex items-start space-x-2"><span>➕</span><span><strong>Operasi Push:</strong> Perintah untuk menambahkan atau memasukkan elemen data baru ke puncak tumpukan.</span></p>
+                <p class="flex items-start space-x-2"><span>🔝</span><span><strong>Pop & TOS (Top of Stack):</strong> <strong>Pop</strong> menghapus data teratas, sedangkan <strong>TOS</strong> adalah penunjuk posisi elemen teratas.</span></p>
+            </div>
+            <button onclick="startMod3Quiz()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white font-extrabold py-4 rounded-2xl shadow-lg transition-all text-base flex items-center justify-center space-x-2 transform hover:scale-[1.01]">
+                <span>Mulai Kuis Modul 3 🎯</span>
+            </button>
+        </div>
+
+        <!-- SCREEN 6: MODULE 3 QUIZ (Struktur Data Tumpukan / Stack) -->
+        <div id="screen-mod3" class="hidden bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 border-4 border-emerald-300 animate-pop">
+            <div class="flex justify-between items-center mb-6 border-b-2 border-emerald-100 pb-4">
+                <span class="bg-emerald-100 text-emerald-700 text-xs font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider">Kuis Modul 3</span>
+                <span class="text-sm font-extrabold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full" id="mod3-counter">Pertanyaan 1 dari 3</span>
+            </div>
+            <div class="flex items-start space-x-4 mb-6">
+                <div class="text-4xl animate-bounce">🥞</div>
+                <div>
+                    <h3 id="mod3-question" class="text-lg sm:text-xl font-bold text-slate-800 mb-2"></h3>
+                    <p class="text-xs text-emerald-600 font-bold">Pilihlah jawaban yang paling tepat di bawah ini!</p>
+                </div>
+            </div>
+            <div id="mod3-options" class="space-y-3 mb-6"></div>
+            <div id="mod3-feedback" class="hidden p-4 rounded-2xl mb-4 font-medium text-sm animate-pop"></div>
+            <button id="mod3-next" onclick="nextMod3()" class="hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl transition-all shadow-md transform hover:scale-[1.01]">
+                Lihat Hasil Evaluasi 🎉
+            </button>
+        </div>
+
+        <!-- SCREEN 7: RESULT / FINISH SCREEN -->
+        <div id="screen-finish" class="hidden bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 text-center border-4 border-yellow-400 animate-pop">
+            <div class="w-32 h-32 mx-auto bg-gradient-to-tr from-yellow-100 to-amber-200 rounded-3xl flex items-center justify-center mb-6 shadow-inner animate-float text-7xl border-2 border-yellow-300">
+                🏆
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-purple-700 mb-2">Hebat Sekali, Luar Biasa!</h2>
+            <p class="text-slate-600 mb-6 text-sm sm:text-base">Kamu telah menyelesaikan seluruh modul materi, minigame beranimasi, dan evaluasi informatika.</p>
+            
+            <div class="bg-gradient-to-r from-purple-50 via-pink-50 to-indigo-50 p-6 rounded-3xl border-3 border-purple-200 max-w-sm mx-auto mb-8 shadow-md">
+                <p class="text-xs uppercase font-extrabold text-purple-500 tracking-wider mb-1">Hasil Akhir Siswa / Kelompok</p>
+                <p id="final-name" class="text-2xl font-extrabold text-slate-800 mb-2">-</p>
+                <div class="text-5xl font-extrabold text-pink-600 mb-2"><span id="final-score">0</span> <span class="text-xl text-slate-400">/ 100</span></div>
+                <p id="final-message" class="text-xs text-slate-600 font-bold"></p>
+            </div>
+
+            <button onclick="restartApp()" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-95 text-white font-extrabold py-4 px-8 rounded-2xl shadow-xl transition-all text-base transform hover:scale-105 glow-effect">
+                🔄 Ulangi Materi dari Awal
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs font-semibold text-slate-500">
+        Dibuat khusus untuk Pembelajaran Kelas Interaktif Beranimasi ✨
+    </footer>
+
+    <!-- JavaScript Application Logic with Audio & Animations -->
+    <script>
+        // Web Audio API Sound Synthesizer for engaging interactive audio feedback
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                if (type === 'click') {
+                    osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.08);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.35);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(100, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                }
+            } catch(e) {}
+        }
+
+        // Global App State
+        let studentName = "";
+        let score = 0;
+        
+        // Modul 1 Data (Berpikir Komputasional)
+        const mod1Data = [
+            {
+                q: "Apa yang dimaksud dengan proses 'Dekomposisi' dalam berpikir komputasional?",
+                options: [
+                    "Memecah masalah besar dan kompleks menjadi bagian-bagian kecil yang lebih mudah dikelola.",
+                    "Menggabungkan seluruh masalah acak menjadi satu kesatuan yang rumit.",
+                    "Menghapus bagian penting dari sebuah sistem komputer.",
+                    "Menyimpan data di dalam flashdisk atau harddisk eksternal."
+                ],
+                correct: 0,
+                explanation: "Dekomposisi adalah teknik memecah masalah besar menjadi sub-masalah yang lebih kecil agar lebih mudah diselesaikan satu persatu."
+            },
+            {
+                q: "Urutan langkah-langkah logis dan sistematis untuk menyelesaikan suatu masalah disebut...",
+                options: [
+                    "Abstraksi",
+                    "Algoritma",
+                    "Dekomposisi",
+                    "Sistem Biner"
+                ],
+                correct: 1,
+                explanation: "Algoritma adalah urutan langkah logis yang teratur untuk menyelesaikan masalah komputasi."
+            },
+            {
+                q: "Manakah contoh penerapan pengenalan pola (pattern recognition) dalam kehidupan sehari-hari?",
+                options: [
+                    "Makan malam bersama keluarga di ruang tamu.",
+                    "Mengenali bentuk awan hitam tebal sebagai tanda akan turun hujan berdasarkan pengalaman sebelumnya.",
+                    "Membeli buku baru di toko buku terdekat.",
+                    "Mematikan lampu kamar saat tidur."
+                ],
+                correct: 1,
+                explanation: "Pengenalan pola melibatkan pengamatan kesamaan atau karakteristik yang berulang untuk memprediksi atau menyelesaikan masalah."
+            }
+        ];
+        let mod1Index = 0;
+
+        // Modul 2 Data (Sistem Bilangan & Abstraksi)
+        const mod2Data = [
+            {
+                q: "Sistem bilangan berbasis 2 yang hanya menggunakan angka 0 dan 1 di dalam komputer disebut...",
+                options: [
+                    "Sistem Desimal",
+                    "Sistem Oktal",
+                    "Sistem Biner",
+                    "Sistem Hexadesimal"
+                ],
+                correct: 2,
+                explanation: "Sistem biner adalah dasar dari semua pemrosesan data digital di dalam komputer, hanya menggunakan angka 0 dan 1."
+            },
+            {
+                q: "Berapakah nilai desimal dari bilangan biner 1010?",
+                options: [
+                    "8",
+                    "10",
+                    "12",
+                    "6"
+                ],
+                correct: 1,
+                explanation: "Perhitungan biner 1010: (1×8) + (0×4) + (1×2) + (0×1) = 8 + 0 + 2 + 0 = 10."
+            },
+            {
+                q: "Konversikan bilangan desimal 6 ke dalam bentuk bilangan biner!",
+                options: [
+                    "110",
+                    "101",
+                    "111",
+                    "100"
+                ],
+                correct: 0,
+                explanation: "Desimal 6 dibagi 2 bersisa 0, 3 dibagi 2 bersisa 1, 1 dibagi 2 sisa 1. Dibaca dari bawah ke atas menjadi 110."
+            },
+            {
+                q: "Bagaimana cara konversi bilangan biner ke oktal atau sebaliknya dalam sistem komputer?",
+                options: [
+                    "Biner dikelompokkan menjadi 3 bit dari kanan untuk diubah ke oktal.",
+                    "Biner dikalikan dengan 10 secara langsung.",
+                    "Oktal diubah menjadi basis 16 tanpa aturan.",
+                    "Tidak ada hubungan antara biner dan oktal."
+                ],
+                correct: 0,
+                explanation: "Konversi biner ke oktal dilakukan dengan mengelompokkan digit biner menjadi 3 bit dari kanan, karena 2 pangkat 3 sama dengan 8."
+            }
+        ];
+        let mod2Index = 0;
+
+        // Modul 3 Data (Struktur Data Tumpukan / Stack)
+        const mod3Data = [
+            {
+                q: "Prinsip utama yang digunakan pada struktur data Stack (Tumpukan) adalah...",
+                options: [
+                    "FIFO (First In, First Out)",
+                    "LIFO (Last In, First Out)",
+                    "Random Access",
+                    "Queue Order"
+                ],
+                correct: 1,
+                explanation: "Stack menggunakan prinsip LIFO (Last In, First Out), di mana elemen yang terakhir masuk akan menjadi elemen yang pertama keluar."
+            },
+            {
+                q: "Operasi penambahan atau memasukkan data baru ke dalam puncak Stack dinamakan...",
+                options: [
+                    "Pop",
+                    "Push",
+                    "Peek",
+                    "Clear"
+                ],
+                correct: 1,
+                explanation: "Push adalah operasi untuk meletakkan data baru di atas tumpukan (Top of Stack)."
+            },
+            {
+                q: "Apa arti dari istilah TOS (Top of Stack) dalam struktur data tumpukan?",
+                options: [
+                    "Posisi elemen yang berada di bagian paling dasar tumpukan.",
+                    "Jumlah total seluruh item di dalam memori.",
+                    "Posisi elemen yang berada di bagian paling atas tumpukan.",
+                    "Proses menghapus seluruh data sekaligus."
+                ],
+                correct: 2,
+                explanation: "TOS (Top of Stack) menunjuk pada elemen teratas dari tumpukan saat ini."
+            }
+        ];
+        let mod3Index = 0;
+
+        // Start Evaluation
+        function startEvaluation() {
+            playSound('click');
+            const nameInput = document.getElementById("student-name").value.trim();
+            if(!nameInput) {
+                playSound('error');
+                alert("Mohon masukkan nama siswa atau kelompok terlebih dahulu ya! 😊");
+                return;
+            }
+            studentName = nameInput;
+            score = 0;
+            document.getElementById("display-name").textContent = studentName;
+            document.getElementById("display-score").textContent = score;
+            document.getElementById("user-badge").classList.remove("hidden");
+
+            document.getElementById("screen-welcome").classList.add("hidden");
+            document.getElementById("screen-mat1").classList.remove("hidden");
+        }
+
+        // Material 1 to Mod 1 Quiz
+        function startMod1Quiz() {
+            playSound('click');
+            document.getElementById("screen-mat1").classList.add("hidden");
+            document.getElementById("screen-mod1").classList.remove("hidden");
+            loadMod1();
+        }
+
+        // Modul 1 Handler
+        function loadMod1() {
+            const current = mod1Data[mod1Index];
+            document.getElementById("mod1-counter").textContent = `Pertanyaan ${mod1Index + 1} dari 3`;
+            document.getElementById("mod1-question").textContent = current.q;
+            
+            const optContainer = document.getElementById("mod1-options");
+            optContainer.innerHTML = "";
+            document.getElementById("mod1-feedback").classList.add("hidden");
+            document.getElementById("mod1-next").classList.add("hidden");
+
+            current.options.forEach((opt, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "w-full text-left p-4 rounded-2xl border-2 border-purple-100 hover:border-purple-400 bg-purple-50/50 hover:bg-purple-100 font-bold text-slate-700 transition-all text-sm sm:text-base shadow-sm transform hover:scale-[1.01]";
+                btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                btn.onclick = () => selectMod1(idx);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function selectMod1(selectedIndex) {
+            const current = mod1Data[mod1Index];
+            const optButtons = document.getElementById("mod1-options").children;
+            
+            for(let i=0; i<optButtons.length; i++) {
+                optButtons[i].disabled = true;
+                if(i === current.correct) {
+                    optButtons[i].classList.add("bg-emerald-100", "border-emerald-500", "text-emerald-900");
+                } else if(i === selectedIndex) {
+                    optButtons[i].classList.add("bg-pink-100", "border-pink-400", "text-pink-900", "animate-shake");
+                }
+            }
+
+            const feedback = document.getElementById("mod1-feedback");
+            feedback.classList.remove("hidden");
+            if(selectedIndex === current.correct) {
+                playSound('success');
+                score += 10;
+                document.getElementById("display-score").textContent = score;
+                feedback.className = "p-4 rounded-2xl mb-4 font-bold text-sm bg-emerald-50 border-2 border-emerald-200 text-emerald-800 animate-pop";
+                feedback.innerHTML = `✨ <strong>Hebat! Jawaban Kamu Benar!</strong><br>${current.explanation}`;
+            } else {
+                playSound('error');
+                feedback.className = "p-4 rounded-2xl mb-4 font-bold text-sm bg-pink-50 border-2 border-pink-200 text-pink-800 animate-pop";
+                feedback.innerHTML = `💡 <strong>Kurang tepat.</strong><br>${current.explanation}`;
+            }
+            document.getElementById("mod1-next").classList.remove("hidden");
+        }
+
+        function nextMod1() {
+            playSound('click');
+            mod1Index++;
+            if(mod1Index < mod1Data.length) {
+                loadMod1();
+            } else {
+                document.getElementById("screen-mod1").classList.add("hidden");
+                document.getElementById("screen-game1").classList.remove("hidden");
+                initGame1();
+            }
+        }
+
+        // Minigame 1 Logic (Missionaries & Cannibals River Crossing) with Animation
+        let riverState = {
+            left: { monks: 3, goblins: 3 },
+            right: { monks: 0, goblins: 0 },
+            boat: { monks: 0, goblins: 0 },
+            boatSide: 'left'
+        };
+
+        function initGame1() {
+            riverState = {
+                left: { monks: 3, goblins: 3 },
+                right: { monks: 0, goblins: 0 },
+                boat: { monks: 0, goblins: 0 },
+                boatSide: 'left'
+            };
+            renderRiver();
+            document.getElementById("river-msg.textContent = 'Klik karakter untuk menaikkan/menurunkan perahu (maks 2 penumpang), lalu seberangkan!'");
+            document.getElementById("game1-next").classList.add("hidden");
+        }
+
+        function renderRiver() {
+            document.getElementById("boat-side").textContent = riverState.boatSide === 'left' ? 'Kiri' : 'Kanan';
+            
+            // Left Bank Render
+            const leftEl = document.getElementById("left-bank-chars");
+            leftEl.innerHTML = "";
+            for(let i=0; i<riverState.left.monks; i++) {
+                const btn = document.createElement("button");
+                btn.className = "w-11 h-11 bg-purple-100 hover:bg-purple-200 rounded-2xl text-2xl flex items-center justify-center shadow-sm border-2 border-purple-300 transition-all transform hover:scale-110";
+                btn.textContent = "🧘‍♂️";
+                btn.onclick = () => boardBoat('monk', 'left');
+                leftEl.appendChild(btn);
+            }
+            for(let i=0; i<riverState.left.goblins; i++) {
+                const btn = document.createElement("button");
+                btn.className = "w-11 h-11 bg-pink-100 hover:bg-pink-200 rounded-2xl text-2xl flex items-center justify-center shadow-sm border-2 border-pink-300 transition-all transform hover:scale-110";
+                btn.textContent = "👺";
+                btn.onclick = () => boardBoat('goblin', 'left');
+                leftEl.appendChild(btn);
+            }
+            if(riverState.left.monks === 0 && riverState.left.goblins === 0) {
+                leftEl.innerHTML = `<span class="text-slate-400 text-xs italic my-auto">Kosong</span>`;
+            }
+
+            // Boat Render
+            const boatEl = document.getElementById("boat-chars");
+            boatEl.innerHTML = "";
+            for(let i=0; i<riverState.boat.monks; i++) {
+                const btn = document.createElement("button");
+                btn.className = "w-11 h-11 bg-purple-200 hover:bg-purple-300 rounded-2xl text-2xl flex items-center justify-center shadow-sm border-2 border-purple-400 transition-all transform hover:scale-110 animate-pop";
+                btn.textContent = "🧘‍♂️";
+                btn.onclick = () => unboardBoat('monk');
+                boatEl.appendChild(btn);
+            }
+            for(let i=0; i<riverState.boat.goblins; i++) {
+                const btn = document.createElement("button");
+                btn.className = "w-11 h-11 bg-pink-200 hover:bg-pink-300 rounded-2xl text-2xl flex items-center justify-center shadow-sm border-2 border-pink-400 transition-all transform hover:scale-110 animate-pop";
+                btn.textContent = "👺";
+                btn.onclick = () => unboardBoat('goblin');
+                boatEl.appendChild(btn);
+            }
+            if(riverState.boat.monks === 0 && riverState.boat.goblins === 0) {
+                boatEl.innerHTML = `<span class="text-slate-400 text-xs italic my-auto">Perahu Kosong</span>`;
+            }
+
+            // Right Bank Render
+            const rightEl = document.getElementById("right-bank-chars");
+            rightEl.innerHTML = "";
+            for(let i=0; i<riverState.right.monks; i++) {
+                const btn = document.createElement("button");
+                btn.className = "w-11 h-11 bg-purple-100 hover:bg-purple-200 rounded-2xl text-2xl flex items-center justify-center shadow-sm border-2 border-purple-300 transition-all transform hover:scale-110";
+                btn.textContent = "🧘‍♂️";
+                btn.onclick = () => boardBoat('monk', 'right');
+                rightEl.appendChild(btn);
+            }
+            for(let i=0; i<riverState.right.goblins; i++) {
+                const btn = document.createElement("button");
+                btn.className = "w-11 h-11 bg-pink-100 hover:bg-pink-200 rounded-2xl text-2xl flex items-center justify-center shadow-sm border-2 border-pink-300 transition-all transform hover:scale-110";
+                btn.textContent = "👺";
+                btn.onclick = () => boardBoat('goblin', 'right');
+                rightEl.appendChild(btn);
+            }
+            if(riverState.right.monks === 0 && riverState.right.goblins === 0) {
+                rightEl.innerHTML = `<span class="text-slate-400 text-xs italic my-auto">Kosong</span>`;
+            }
+
+            // Check Win Condition
+            if(riverState.right.monks === 3 && riverState.right.goblins === 3) {
+                playSound('success');
+                document.getElementById("river-msg").textContent = "🎉 Luar Biasa! Semua Pendeta & Goblin berhasil menyeberang dengan aman!";
+                document.getElementById("game1-next").classList.remove("hidden");
+                score += 15;
+                document.getElementById("display-score").textContent = score;
+            }
+        }
+
+        function boardBoat(type, side) {
+            if(side !== riverState.boatSide) {
+                playSound('error');
+                document.getElementById("river-msg").textContent = "⚠️ Perahu sedang berada di sisi seberang yang lain!";
+                return;
+            }
+            playSound('click');
+            const totalBoat = riverState.boat.monks + riverState.boat.goblins;
+            if(totalBoat >= 2) {
+                playSound('error');
+                document.getElementById("river-msg").textContent = "⚠️ Perahu hanya bisa memuat maksimal 2 penumpang!";
+                return;
+            }
+
+            if(side === 'left') {
+                if(type === 'monk' && riverState.left.monks > 0) {
+                    riverState.left.monks--;
+                    riverState.boat.monks++;
+                } else if(type === 'goblin' && riverState.left.goblins > 0) {
+                    riverState.left.goblins--;
+                    riverState.boat.goblins++;
+                }
+            } else {
+                if(type === 'monk' && riverState.right.monks > 0) {
+                    riverState.right.monks--;
+                    riverState.boat.monks++;
+                } else if(type === 'goblin' && riverState.right.goblins > 0) {
+                    riverState.right.goblins--;
+                    riverState.boat.goblins++;
+                }
+            }
+            renderRiver();
+        }
+
+        function unboardBoat(type) {
+            playSound('click');
+            if(type === 'monk' && riverState.boat.monks > 0) {
+                riverState.boat.monks--;
+                riverState[riverState.boatSide].monks++;
+            } else if(type === 'goblin' && riverState.boat.goblins > 0) {
+                riverState.boat.goblins--;
+                riverState[riverState.boatSide].goblins++;
+            }
+            renderRiver();
+        }
+
+        function sailBoat() {
+            const totalBoat = riverState.boat.monks + riverState.boat.goblins;
+            if(totalBoat === 0) {
+                playSound('error');
+                document.getElementById("river-msg").textContent = "⚠️ Perahu kosong! Masukkan minimal 1 penumpang.";
+                return;
+            }
+
+            const targetSide = riverState.boatSide === 'left' ? 'right' : 'left';
+            
+            let tempLeftM = riverState.left.monks + (targetSide === 'right' ? 0 : riverState.boat.monks);
+            let tempLeftG = riverState.left.goblins + (targetSide === 'right' ? 0 : riverState.boat.goblins);
+            let tempRightM = riverState.right.monks + (targetSide === 'left' ? 0 : riverState.boat.monks);
+            let tempRightG = riverState.right.goblins + (targetSide === 'left' ? 0 : riverState.boat.goblins);
+
+            if(tempLeftM > 0 && tempLeftG > tempLeftM) {
+                playSound('error');
+                document.getElementById("river-msg").textContent = "❌ Gagal! Goblin terlalu banyak di daratan kiri dan memangsa pendeta!";
+                return;
+            }
+            if(tempRightM > 0 && tempRightG > tempRightM) {
+                playSound('error');
+                document.getElementById("river-msg").textContent = "❌ Gagal! Goblin terlalu banyak di daratan kanan dan memangsa pendeta!";
+                return;
+            }
+
+            playSound('success');
+            riverState.boatSide = targetSide;
+            document.getElementById("river-msg").textContent = "🌊 Perahu sukses berlayar menyeberangi sungai!";
+            renderRiver();
+        }
+
+        function resetGame1() {
+            playSound('click');
+            initGame1();
+        }
+
+        function finishGame1() {
+            playSound('click');
+            document.getElementById("screen-game1").classList.add("hidden");
+            document.getElementById("screen-mat2").classList.remove("hidden");
+        }
+
+        // Material 2 to Mod 2 Quiz
+        function startMod2Quiz() {
+            playSound('click');
+            document.getElementById("screen-mat2").classList.add("hidden");
+            document.getElementById("screen-mod2").classList.remove("hidden");
+            loadMod2();
+        }
+
+        // Modul 2 Handler
+        function loadMod2() {
+            const current = mod2Data[mod2Index];
+            document.getElementById("mod2-counter").textContent = `Pertanyaan ${mod2Index + 1} dari 4`;
+            document.getElementById("mod2-question").textContent = current.q;
+            
+            const optContainer = document.getElementById("mod2-options");
+            optContainer.innerHTML = "";
+            document.getElementById("mod2-feedback").classList.add("hidden");
+            document.getElementById("mod2-next").classList.add("hidden");
+
+            current.options.forEach((opt, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "w-full text-left p-4 rounded-2xl border-2 border-blue-100 hover:border-blue-400 bg-blue-50/50 hover:bg-blue-100 font-bold text-slate-700 transition-all text-sm sm:text-base shadow-sm transform hover:scale-[1.01]";
+                btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                btn.onclick = () => selectMod2(idx);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function selectMod2(selectedIndex) {
+            const current = mod2Data[mod2Index];
+            const optButtons = document.getElementById("mod2-options").children;
+            
+            for(let i=0; i<optButtons.length; i++) {
+                optButtons[i].disabled = true;
+                if(i === current.correct) {
+                    optButtons[i].classList.add("bg-emerald-100", "border-emerald-500", "text-emerald-900");
+                } else if(i === selectedIndex) {
+                    optButtons[i].classList.add("bg-pink-100", "border-pink-400", "text-pink-900", "animate-shake");
+                }
+            }
+
+            const feedback = document.getElementById("mod2-feedback");
+            feedback.classList.remove("hidden");
+            if(selectedIndex === current.correct) {
+                playSound('success');
+                score += 10;
+                document.getElementById("display-score").textContent = score;
+                feedback.className = "p-4 rounded-2xl mb-4 font-bold text-sm bg-emerald-50 border-2 border-emerald-200 text-emerald-800 animate-pop";
+                feedback.innerHTML = `✨ <strong>Mantap! Jawaban Kamu Benar!</strong><br>${current.explanation}`;
+            } else {
+                playSound('error');
+                feedback.className = "p-4 rounded-2xl mb-4 font-bold text-sm bg-pink-50 border-2 border-pink-200 text-pink-800 animate-pop";
+                feedback.innerHTML = `💡 <strong>Kurang tepat.</strong><br>${current.explanation}`;
+            }
+            document.getElementById("mod2-next").classList.remove("hidden");
+        }
+
+        function nextMod2() {
+            playSound('click');
+            mod2Index++;
+            if(mod2Index < mod2Data.length) {
+                loadMod2();
+            } else {
+                document.getElementById("screen-mod2").classList.add("hidden");
+                document.getElementById("screen-game2").classList.remove("hidden");
+                initGame2();
+            }
+        }
+
+        // Minigame 2 Logic (Binary Bit Toggle Puzzle with Animated Bulbs)
+        let binaryTarget = 6;
+        let bitsState = [0, 0, 0, 0];
+
+        function initGame2() {
+            binaryTarget = Math.floor(Math.random() * 14) + 1;
+            bitsState = [0, 0, 0, 0];
+            document.getElementById("binary-target").textContent = binaryTarget;
+            document.getElementById("binary-next-btn").classList.add("hidden");
+            document.getElementById("binary-message").textContent = "Nyalakan saklar agar jumlahnya sesuai target!";
+            document.getElementById("binary-message").className = "text-sm font-extrabold text-purple-700 mb-4 h-6";
+            renderBinaryPuzzle();
+        }
+
+        function toggleBit(index) {
+            playSound('click');
+            bitsState[index] = bitsState[index] === 0 ? 1 : 0;
+            renderBinaryPuzzle();
+        }
+
+        function renderBinaryPuzzle() {
+            const weights = [8, 4, 2, 1];
+            let currentSum = 0;
+            let binStr = "";
+
+            for(let i=3; i>=0; i--) {
+                const bitVal = bitsState[i];
+                binStr += bitVal;
+                if(bitVal === 1) currentSum += weights[i];
+                
+                const btn = document.getElementById(`bit-${i}`);
+                const bulb = document.getElementById(`bulb-${i}`);
+                btn.textContent = bitVal;
+                
+                if(bitVal === 1) {
+                    btn.className = "w-full py-2 rounded-xl font-extrabold text-sm bg-purple-600 hover:bg-purple-700 text-white transition-all shadow-lg scale-105";
+                    bulb.textContent = "💡";
+                    bulb.className = "text-3xl mb-1 transition-transform transform duration-300 scale-125 animate-bounce-slow filter drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]";
+                } else {
+                    btn.className = "w-full py-2 rounded-xl font-extrabold text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 transition-all shadow";
+                    bulb.textContent = "🌑";
+                    bulb.className = "text-2xl mb-1 transition-transform transform duration-300 opacity-60";
+                }
+            }
+
+            document.getElementById("binary-current-sum").textContent = currentSum;
+            document.getElementById("binary-string").textContent = binStr;
+
+            const msg = document.getElementById("binary-message");
+            if(currentSum === binaryTarget) {
+                playSound('success');
+                msg.textContent = "🎉 Yey! Nilai biner sudah tepat sama dengan target desimal!";
+                msg.className = "text-sm font-extrabold text-emerald-600 mb-4 h-6 animate-pulse";
+                document.getElementById("binary-next-btn").classList.remove("hidden");
+                score += 15;
+                document.getElementById("display-score").textContent = score;
+            } else {
+                msg.textContent = currentSum < binaryTarget ? "📈 Nilai masih kurang. Nyalakan lebih banyak saklar!" : "📉 Nilai terlalu besar! Matikan beberapa saklar.";
+                msg.className = "text-sm font-extrabold text-purple-700 mb-4 h-6";
+            }
+        }
+
+        function nextBinaryLevel() {
+            playSound('click');
+            document.getElementById("screen-game2").classList.add("hidden");
+            document.getElementById("screen-mat3").classList.remove("hidden");
+        }
+
+        // Material 3 to Mod 3 Quiz
+        function startMod3Quiz() {
+            playSound('click');
+            document.getElementById("screen-mat3").classList.add("hidden");
+            document.getElementById("screen-mod3").classList.remove("hidden");
+            loadMod3();
+        }
+
+        // Modul 3 Handler
+        function loadMod3() {
+            const current = mod3Data[mod3Index];
+            document.getElementById("mod3-counter").textContent = `Pertanyaan ${mod3Index + 1} dari 3`;
+            document.getElementById("mod3-question").textContent = current.q;
+            
+            const optContainer = document.getElementById("mod3-options");
+            optContainer.innerHTML = "";
+            document.getElementById("mod3-feedback").classList.add("hidden");
+            document.getElementById("mod3-next").classList.add("hidden");
+
+            current.options.forEach((opt, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "w-full text-left p-4 rounded-2xl border-2 border-emerald-100 hover:border-emerald-400 bg-emerald-50/50 hover:bg-emerald-100 font-bold text-slate-700 transition-all text-sm sm:text-base shadow-sm transform hover:scale-[1.01]";
+                btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                btn.onclick = () => selectMod3(idx);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function selectMod3(selectedIndex) {
+            const current = mod3Data[mod3Index];
+            const optButtons = document.getElementById("mod3-options").children;
+            
+            for(let i=0; i<optButtons.length; i++) {
+                optButtons[i].disabled = true;
+                if(i === current.correct) {
+                    optButtons[i].classList.add("bg-emerald-100", "border-emerald-500", "text-emerald-900");
+                } else if(i === selectedIndex) {
+                    optButtons[i].classList.add("bg-pink-100", "border-pink-400", "text-pink-900", "animate-shake");
+                }
+            }
+
+            const feedback = document.getElementById("mod3-feedback");
+            feedback.classList.remove("hidden");
+            if(selectedIndex === current.correct) {
+                playSound('success');
+                score += 10;
+                document.getElementById("display-score").textContent = score;
+                feedback.className = "p-4 rounded-2xl mb-4 font-bold text-sm bg-emerald-50 border-2 border-emerald-200 text-emerald-800 animate-pop";
+                feedback.innerHTML = `✨ <strong>Luar Biasa! Jawaban Kamu Benar!</strong><br>${current.explanation}`;
+            } else {
+                playSound('error');
+                feedback.className = "p-4 rounded-2xl mb-4 font-bold text-sm bg-pink-50 border-2 border-pink-200 text-pink-800 animate-pop";
+                feedback.innerHTML = `💡 <strong>Kurang tepat.</strong><br>${current.explanation}`;
+            }
+            document.getElementById("mod3-next").classList.remove("hidden");
+        }
+
+        function nextMod3() {
+            playSound('click');
+            mod3Index++;
+            if(mod3Index < mod3Data.length) {
+                loadMod3();
+            } else {
+                document.getElementById("screen-mod3").classList.add("hidden");
+                document.getElementById("screen-finish").classList.remove("hidden");
+                showFinalResult();
+            }
+        }
+
+        function showFinalResult() {
+            playSound('success');
+            document.getElementById("final-name").textContent = studentName;
+            document.getElementById("final-score").textContent = score;
+            const finalMsg = document.getElementById("final-message");
+            
+            if(score >= 85) {
+                finalMsg.textContent = "🌟 Predikat: Sangat Memuaskan! Kamu Master Informatika Cilik!";
+            } else if(score >= 60) {
+                finalMsg.textContent = "⭐ Predikat: Bagus Sekali! Pertahankan prestasi belajarmu ya!";
+            } else {
+                finalMsg.textContent = "💪 Terus semangat belajar dan ulangi materinya bersama guru di kelas!";
+            }
+        }
+
+        function restartApp() {
+            playSound('click');
+            mod1Index = 0;
+            mod2Index = 0;
+            mod3Index = 0;
+            score = 0;
+            document.getElementById("student-name").value = "";
+            document.getElementById("user-badge").classList.add("hidden");
+
+            document.getElementById("screen-finish").classList.add("hidden");
+            document.getElementById("screen-welcome").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
+```
