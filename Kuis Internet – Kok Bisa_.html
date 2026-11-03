@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kuis Internet – Kok Bisa?</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{min-height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#4f46e5 0%,#9333ea 50%,#ec4899 100%);background-attachment:fixed;color:#fff}
+.glass{background:rgba(255,255,255,.16);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.3);box-shadow:0 8px 32px rgba(31,38,135,.25)}
+.opt{transition:transform .2s,box-shadow .2s,background .2s}
+.opt:not(:disabled):hover{transform:translateY(-4px);box-shadow:0 10px 20px rgba(0,0,0,.2)}
+.opt.ok{background:#16a34a!important;border-color:#bbf7d0!important}
+.opt.bad{background:#dc2626!important;border-color:#fecaca!important}
+.opt.dim{opacity:.55}
+.hidden{display:none}
+@keyframes pulse2{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.pulse2{animation:pulse2 1.6s ease-in-out infinite}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pop{animation:pop .3s ease}
+</style>
+</head>
+<body>
+<main class="max-w-2xl mx-auto p-4 sm:p-6">
+
+<!-- START -->
+<section id="start" class="glass rounded-3xl p-6 sm:p-10 text-center mt-6">
+  <div class="text-7xl pulse2 mb-4">🌐</div>
+  <h1 class="text-2xl sm:text-3xl font-extrabold mb-2">Kayak Gimana Bentuk Internet Sebenernya?</h1>
+  <p class="text-white/85 mb-6">Kuis interaktif berdasarkan video Kok Bisa? Uji pemahamanmu tentang paket data, router, kabel bawah laut, ISP, dan pemerataan akses digital.</p>
+  <div class="grid grid-cols-3 gap-3 mb-6 text-sm">
+    <div class="glass rounded-2xl p-3"><div class="text-2xl">📝</div><b>20 Soal</b></div>
+    <div class="glass rounded-2xl p-3"><div class="text-2xl">⚡</div><b>Interaktif</b></div>
+    <div class="glass rounded-2xl p-3"><div class="text-2xl">🏆</div><b>Rekap Skor</b></div>
+  </div>
+  <button onclick="startQuiz()" class="w-full sm:w-auto bg-white text-indigo-700 font-bold text-lg rounded-2xl px-10 py-3 hover:scale-105 transition">▶ Mulai Kuis</button>
+  <div><button onclick="openVideo()" class="mt-4 text-white/90 underline text-sm">🎬 Tonton video dulu</button></div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz" class="hidden">
+  <div class="glass rounded-3xl p-4 sm:p-6">
+    <div class="flex items-center justify-between text-sm font-semibold mb-2">
+      <span id="qnum">Soal 1/20</span>
+      <span id="live" class="bg-white/25 rounded-full px-3 py-1">Skor: 0</span>
+      <span id="timer" class="bg-white/25 rounded-full px-3 py-1">⏱ 30</span>
+    </div>
+    <div class="h-2 rounded-full bg-white/25 overflow-hidden mb-1"><div id="prog" class="h-full rounded-full bg-gradient-to-r from-yellow-300 to-pink-300 transition-all duration-500" style="width:0"></div></div>
+    <div class="h-1 rounded-full bg-white/15 overflow-hidden mb-5"><div id="tbar" class="h-full bg-white/80" style="width:100%"></div></div>
+    <h2 id="qtext" class="text-lg sm:text-xl font-bold mb-3"></h2>
+    <button id="hintBtn" onclick="showHint()" class="text-sm text-yellow-200 underline mb-3">💡 Lihat petunjuk</button>
+    <p id="hint" class="hidden pop text-sm bg-yellow-300/20 rounded-xl p-3 mb-3"></p>
+    <div id="opts" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    <div id="fb" class="hidden pop mt-4 rounded-2xl p-4 text-sm bg-white/20"></div>
+    <button id="next" onclick="next()" class="hidden mt-4 w-full bg-white text-indigo-700 font-bold rounded-2xl py-3">Lanjut ➜</button>
+  </div>
+  <div class="text-center mt-3"><button onclick="openVideo()" class="text-white/90 underline text-sm">🎬 Buka video</button></div>
+</section>
+
+<!-- RESULT -->
+<section id="result" class="hidden glass rounded-3xl p-6 sm:p-10 text-center mt-6">
+  <div id="rEmoji" class="text-7xl mb-3">🏆</div>
+  <h2 class="text-xl font-bold">Skor Akhir</h2>
+  <p class="text-6xl font-extrabold my-3"><span id="rScore">0</span><span class="text-2xl text-white/70"> / 20</span></p>
+  <p id="rMsg" class="text-white/90 mb-6"></p>
+  <div class="flex flex-col sm:flex-row gap-3 justify-center">
+    <button onclick="startQuiz()" class="bg-white text-indigo-700 font-bold rounded-2xl px-6 py-3">🔄 Ulangi Kuis</button>
+    <button onclick="openVideo()" class="glass font-bold rounded-2xl px-6 py-3">🎬 Tonton Ulang Video</button>
+  </div>
+</section>
+</main>
+
+<!-- VIDEO MODAL -->
+<div id="modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+  <div class="glass rounded-2xl p-3 w-full max-w-2xl">
+    <div class="flex justify-between items-center mb-2 px-1"><b>Kok Bisa? – Bentuk Internet</b><button onclick="closeVideo()" class="text-2xl leading-none">✕</button></div>
+    <div class="aspect-video rounded-xl overflow-hidden bg-black"><iframe id="yt" class="w-full h-full" src="" title="Video YouTube" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+    <a class="block text-center text-sm underline mt-2" href="https://www.youtube.com/watch?v=_fl7wWbV604" target="_blank" rel="noopener">Buka di YouTube</a>
+  </div>
+</div>
+
+<script>
+// [pertanyaan, benar, salah1, salah2, salah3, rationale, hint]
+const RAW=[
+["Apa yang dimaksud dengan internet?","Jaringan global yang menghubungkan jutaan jaringan komputer di seluruh dunia","Satu komputer raksasa milik perusahaan teknologi","Aplikasi untuk membuka situs web","Sinyal Wi-Fi yang dipancarkan dari satelit","Internet adalah jaringan dari jaringan (interconnected networks) yang saling terhubung secara global.","Kata kunci: inter + network."],
+["Data yang dikirim lewat internet dipecah menjadi potongan kecil yang disebut…","Paket data","File kompresi","Kuota","Bandwidth","Data dipecah menjadi paket-paket kecil, masing-masing membawa alamat tujuan.","Seperti memecah barang menjadi beberapa paket kiriman."],
+["Mengapa data dipecah menjadi paket-paket kecil?","Agar bisa dikirim lewat jalur berbeda dengan lebih efisien dan andal","Agar ukuran file menjadi lebih besar","Agar data tidak perlu alamat tujuan","Agar bisa dikirim tanpa kabel","Paket bisa mengambil rute berbeda; jika satu jalur macet atau rusak, jalur lain bisa dipakai, lalu paket disusun ulang di tujuan.","Bayangkan banyak jalan menuju kota yang sama."],
+["Apa fungsi router dalam jaringan internet?","Menentukan jalur terbaik untuk meneruskan paket data","Menyimpan semua situs web","Mengubah suara menjadi teks","Mengisi ulang kuota pengguna","Router menerima paket lalu meneruskannya ke perangkat/jaringan berikutnya yang paling tepat menuju tujuan.","Seperti polisi lalu lintas bagi paket data."],
+["Apa yang membuat setiap perangkat di internet dapat dikenali secara unik?","Alamat IP","Nama pengguna media sosial","Warna kabel","Merek perangkat","Alamat IP berfungsi seperti alamat rumah agar paket sampai ke perangkat yang tepat.","Empat angka dipisah titik, contohnya 192.168.1.1."],
+["Sebagian besar lalu lintas internet antarbenua dibawa oleh…","Kabel serat optik bawah laut","Satelit di luar angkasa","Gelombang radio FM","Menara seluler","Lebih dari 95% data antarbenua dikirim lewat kabel serat optik di dasar laut, bukan satelit.","Internet itu ternyata ada di dasar laut."],
+["Kabel serat optik mengirim data menggunakan…","Pulsa cahaya","Arus listrik bertegangan tinggi","Gelombang suara","Tekanan air","Serat optik mengirim data berupa kedipan cahaya melalui serat kaca tipis dengan kecepatan sangat tinggi.","Kilatan cahaya dalam kaca."],
+["Apa penyebab umum kerusakan kabel internet bawah laut?","Jangkar kapal, jaring ikan, dan bencana alam seperti gempa","Hujan di permukaan laut","Sinar matahari","Angin darat","Aktivitas manusia di laut dan pergerakan dasar laut adalah penyebab utama kabel putus.","Ada hubungannya dengan kapal dan gempa."],
+["Mengapa kabel bawah laut lebih dipilih daripada satelit untuk lalu lintas utama?","Kapasitas lebih besar, lebih cepat, dan biaya per data lebih murah","Karena satelit tidak bisa menyimpan data","Karena kabel tidak pernah rusak","Karena satelit melarang data video","Kabel serat optik punya kapasitas dan kecepatan jauh lebih tinggi serta latensi lebih rendah dibanding satelit.","Pikirkan jarak ke luar angkasa dan kembali."],
+["Apa peran ISP (Internet Service Provider)?","Menyediakan akses ke internet bagi pelanggan","Membuat semua konten di internet","Memiliki seluruh kabel di dunia","Memblokir semua situs asing","ISP menghubungkan rumah, kantor, atau perangkat kita ke jaringan internet yang lebih besar.","Contoh: Telkom, Biznet, atau operator seluler."],
+["Jika tidak berlangganan ISP, apa yang terjadi pada perangkatmu?","Tidak bisa terhubung ke internet global meski punya perangkat","Tetap bisa membuka semua situs","Berubah menjadi router","Mendapat kuota gratis","ISP adalah 'pintu gerbang' ke internet; tanpanya perangkat hanya terhubung ke jaringan lokal.","Pintu gerbang."],
+["Apa fungsi Wi-Fi yang sebenarnya?","Menghubungkan perangkat ke router secara nirkabel","Menjadi sumber internet itu sendiri","Menyimpan data situs web","Menggantikan kabel bawah laut","Wi-Fi hanya jalur nirkabel jarak dekat ke router; internetnya tetap datang lewat kabel dari ISP.","Wi-Fi ≠ internet."],
+["Bagaimana peran perusahaan teknologi besar (Google, Meta, Netflix, dll.) dalam infrastruktur internet?","Banyak yang membangun atau ikut membiayai kabel bawah laut dan pusat data sendiri","Mereka hanya membuat aplikasi","Mereka tidak butuh infrastruktur","Mereka hanya menyewa satelit","Raksasa teknologi berinvestasi pada kabel laut dan data center agar layanannya cepat dan stabil.","Mereka butuh jalur data sendiri."],
+["Apa itu data center?","Gedung berisi banyak server untuk menyimpan dan mengolah data","Toko penjual kuota","Menara pemancar sinyal","Aplikasi pengatur kuota","Data center menampung server yang menyimpan situs, video, dan aplikasi yang kita akses.","Gudang raksasa bagi data."],
+["Apa fungsi CDN (Content Delivery Network)?","Menyimpan salinan konten di banyak lokasi dekat pengguna agar akses lebih cepat","Mengenkripsi password","Mengganti alamat IP pengguna","Mengurangi jumlah pengguna","CDN menaruh salinan konten di server terdekat sehingga jarak tempuh data lebih pendek.","Konten dikirim dari tempat yang dekat."],
+["Apa tugas DNS?","Menerjemahkan nama domain menjadi alamat IP","Menghapus virus","Menambah kecepatan kabel","Menyimpan riwayat chat","DNS seperti buku telepon internet: mengubah nama seperti example.com menjadi alamat IP.","Buku telepon internet."],
+["Apa peran pemerintah dalam pemerataan akses internet?","Membangun infrastruktur di daerah terpencil dan membuat regulasi yang adil","Melarang semua ISP swasta","Memberikan perangkat ke semua orang tanpa syarat","Mengganti seluruh kabel dengan satelit","Daerah terpencil kurang menguntungkan secara bisnis, sehingga pemerintah mendorong pembangunan infrastruktur dan aturan yang mendukung.","Daerah yang tidak menarik bagi bisnis."],
+["Apa itu proyek Palapa Ring di Indonesia?","Pembangunan jaringan serat optik yang menghubungkan wilayah barat, tengah, dan timur Indonesia","Satelit mata-mata","Aplikasi belanja online","Kabel listrik antarpulau","Palapa Ring adalah proyek 'tol langit' serat optik untuk memeratakan akses internet hingga ke daerah 3T.","Disebut juga tol langit."],
+["Mengapa internet dikatakan tidak punya satu pemilik tunggal?","Karena terdiri dari banyak jaringan milik berbagai pihak yang saling terhubung","Karena tidak ada yang mau memilikinya","Karena dimiliki satu negara saja","Karena internet adalah benda alam","Internet adalah gabungan jaringan ISP, perusahaan, kampus, dan pemerintah yang bekerja sama lewat protokol bersama.","Banyak jaringan, banyak pemilik."],
+["Apa yang dimaksud kesenjangan digital?","Perbedaan akses dan kemampuan memanfaatkan internet antar wilayah atau kelompok","Perbedaan warna layar","Perbedaan harga HP merek berbeda","Gangguan sinyal sesaat","Kesenjangan digital terjadi saat sebagian orang punya akses internet baik, sementara yang lain tidak.","Ada yang terhubung, ada yang tertinggal."]
+];
+const Q=RAW.map(r=>({q:r[0],o:[r[1],r[2],r[3],r[4]].map((t,i)=>({t,isCorrect:i===0})),r:r[5],h:r[6]}));
+const $=id=>document.getElementById(id);
+let idx=0,score=0,left=30,tick=null,locked=false,order=[];
+let ac;
+function beep(ok){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const seq=ok?[[523,0],[659,.1],[784,.2]]:[[220,0],[165,.15]];seq.forEach(([f,t])=>{const o=ac.createOscillator(),g=ac.createGain();o.type=ok?'sine':'sawtooth';o.frequency.value=f;g.gain.setValueAtTime(.15,ac.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+t+.18);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+t);o.stop(ac.currentTime+t+.2)})}catch(e){}}
+function show(id){['start','quiz','result'].forEach(s=>$(s).classList.toggle('hidden',s!==id))}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startQuiz(){idx=0;score=0;$('live').textContent='Skor: 0';show('quiz');load()}
+function load(){
+  clearInterval(tick);locked=false;left=30;
+  const q=Q[idx];
+  $('qnum').textContent=`Soal ${idx+1}/20`;
+  $('prog').style.width=(idx/20*100)+'%';
+  $('qtext').textContent=q.q;
+  $('hint').classList.add('hidden');$('hintBtn').classList.remove('hidden');
+  $('fb').classList.add('hidden');$('next').classList.add('hidden');
+  order=shuffle(q.o);
+  const box=$('opts');box.innerHTML='';
+  const L=['A','B','C','D'];
+  order.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='opt glass rounded-2xl p-4 text-left font-medium flex gap-3 items-start';
+    b.innerHTML=`<span class="bg-white/30 rounded-lg w-7 h-7 shrink-0 flex items-center justify-center text-sm font-bold">${L[i]}</span><span></span>`;
+    b.lastChild.textContent=o.t;
+    b.onclick=()=>answer(i);
+    box.appendChild(b);
+  });
+  drawTimer();
+  tick=setInterval(()=>{left--;drawTimer();if(left<=0){clearInterval(tick);answer(-1)}},1000);
+}
+function drawTimer(){
+  $('timer').textContent='⏱ '+left;
+  $('timer').style.background=left<=10?'rgba(239,68,68,.6)':'';
+  $('tbar').style.width=(left/30*100)+'%';
+}
+function showHint(){$('hint').textContent='💡 '+Q[idx].h;$('hint').classList.remove('hidden');$('hintBtn').classList.add('hidden')}
+function answer(i){
+  if(locked)return;locked=true;clearInterval(tick);
+  const btns=[...$('opts').children];
+  const ci=order.findIndex(o=>o.isCorrect);
+  const ok=i===ci;
+  btns.forEach((b,k)=>{b.disabled=true;if(k===ci)b.classList.add('ok');else if(k===i)b.classList.add('bad');else b.classList.add('dim')});
+  if(ok){score++;$('live').textContent='Skor: '+score}
+  beep(ok);
+  const head=i===-1?'⏰ Waktu habis!':ok?'✅ Benar!':'❌ Belum tepat.';
+  $('fb').innerHTML=`<b>${head}</b><br>`;
+  const p=document.createElement('span');p.textContent=Q[idx].r+(ok?'':' Jawaban benar: '+order[ci].t+'.');
+  $('fb').appendChild(p);
+  $('fb').classList.remove('hidden');
+  $('next').textContent=idx===19?'Lihat Hasil 🏁':'Lanjut ➜';
+  $('next').classList.remove('hidden');
+}
+function next(){idx++;if(idx>=20)finish();else load()}
+function finish(){
+  $('prog').style.width='100%';
+  show('result');
+  $('rScore').textContent=score;
+  let e,m;
+  if(score>=18){e='🏆';m='Luar biasa! Kamu paham betul bagaimana internet bekerja.'}
+  else if(score>=14){e='🎉';m='Bagus sekali! Pemahamanmu sudah kuat, sedikit lagi sempurna.'}
+  else if(score>=10){e='👍';m='Lumayan! Tonton ulang videonya untuk memperkuat pemahaman.'}
+  else{e='📚';m='Jangan menyerah! Tonton videonya lalu coba lagi.'}
+  $('rEmoji').textContent=e;$('rMsg').textContent=m;
+  if(score>=14&&window.confetti){const f=()=>confetti({particleCount:90,spread:80,origin:{y:.6}});f();setTimeout(f,400);setTimeout(f,900)}
+}
+function openVideo(){$('yt').src='https://www.youtube.com/embed/_fl7wWbV604';$('modal').classList.remove('hidden')}
+function closeVideo(){$('yt').src='';$('modal').classList.add('hidden')}
+$('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeVideo()});
+</script>
+</body>
+</html>
