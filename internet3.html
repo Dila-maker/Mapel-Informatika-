@@ -1,0 +1,763 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif: Kayak Gimana Bentuk Internet Sebenernya?</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .glass-card-solid {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 2.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-950 via-purple-900 to-pink-900 min-h-screen text-white flex items-center justify-center p-4 sm:p-6 overflow-x-hidden">
+
+    <!-- Container Utama Aplikasi -->
+    <div id="app" class="w-full max-w-3xl mx-auto">
+
+        <!-- ================= PAGE 1: START SCREEN ================= -->
+        <div id="start-screen" class="glass-card rounded-3xl p-6 sm:p-10 shadow-2xl text-center transition-all duration-500">
+            <div class="inline-flex p-4 bg-pink-500/20 rounded-2xl mb-6 text-pink-400 border border-pink-500/30 animate-pulse-subtle">
+                <i class="fa-solid fa-globe text-4xl sm:text-5xl"></i>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold mb-3 tracking-tight bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
+                Kuis Interaktif: Bentuk Internet
+            </h1>
+            <p class="text-gray-300 text-sm sm:text-base mb-8 max-w-xl mx-auto leading-relaxed">
+                Uji pemahamanmu setelah menonton video edukasi dari channel <span class="text-pink-300 font-semibold">Kok Bisa?</span> berjudul <span class="italic">"Kayak Gimana Bentuk Internet Sebenernya?"</span>. Selesaikan 20 soal seru dan raih skor tertinggimu!
+            </p>
+
+            <!-- Fitur Highlight Chips -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8 text-left">
+                <div class="bg-white/5 border border-white/10 p-3.5 rounded-2xl flex items-center space-x-3">
+                    <div class="p-2.5 bg-indigo-500/20 text-indigo-400 rounded-xl"><i class="fa-solid fa-list-check"></i></div>
+                    <div>
+                        <div class="text-xs text-gray-400">Total Soal</div>
+                        <div class="font-bold text-sm">20 Pertanyaan</div>
+                    </div>
+                </div>
+                <div class="bg-white/5 border border-white/10 p-3.5 rounded-2xl flex items-center space-x-3">
+                    <div class="p-2.5 bg-purple-500/20 text-purple-400 rounded-xl"><i class="fa-solid fa-stopwatch"></i></div>
+                    <div>
+                        <div class="text-xs text-gray-400">Waktu Per Soal</div>
+                        <div class="font-bold text-sm">30 Detik</div>
+                    </div>
+                </div>
+                <div class="bg-white/5 border border-white/10 p-3.5 rounded-2xl flex items-center space-x-3">
+                    <div class="p-2.5 bg-pink-500/20 text-pink-400 rounded-xl"><i class="fa-solid fa-bolt"></i></div>
+                    <div>
+                        <div class="text-xs text-gray-400">Umpan Balik</div>
+                        <div class="font-bold text-sm">Instant & Rationale</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Aksi Utama -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="startQuiz()" class="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 font-bold rounded-2xl shadow-lg shadow-pink-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Mulai Kuis Sekarang</span>
+                </button>
+                <button onclick="openVideoModal()" class="px-6 py-4 bg-white/10 hover:bg-white/20 border border-white/20 font-semibold rounded-2xl transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-brands fa-youtube text-red-500 text-lg"></i>
+                    <span>Tonton Video Materi</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 2: QUIZ SCREEN ================= -->
+        <div id="quiz-screen" class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl hidden">
+            <!-- Header Kuis: Progress & Skor -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                <div class="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-4">
+                    <span class="px-4 py-1.5 bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 rounded-full text-xs font-bold uppercase tracking-wider">
+                        Soal <span id="current-question-num">1</span> dari 20
+                    </span>
+                    <div class="flex items-center space-x-2 text-pink-300 font-bold text-sm bg-pink-500/10 px-4 py-1.5 rounded-full border border-pink-500/20">
+                        <i class="fa-solid fa-star"></i>
+                        <span>Skor: <span id="live-score">0</span></span>
+                    </div>
+                </div>
+                <!-- Timer Lingkaran/Bar -->
+                <div class="flex items-center space-x-3 w-full sm:w-48 bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
+                    <i class="fa-regular fa-clock text-pink-400"></i>
+                    <div class="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
+                        <div id="timer-bar" class="bg-gradient-to-r from-pink-500 to-indigo-500 h-2.5 rounded-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                    <span id="timer-text" class="text-xs font-mono font-bold w-6 text-right">30</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar Total Kuis -->
+            <div class="w-full bg-white/10 rounded-full h-1.5 mb-6 overflow-hidden">
+                <div id="total-progress-bar" class="bg-indigo-400 h-1.5 rounded-full transition-all duration-300" style="width: 5%;"></div>
+            </div>
+
+            <!-- Kartu Pertanyaan -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 mb-6">
+                <h2 id="question-text" class="text-lg sm:text-xl font-bold text-gray-100 leading-snug">
+                    Memuat pertanyaan...
+                </h2>
+            </div>
+
+            <!-- Grid Pilihan Ganda (2x2) -->
+            <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <!-- Diisi via JavaScript -->
+            </div>
+
+            <!-- Bagian Rationale / Penjelasan (Hidden by default) -->
+            <div id="rationale-box" class="hidden bg-indigo-950/80 border border-indigo-500/40 rounded-2xl p-4 sm:p-5 mb-6 transition-all animate-fadeIn">
+                <div class="flex items-start space-x-3">
+                    <div id="rationale-icon" class="p-2 rounded-xl text-lg mt-0.5"></div>
+                    <div>
+                        <h4 id="rationale-title" class="font-bold text-sm mb-1">Penjelasan:</h4>
+                        <p id="rationale-text" class="text-xs sm:text-sm text-gray-300 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Navigasi Bawah -->
+            <div class="flex justify-between items-center">
+                <button onclick="toggleHint()" class="text-xs text-gray-400 hover:text-white flex items-center space-x-1.5 transition-colors">
+                    <i class="fa-solid fa-lightbulb text-yellow-400"></i>
+                    <span id="hint-btn-text">Petunjuk Soal</span>
+                </button>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden px-6 py-3 bg-gradient-to-r from-pink-500 to-indigo-600 hover:from-pink-600 hover:to-indigo-700 font-bold text-sm rounded-xl shadow-lg shadow-indigo-500/25 transition-all flex items-center space-x-2">
+                    <span>Lanjut Soal</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <!-- Box Hint Popup Sederhana -->
+            <div id="hint-box" class="hidden mt-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-xl text-yellow-200 text-xs">
+                <strong>Petunjuk:</strong> <span id="hint-text"></span>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 3: RESULT SCREEN ================= -->
+        <div id="result-screen" class="glass-card rounded-3xl p-6 sm:p-10 shadow-2xl text-center hidden">
+            <div id="result-icon-container" class="inline-flex p-5 rounded-3xl mb-6 border shadow-xl">
+                <i id="result-trophy-icon" class="fa-solid fa-trophy text-5xl sm:text-6xl"></i>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold mb-2" id="result-title">Kuis Selesai!</h2>
+            <p class="text-gray-300 text-sm sm:text-base mb-6" id="result-subtitle">Kamu telah menyelesaikan seluruh tantangan internet.</p>
+
+            <!-- Skor Card -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 max-w-sm mx-auto mb-8">
+                <div class="text-xs text-gray-400 uppercase tracking-wider mb-1">Skor Akhir Kamu</div>
+                <div class="text-4xl sm:text-5xl font-black bg-gradient-to-r from-pink-400 to-indigo-300 bg-clip-text text-transparent mb-2">
+                    <span id="final-score">0</span> <span class="text-xl text-gray-400 font-medium">/ 20</span>
+                </div>
+                <div id="evaluation-badge" class="inline-block px-3 py-1 rounded-full text-xs font-semibold"></div>
+            </div>
+
+            <!-- Tombol Aksi Akhir -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="restartQuiz()" class="px-6 py-3.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 font-bold rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Ulangi Kuis</span>
+                </button>
+                <button onclick="openVideoModal()" class="px-6 py-3.5 bg-white/10 hover:bg-white/20 border border-white/20 font-semibold rounded-2xl transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-brands fa-youtube text-red-500 text-lg"></i>
+                    <span>Tonton Ulang Video</span>
+                </button>
+                <button onclick="goToHome()" class="px-6 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 font-semibold rounded-2xl transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Menu Utama</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= YOUTUBE VIDEO MODAL ================= -->
+    <div id="video-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card-solid rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl border border-white/20 relative">
+            <div class="flex justify-between items-center p-4 border-b border-white/10 bg-white/5">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-brands fa-youtube text-red-500 text-xl"></i>
+                    <span class="font-bold text-sm sm:text-base">Kayak Gimana Bentuk Internet Sebenernya? - Kok Bisa?</span>
+                </div>
+                <button onclick="closeVideoModal()" class="p-2 text-gray-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="relative aspect-video w-full bg-black">
+                <iframe id="youtube-iframe" class="w-full h-full" src="" title="Kok Bisa - Bentuk Internet" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <div class="p-4 bg-white/5 text-xs text-gray-400 text-center">
+                Tonton materi lengkap untuk membantu menjawab pertanyaan kuis dengan benar!
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // Data 20 Pertanyaan Kuis Lengkap Sesuai Materi Video Kok Bisa?
+        const quizData = [
+            {
+                question: "Apa definisi paling tepat mengenai wujud fisik dari 'Internet'?",
+                options: [
+                    "Kumpulan awan data abstrak di angkasa",
+                    "Jaringan global komputer dan perangkat keras yang saling terhubung kabel serta server",
+                    "Aplikasi media sosial dan browser di HP",
+                    "Satelit militer rahasia yang mengitari bumi"
+                ],
+                correct: 1,
+                rationale: "Internet bukanlah sesuatu yang abstrak di udara, melainkan jaringan fisik nyata yang terdiri dari kabel, router, server, dan pusat data di seluruh dunia.",
+                hint: "Cari opsi yang menyebutkan perangkat keras dan kabel secara nyata."
+            },
+            {
+                question: "Bagaimana cara data digital dikirimkan dari satu komputer ke komputer lain lewat internet?",
+                options: [
+                    "Dikirim utuh dalam satu file besar sekaligus",
+                    "Dipecah menjadi potongan-potongan kecil bernama 'paket data'",
+                    "Dipancarkan melalui gelombang radio khusus tanpa aturan",
+                    "Diubah menjadi suara ultrasonik"
+                ],
+                correct: 1,
+                rationale: "Data digital dipecah menjadi paket-paket kecil agar lebih mudah dikirimkan melalui berbagai jalur jaringan sebelum disatukan kembali di tujuan.",
+                hint: "Data dipecah menjadi bagian-bagian kecil yang disebut paket."
+            },
+            {
+                question: "Apa fungsi utama dari perangkat keras bernama 'Router' di dalam jaringan internet?",
+                options: [
+                    "Menampilkan gambar di layar monitor",
+                    "Menyimpan semua video YouTube di dunia",
+                    "Mengarahkan paket data ke jalur terbaik menuju tujuannya",
+                    "Mempercepat pengisian baterai perangkat"
+                ],
+                correct: 2,
+                rationale: "Router berfungsi seperti polisi lalu lintas atau persimpangan jalan tol yang menentukan jalur tercepat dan teraman bagi paket data.",
+                hint: "Berperan sebagai pengarah jalur atau lalu lintas data."
+            },
+            {
+                question: "Media apakah yang paling banyak diandalkan untuk mentransmisikan data internet antarbenua melintasi samudera?",
+                options: [
+                    "Kabel fiber optik bawah laut",
+                    "Kabel tembaga telepon biasa",
+                    "Balon udara berkecepatan tinggi",
+                    "Gelombang sonar bawah air"
+                ],
+                correct: 0,
+                rationale: "Lebih dari 95% komunikasi antarbenua di seluruh dunia dikirimkan melalui kabel fiber optik yang terbentang di dasar lautan.",
+                hint: "Kabel khusus berbahan kaca yang membentang di dasar laut."
+            },
+            {
+                question: "Apa keunggulan utama kabel fiber optik dibanding kabel tembaga konvensional?",
+                options: [
+                    "Lebih murah dibuat dari plastik daur ulang",
+                    "Menggunakan kecepatan cahaya untuk mengirim data berkapasitas besar",
+                    "Dapat dialiri listrik tegangan tinggi untuk rumah tangga",
+                    "Tahan terhadap gigitan hiu secara permanen"
+                ],
+                correct: 1,
+                rationale: "Fiber optik mentransmisikan data menggunakan pulsa cahaya melalui serat kaca tipis, menghasilkan kecepatan dan kapasitas yang jauh lebih tinggi.",
+                hint: "Hubungkan dengan kecepatan cahaya."
+            },
+            {
+                question: "Apa singkatan dan peran utama dari seorang ISP (Internet Service Provider)?",
+                options: [
+                    "Internal System Protocol - Pengatur keamanan server",
+                    "Internet Service Provider - Penyedia jasa akses internet bagi konsumen",
+                    "International Satellite Program - Pembuat satelit cuaca",
+                    "Integrated Software Package - Pembuat aplikasi web"
+                ],
+                correct: 1,
+                rationale: "ISP adalah perusahaan telekomunikasi yang menjembatani perangkat pengguna (rumah/kantor) agar bisa terhubung ke jaringan internet global.",
+                hint: "Penyedia layanan yang kamu bayar setiap bulan untuk langganan internet."
+            },
+            {
+                question: "Apa fungsi dari Domain Name System (DNS) dalam sistem kerja internet?",
+                options: [
+                    "Mengamankan kata sandi pengguna dari peretas",
+                    "Menerjemahkan nama domain web (seperti google.com) menjadi alamat IP numerik",
+                    "Menyimpan cadangan foto pribadi",
+                    "Memblokir situs web berbahaya secara otomatis"
+                ],
+                correct: 1,
+                rationale: "Komputer bekerja menggunakan angka (Alamat IP), sedangkan manusia lebih mudah mengingat nama teks. DNS adalah 'buku telepon' yang menterjemahkannya.",
+                hint: "Menerjemahkan alamat web teks menjadi angka IP."
+            },
+            {
+                question: "Mengapa kabel serat optik bawah laut sangat krusial bagi negara kepulauan seperti Indonesia?",
+                options: [
+                    "Sebagai jalur migrasi ikan tuna",
+                    "Menghubungkan pulau-pulau di Nusantara serta menghubungkannya ke jaringan global",
+                    "Mencegah terjadinya tsunami di pantai",
+                    "Menambah keindahan pemandangan dasar laut"
+                ],
+                correct: 1,
+                rationale: "Sebagai negara kepulauan, kabel bawah laut adalah urat nadi utama yang menyatukan konektivitas antar pulau dan dunia luar.",
+                hint: "Menghubungkan antar pulau di Indonesia."
+            },
+            {
+                question: "Apa yang terjadi pada paket data jika salah satu jalur router utama mengalami kerusakan atau gangguan?",
+                options: [
+                    "Paket data akan hancur dan hilang selamanya",
+                    "Seluruh internet di dunia akan langsung mati total",
+                    "Paket data secara otomatis mencari jalur alternatif lain yang tersedia",
+                    "Komputer pengirim akan meledak"
+                ],
+                correct: 2,
+                rationale: "Desain internet bersifat terdesentralisasi; jika satu jalur terputus, router akan langsung merutekan ulang paket data melalui jalur lain.",
+                hint: "Internet dirancang fleksibel dengan jalur alternatif."
+            },
+            {
+                question: "Organisasi manakah yang mengatur standar global protokol teknis internet agar semua perangkat di dunia bisa saling terhubung?",
+                options: [
+                    "PBB (Perserikatan Bangsa-Bangsa)",
+                    "Organisasi Kesehatan Dunia (WHO)",
+                    "Organisasi standar seperti IETF (Internet Engineering Task Force) dan W3C",
+                    "Dewan Keamanan Internasional"
+                ],
+                correct: 2,
+                rationale: "IETF dan W3C adalah lembaga kolaboratif global yang membuat aturan baku (standar protokol) komunikasi internet.",
+                hint: "Lembaga teknik internet (IETF)."
+            },
+            {
+                question: "Apa peran dari sebuah 'Server' dalam infrastruktur internet?",
+                options: [
+                    "Melayani dan menyimpan data/situs web yang bisa diakses oleh klien",
+                    "Menyalurkan air bersih ke rumah-rumah",
+                    "Membantu mendinginkan perangkat laptop yang panas",
+                    "Mencetak dokumen fisik dari internet"
+                ],
+                correct: 0,
+                rationale: "Server adalah komputer berkapasitas besar yang aktif 24 jam untuk menyimpan data website, aplikasi, dan merespons permintaan pengguna.",
+                hint: "Komputer pusat penyimpan data web."
+            },
+            {
+                question: "Apa tantangan geografis terbesar dalam pemerataan akses internet di wilayah terpencil di Indonesia?",
+                options: [
+                    "Terlalu banyak gedung pencakar langit di desa",
+                    "Kondisi pulau-pulau yang luas, bergunung-gunung, dan dipisahkan lautan",
+                    "Kurangnya pasokan oksigen di pedalaman",
+                    "Suhu udara yang terlalu dingin"
+                ],
+                correct: 1,
+                rationale: "Topografi Indonesia yang berupa kepulauan dan pegunungan membuat pembangunan infrastruktur fisik kabel menjadi sangat menantang.",
+                hint: "Kondisi geografis kepulauan dan pegunungan."
+            },
+            {
+                question: "Apa nama proyek strategis pemerintah Indonesia untuk membangun tulang punggung serat optik nasional di daerah 3T?",
+                options: [
+                    "Proyek Palapa Ring",
+                    "Proyek Nusantara Cyber",
+                    "Proyek Tol Langit Nusantara",
+                    "Proyek Indonesia Terang"
+                ],
+                correct: 0,
+                rationale: "Palapa Ring adalah proyek pembangunan jaringan serat optik nasional yang menjangkau daerah Tertinggal, Terdepan, dan Terluar (3T).",
+                hint: "Nama satelit legendaris sejarah Indonesia yang dijadikan nama proyek."
+            },
+            {
+                question: "Apa fungsi utama dari protokol TCP/IP dalam komunikasi data di internet?",
+                options: [
+                    "Mengatur standar aturan bagaimana komputer saling bertukar paket data secara andal",
+                    "Menghitung jumlah tagihan kuota internet bulanan",
+                    "Mendesain tampilan halaman web agar indah",
+                    "Mempercepat putaran kipas prosesor"
+                ],
+                correct: 0,
+                rationale: "TCP/IP adalah fondasi protokol standar komunikasi yang memastikan data terkirim lengkap tanpa cacat dari pengirim ke penerima.",
+                hint: "Protokol standar komunikasi data."
+            },
+            {
+                question: "Apakah internet dimiliki oleh satu orang, perusahaan, atau satu negara tertentu?",
+                options: [
+                    "Ya, dimiliki sepenuhnya oleh perusahaan Google",
+                    "Ya, dimiliki oleh pemerintah Amerika Serikat",
+                    "Tidak, internet adalah jaringan terdesentralisasi milik bersama secara global",
+                    "Ya, dimiliki oleh Perserikatan Bangsa-Bangsa"
+                ],
+                correct: 2,
+                rationale: "Internet tidak memiliki satu pemilik tunggal; ia adalah ekosistem raksasa yang dibangun dan dikelola bersama oleh berbagai pihak di seluruh dunia.",
+                hint: "Internet adalah milik bersama secara global."
+            },
+            {
+                question: "Apa arti istilah 'Bandwidth' dalam konteks jaringan internet?",
+                options: [
+                    "Ukuran fisik lebar kabel fiber optik dalam sentimeter",
+                    "Kapasitas maksimal pengiriman data melalui jalur koneksi dalam waktu tertentu",
+                    "Berat fisik dari server pusat",
+                    "Kecepatan putar harddisk komputer"
+                ],
+                correct: 1,
+                rationale: "Bandwidth sering diibaratkan sebagai lebar jalan tol; semakin besar bandwidth, semakin banyak data yang bisa lewat dalam waktu bersamaan.",
+                hint: "Kapasitas jalur pengiriman data."
+            },
+            {
+                question: "Mengapa teknologi satelit tetap digunakan dalam sistem internet global meskipun sudah ada kabel fiber optik bawah laut?",
+                options: [
+                    "Untuk menggantikan 100% kabel di seluruh dunia",
+                    "Untuk menjangkau daerah sangat terpencil di pegunungan atau lautan lepas yang sulit dijangkau kabel",
+                    "Agar harga langganan internet menjadi gratis",
+                    "Untuk memantau aktivitas alien di angkasa"
+                ],
+                correct: 1,
+                rationale: "Satelit sangat efektif untuk menjangkau lokasi ekstrem yang tidak mungkin ditarik kabel fisik darat atau laut.",
+                hint: "Menjangkau daerah terpencil tanpa kabel."
+            },
+            {
+                question: "Siapa pihak yang biasanya memiliki dan merawat kabel fiber optik bawah laut komersial?",
+                    options: [
+                    "Nelayan tradisional setempat",
+                    "Konsorsium perusahaan telekomunikasi multinasional dan raksasa teknologi",
+                    "Organisasi NASA seorang diri",
+                    "Kepolisian perairan nasional"
+                ],
+                correct: 1,
+                rationale: "Kabel bawah laut bernilai triliunan rupiah dibangun dan dipelihara oleh konsorsium operator telekomunikasi serta perusahaan teknologi besar dunia.",
+                hint: "Gabungan perusahaan telekomunikasi besar."
+            },
+            {
+                question: "Apa potensi bahaya fisik yang sering mengancam kabel fiber optik bawah laut di samudra?",
+                options: [
+                    "Serangan monster laut purba",
+                    "Jangkar kapal laut dan gempa bumi bawah laut / aktivitas tektonik",
+                    "Pemanasan global yang mendidihkan air laut",
+                    "Pencurian oleh penyelam amatir"
+                ],
+                correct: 1,
+                rationale: "Ancaman terbesar bagi kabel bawah laut adalah jangkar kapal yang menjatuhkan sauh dan bencana alam seperti gempa bumi atau longsor bawah laut.",
+                hint: "Jangkar kapal dan gempa bumi."
+            },
+            {
+                question: "Apa pesan utama di akhir video Kok Bisa? mengenai masa depan internet bagi umat manusia?",
+                options: [
+                    "Internet adalah karya kolaborasi manusia terbesar yang harus dijaga dan dimanfaatkan secara bijak",
+                    "Internet akan segera ditinggalkan dan digantikan surat kertas",
+                    "Manusia tidak perlu lagi belajar karena internet sudah tahu segalanya",
+                    "Internet berbahaya dan harus dilarang penggunaannya"
+                ],
+                correct: 0,
+                rationale: "Internet adalah bukti kehebatan kolaborasi global manusia yang menghubungkan miliaran jiwa, sehingga harus dimanfaatkan untuk kebaikan.",
+                hint: "Kolaborasi terbesar manusia yang harus dijaga bijak."
+            }
+        ];
+
+        // State Aplikasi
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 30;
+        let isAnswered = false;
+
+        // Web Audio API Synthesizer (Tanpa file .mp3 eksternal)
+        function playSound(type) {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                const now = ctx.currentTime;
+
+                if (type === 'correct') {
+                    // Nada gembira / sukses (Chard naik)
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now); // A4
+                    osc.frequency.setValueAtTime(554.37, now + 0.1); // C#5
+                    osc.frequency.setValueAtTime(659.25, now + 0.2); // E5
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'wrong') {
+                    // Nada salah (Buzz turun)
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(150, now + 0.15);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'click') {
+                    // Nada klik lembut
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                }
+            } catch (e) {
+                console.log("Audio Context suppressed or not allowed.");
+            }
+        }
+
+        // Navigasi Layar
+        function showScreen(screenId) {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function startQuiz() {
+            playSound('click');
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('live-score').innerText = score;
+            showScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function goToHome() {
+            playSound('click');
+            showScreen('start-screen');
+        }
+
+        function restartQuiz() {
+            playSound('click');
+            startQuiz();
+        }
+
+        // Load Pertanyaan
+        function loadQuestion() {
+            isAnswered = false;
+            clearInterval(timer);
+            timeLeft = 30;
+            document.getElementById('timer-text').innerText = timeLeft;
+            document.getElementById('timer-bar').style.width = '100%';
+            document.getElementById('rationale-box').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('hint-box').classList.add('hidden');
+
+            const q = quizData[currentQuestionIndex];
+            document.getElementById('current-question-num').innerText = currentQuestionIndex + 1;
+            document.getElementById('question-text').innerText = q.question;
+            document.getElementById('hint-text').innerText = q.hint;
+
+            // Update Progress Bar Total
+            const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
+            document.getElementById('total-progress-bar').style.width = `${progressPercent}%`;
+
+            // Render Pilihan Ganda (2x2 grid)
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn text-left p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-pink-500/50 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-sm sm:text-base font-medium flex items-center space-x-3 group";
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-xs font-bold group-hover:bg-pink-500 group-hover:text-white transition-colors shrink-0">${String.fromCharCode(65 + index)}</span>
+                    <span class="flex-1">${opt}</span>
+                `;
+                btn.onclick = () => selectAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        // Timer per Soal
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-text').innerText = timeLeft;
+                const percentage = (timeLeft / 30) * 100;
+                document.getElementById('timer-bar').style.width = `${percentage}%`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function handleTimeout() {
+            if (isAnswered) return;
+            isAnswered = true;
+            playSound('wrong');
+
+            const q = quizData[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === q.correct) {
+                    btn.classList.remove('bg-white/5', 'hover:bg-white/10');
+                    btn.classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-200');
+                }
+            });
+
+            showRationale(false, "Waktu habis! Kamu tidak menjawab tepat waktu.");
+        }
+
+        // Pilih Jawaban
+        function selectAnswer(selectedIndex, selectedBtn) {
+            if (isAnswered) return;
+            isAnswered = true;
+            clearInterval(timer);
+
+            const q = quizData[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+            const isCorrect = (selectedIndex === q.correct);
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === q.correct) {
+                    btn.classList.remove('bg-white/5', 'hover:bg-white/10');
+                    btn.classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-200');
+                } else if (idx === selectedIndex && !isCorrect) {
+                    btn.classList.remove('bg-white/5', 'hover:bg-white/10');
+                    btn.classList.add('bg-rose-500/20', 'border-rose-500', 'text-rose-200');
+                }
+            });
+
+            if (isCorrect) {
+                score++;
+                document.getElementById('live-score').innerText = score;
+                playSound('correct');
+                showRationale(true, q.rationale);
+            } else {
+                playSound('wrong');
+                showRationale(false, q.rationale);
+            }
+        }
+
+        // Tampilkan Penjelasan Rationale
+        function showRationale(isCorrect, text) {
+            const box = document.getElementById('rationale-box');
+            const icon = document.getElementById('rationale-icon');
+            const title = document.getElementById('rationale-title');
+            const desc = document.getElementById('rationale-text');
+
+            box.classList.remove('hidden');
+            if (isCorrect) {
+                icon.className = "p-2 rounded-xl text-lg mt-0.5 bg-emerald-500/20 text-emerald-400";
+                icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                title.innerText = "Benar Sekali!";
+                title.className = "font-bold text-sm mb-1 text-emerald-300";
+            } else {
+                icon.className = "p-2 rounded-xl text-lg mt-0.5 bg-rose-500/20 text-rose-400";
+                icon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+                title.innerText = "Kurang Tepat!";
+                title.className = "font-bold text-sm mb-1 text-rose-300";
+            }
+            desc.innerText = text;
+
+            // Tampilkan tombol lanjut
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        // Lanjut ke Pertanyaan Berikutnya atau Selesai
+        function nextQuestion() {
+            playSound('click');
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResultScreen();
+            }
+        }
+
+        // Toggle Hint
+        function toggleHint() {
+            playSound('click');
+            const hintBox = document.getElementById('hint-box');
+            hintBox.classList.toggle('hidden');
+        }
+
+        // Tampilkan Layar Hasil
+        function showResultScreen() {
+            showScreen('result-screen');
+            document.getElementById('final-score').innerText = score;
+
+            // Update Total Progress ke 100%
+            document.getElementById('total-progress-bar').style.width = '100%';
+
+            const trophyIcon = document.getElementById('result-trophy-icon');
+            const iconContainer = document.getElementById('result-icon-container');
+            const title = document.getElementById('result-title');
+            const subtitle = document.getElementById('result-subtitle');
+            const badge = document.getElementById('evaluation-badge');
+
+            if (score >= 17) {
+                // Skor Tinggi
+                trophyIcon.className = "fa-solid fa-trophy text-yellow-400 text-5xl sm:text-6xl";
+                iconContainer.className = "inline-flex p-5 rounded-3xl mb-6 border bg-yellow-500/20 border-yellow-500/30 shadow-2xl";
+                title.innerText = "Luar Biasa! Ahli Internet!";
+                subtitle.innerText = "Kamu benar-benar menguasai materi video 'Kok Bisa?' dengan sangat sempurna.";
+                badge.className = "inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-yellow-500/20 text-yellow-300 border border-yellow-500/30";
+                badge.innerText = "Predikat: Master Internet 🌟";
+
+                // Trigger Confetti Perayaan
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            } else if (score >= 10) {
+                // Skor Menengah
+                trophyIcon.className = "fa-solid fa-medal text-indigo-300 text-5xl sm:text-6xl";
+                iconContainer.className = "inline-flex p-5 rounded-3xl mb-6 border bg-indigo-500/20 border-indigo-500/30 shadow-2xl";
+                title.innerText = "Kerja Bagus!";
+                subtitle.innerText = "Pemahamanmu tentang jaringan internet sudah cukup baik. Coba lagi untuk hasil maksimal!";
+                badge.className = "inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30";
+                badge.innerText = "Predikat: Cukup Kompeten 👍";
+            } else {
+                // Skor Rendah
+                trophyIcon.className = "fa-solid fa-book-open text-pink-400 text-5xl sm:text-6xl";
+                iconContainer.className = "inline-flex p-5 rounded-3xl mb-6 border bg-pink-500/20 border-pink-500/30 shadow-2xl";
+                title.innerText = "Tetap Semangat Belajar!";
+                subtitle.innerText = "Yuk tonton ulang video pembelajarannya agar kamu semakin paham bentuk asli internet!";
+                badge.className = "inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30";
+                badge.innerText = "Predikat: Perlu Review Materi 📚";
+            }
+        }
+
+        // Modal YouTube Player
+        function openVideoModal() {
+            playSound('click');
+            const modal = document.getElementById('video-modal');
+            const iframe = document.getElementById('youtube-iframe');
+            iframe.src = "https://www.youtube.com/embed/_fl7wWbV604?autoplay=1";
+            modal.classList.remove('hidden');
+        }
+
+        function closeVideoModal() {
+            playSound('click');
+            const modal = document.getElementById('video-modal');
+            const iframe = document.getElementById('youtube-iframe');
+            iframe.src = ""; // Stop video playback
+            modal.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
+```
